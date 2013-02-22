@@ -1,4 +1,4 @@
 blog_source
 ===========
 
-Sources of the blog
+Sources of my GitHub blog
