@@ -9,6 +9,7 @@ categories: [operating systems, concurrent programming]
 ## Abstract
 
 In the past article I introduced the concept of process and how important it is for our operating system: in this new issue of the Concurrent Programming series we will go on and begin to write multitasking code; we will start from one of the basic concepts of the whole picture, the forking operation. Afterwards we will start to introduce the problem of process synchronization and communication, which we will deeply face in a later instalment.
+<!--more-->
 
 ## The C standard library
 

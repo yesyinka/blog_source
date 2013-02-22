@@ -9,6 +9,7 @@ categories: [operating systems, concurrent programming]
 ## Abstract
 
 In the past issue of this series of articles about concurrent programming we started to concern ourselves with the problems of synchronization between processes. In this installment we will investigate further the subject introducing some structures and functions collectively known as _Unix System V IPC_.
+<!--more-->
 
 ## IPC: InterProcess Communication
 

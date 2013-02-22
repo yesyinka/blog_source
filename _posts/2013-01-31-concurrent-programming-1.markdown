@@ -11,8 +11,9 @@ categories: [operating systems, concurrent programming]
 _This series of articles on concurrent programming have been already published on LinuxFocus from November 2002 and have been now carefully reviewed. Feel free to notify me any error you will find._
 
 The purpose of this article (and the following ones in this series) is to introduce the reader to the concept of multitasking and to its implementation in the Linux operating system. Thus, we will start from the theoretical concepts at the base of multitasking and from those we will move towards advanced concept like multithreading and interprocess communication. Along this path we will practice some code and some Linux internals, trying to constantly exemplify how concepts are realized in a real world operating system.
+<!--more-->
 
-One of the biggest positive apects of dealing with an open source operating system like Linux is the possibility to look at the code: this allow us to uncover the internal working of a system that runs on the most important data center of the planet.
+## Prerequisites
 
 Prerequisites for the understanding of the article are:
 
@@ -20,6 +21,8 @@ Prerequisites for the understanding of the article are:
 * Basic knowledge of C language (syntax, loops, libraries)
 
 Even if the articles are written using a Linux machine, many concepts are shared by any Unix-like operating system, most notably Mac OS X. Pay however attention to the fact that while any Unix-like system behaves the same way (more or less), its internal structures and code can be significantly different. On the other hand OSs of the DOS and Windows family share some concepts with Unix-like ones but behave very differently.
+
+One of the biggest positive apects of dealing with an open source operating system like Linux is the possibility to look at the code: this allow us to uncover the internal working of a system that runs on the most important data center of the planet.
 
 ## Introduction
 

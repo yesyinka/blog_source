@@ -11,8 +11,7 @@ categories: [operating systems, concurrent programming]
 In the first article we stepped into the world of multitasking, going over its meaning and the reasons behind its existence. In the second article we met the fundamental fork operation and wrote our first multitasking code. In this article we will go ahead and introduce ourselves in the topic of synchronization: the problem we face now indeed is to release the full power of multitasking, that is to share the work between processes.
 
 In the first part of the article I want to make a step back to the basics of multitasking to clarify the single/multiple CPU theme. Then we will start talking about shared data between processes, first looking at the problems arising and then writing some code.
-
-Note that from now on it does not really matter if our processes have been created by an explicit `fork()` in our code or by running them separately.
+<!--more-->
 
 ## Simultaneous execution
 
