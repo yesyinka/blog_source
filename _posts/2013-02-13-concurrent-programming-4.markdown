@@ -416,8 +416,8 @@ In the next article we will introduce and deal with atomicity, which is a very i
 
 ## Past articles
 
-[Concurrent Programming 1](blog/2013/01/31/concurrent-programming-1)
+[Concurrent Programming 1](/blog/2013/01/31/concurrent-programming-1)
 
-[Concurrent Programming 2](blog/2013/02/04/concurrent-programming-2)
+[Concurrent Programming 2](/blog/2013/02/04/concurrent-programming-2)
 
-[Concurrent Programming 3](blog/2013/02/06/concurrent-programming-3)
+[Concurrent Programming 3](/blog/2013/02/06/concurrent-programming-3)

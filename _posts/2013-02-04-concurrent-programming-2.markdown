@@ -237,4 +237,4 @@ In the next article we will start to look after processes synchronization and da
 
 ## Past articles
 
-[Concurrent Programming 1](blog/2013/01/31/concurrent-programming-1)
+[Concurrent Programming 1](/blog/2013/01/31/concurrent-programming-1)
