@@ -35,8 +35,8 @@ Each error is a lesson... if someone corrects you. So please notify me any mista
 
 ## Contact me
 
-* Linkedin: [Leonardo Giordani](http://it.linkedin.com/pub/leonardo-giordani/45/3a9/aa2/)
-* Google Plus: [116249535367530805786](https://plus.google.com/u/0/116249535367530805786)
-* Twitter: [tw_lgiordani](https://twitter.com/tw_lgiordani)
-* Github: [lgiordani](https://github.com/lgiordani)
-* Blog issues: [lgiordani.github.com/issues](https://github.com/lgiordani/lgiordani.github.com/issues)
+* [Linkedin](http://it.linkedin.com/pub/leonardo-giordani/45/3a9/aa2/)
+* <a href="https://plus.google.com/116249535367530805786" rel="me">Google+</a>
+* [Twitter](https://twitter.com/tw_lgiordani)
+* [GitHub](https://github.com/lgiordani)
+* [Blog issues](https://github.com/lgiordani/lgiordani.github.com/issues)
