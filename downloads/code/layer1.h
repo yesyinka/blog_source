@@ -3,6 +3,7 @@
 #include <linux/ipc.h>
 #include <linux/msg.h>
 #include <errno.h>
+#include <string.h>
 
 typedef struct
 {
@@ -19,17 +20,17 @@ typedef struct
  message_t message;
 } messagebuf_t;
 
-void set_sender(messagebuf_t * buf, int sender);
-void set_receiver(messagebuf_t * buf, int receiver);
-void set_text(messagebuf_t * buf, char *text);
-void set_service(messagebuf_t * buf, int service);
-void set_service_data(messagebuf_t * buf, int data);
+void set_sender(messagebuf_t *buf, int sender);
+void set_receiver(messagebuf_t *buf, int receiver);
+void set_text(messagebuf_t *buf, char *text);
+void set_service(messagebuf_t *buf, int service);
+void set_service_data(messagebuf_t *buf, int data);
 
-void get_sender(messagebuf_t * buf);
-void get_receiver(messagebuf_t * buf);
-void get_text(messagebuf_t * buf);
-void get_service(messagebuf_t * buf);
-void get_service_data(messagebuf_t * buf);
+int get_sender(messagebuf_t *buf);
+int get_receiver(messagebuf_t *buf);
+void get_text(messagebuf_t *buf, char *text);
+int get_service(messagebuf_t *buf);
+int get_service_data(messagebuf_t *buf);
 
 /* This function creates a unique SysV IPC key */
 /* from a letter passed as a parameter */
