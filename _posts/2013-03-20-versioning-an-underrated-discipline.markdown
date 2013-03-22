@@ -9,10 +9,10 @@ version: 1
 
 ## Overture
 
-Everyone uses a computer has to deal in their everyday life with software version numbers, and even who deals with computers just as bare user shall sooner or later introduce the word _version_ in their speech. Alas, this made it one of those concepts so pervading that it is now taken for granted, and this is so widespread that even professionals often forget or do not even know the complexity of the matter behind. In this article I am going to try to shine a light on this topic.
+Everyone uses a computer has to deal in their everyday life with software version numbers, and even who deals with computers just as bare user shall sooner or later introduce the word _version_ in their speech. Alas, this made it one of those concepts so pervading that it is now taken for granted, and this is so widespread that even professionals often forget or do not even know the complexity of the matter behind. This article is an attempt to shine a light on this topic.
 
 <!--more-->
-This post started as a collection of some thoughts and best practices that aimed to summarize the experience collected by me in 10 years of software development. As usual, short sentences proved to be too short and became long sentences, then paragraphs, and the short list was already a long article. However, despite of the length my analysis does not claim to be neither complete nor exact.
+This post started as a collection of some thoughts that aimed to summarize the experience collected by me in 10 years of software development. As usual, short sentences proved to be too short and became long sentences, then paragraphs, and the short list was already a long article. However, despite of the length my analysis does not claim to be neither complete nor exact.
 
 It simply represents an attempt to introduce the reader to the complexity of a matter which is always relevant in the software world.
 
