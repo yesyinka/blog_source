@@ -10,6 +10,7 @@ version: 1
 ## Introduction
 
 Python is a language that in 11 years of life has been through a very remarkable development and the introduction of several new features, sometimes borrowed from other languages, sometimes arisen from the needs of developers and heavily discussed before being officially implemented. One of these improvements concerns generators, a concept which can be found in the computer science environment since the 70s; it has been implemented in Python from version 2.2 (2001) and became popular from version 2.3 (2003).
+<!--more-->
 
 Generators are a generalization of functions that allow to deal in a more complete and rich way with iterations, repeated executions and in general with everything concerns the program flow. In the last years a concept which was considered obsolete started to spread again, namely that of cooperative multitasking. This concept has been shadowed for some years by the advent of multiprocessing and multithreading but, as happened to interpreted languages and virtual machines, as time passes and contexts change good ideas rise again and prove to be anything but dead.
 
