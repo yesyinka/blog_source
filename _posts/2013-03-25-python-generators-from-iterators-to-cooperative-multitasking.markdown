@@ -3,7 +3,7 @@ layout: post
 title: "Python generators - from iterators to cooperative multitasking"
 date: 2013-03-25 10:41
 comments: true
-categories: python, generators
+categories: [python, generators]
 version: 1
 ---
 
@@ -85,8 +85,8 @@ This object is an iterator since it exposes `__iter__()`. Its `next()` method re
 1
 >>> print iterator.next()
 Traceback (most recent call last):
-File "<stdin>", line 1, in <module>
-File "<stdin>", line 7, in next
+  File "<stdin>", line 1, in <module>
+  File "<stdin>", line 7, in next
 StopIteration
 >>>
 >>> iterator = AnIterator(3)
