@@ -209,4 +209,4 @@ Generators are a very powerful tool, not only because they simplify the creation
 
 ## Past articles
 
-[Python Generators - From Iterators to Cooperative Multitasking](/blog/2013/03/25/python-generators-from-iterators-to-cooperative-multitasking)
+* [Python Generators - From Iterators to Cooperative Multitasking](/blog/2013/03/25/python-generators-from-iterators-to-cooperative-multitasking)
