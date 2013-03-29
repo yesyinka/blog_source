@@ -21,7 +21,7 @@ The slides of this presentation are freely downloadable, so I suggest the intere
 
 ## Microthread: cooperative multitasking
 
-_Disclaimer: the concepts and code presented here have been heavily influenced by the Kamaelia project. You can find it [here](www.kamaelia.org)._
+_Disclaimer: the concepts and code presented here have been heavily influenced by the Kamaelia project. You can find it [here](http://www.kamaelia.org)._
 
 Let us move forward to see how (Python) generators allow us to easily build applications based on the concept of cooperative multitasking. I assume the reader is familiar with the concepts of preemption and thread-based multitasking and is aware of the pro and cons of such solutions.
 
