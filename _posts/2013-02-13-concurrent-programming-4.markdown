@@ -4,6 +4,7 @@ title: "Concurrent programming - 4"
 date: 2013-02-13 10:50
 comments: true
 categories: [operating systems, concurrent programming]
+version: 1
 ---
 
 ## Abstract
@@ -421,3 +422,7 @@ In the next article we will introduce and deal with atomicity, which is a very i
 [Concurrent Programming 2](/blog/2013/02/04/concurrent-programming-2)
 
 [Concurrent Programming 3](/blog/2013/02/06/concurrent-programming-3)
+
+## Next articles
+
+[Concurrent Programming 5](/blog/2013/02/28/concurrent-programming-5)

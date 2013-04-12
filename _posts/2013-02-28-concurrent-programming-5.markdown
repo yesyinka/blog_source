@@ -4,6 +4,7 @@ title: "Concurrent programming - 5"
 date: 2013-02-28 17:49
 comments: true
 categories: [operating systems, concurrent programming]
+version: 1
 ---
 
 ## Abstract
