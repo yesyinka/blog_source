@@ -78,3 +78,13 @@ Now you have been introduced to the meaning of multitasking and to the reason of
 Next article will dig into the fundamental concept of process forking, both from the theoretical point of view and with real C examples. We will also later talk about interprocess communication, multithreading, multiple CPUs and cores and scheduling.
 
 Feel free to ask questions or point errors through comments or social networks.
+
+## Next articles
+
+[Concurrent Programming 2](/blog/2013/02/04/concurrent-programming-2)
+
+[Concurrent Programming 3](/blog/2013/02/06/concurrent-programming-3)
+
+[Concurrent Programming 5](/blog/2013/02/28/concurrent-programming-5)
+
+[Concurrent Programming 4](/blog/2013/02/13/concurrent-programming-4)

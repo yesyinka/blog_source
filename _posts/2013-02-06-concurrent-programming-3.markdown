@@ -150,3 +150,9 @@ In the next article we will study some classical synchronization problems and in
 [Concurrent Programming 1](/blog/2013/01/31/concurrent-programming-1)
 
 [Concurrent Programming 2](/blog/2013/02/04/concurrent-programming-2)
+
+## Next articles
+
+[Concurrent Programming 4](/blog/2013/02/13/concurrent-programming-4)
+
+[Concurrent Programming 5](/blog/2013/02/28/concurrent-programming-5)
