@@ -14,6 +14,7 @@
 #define SERVICE_CONNECT 4
 #define SERVICE_DISCONNECT 5
 #define SERVICE_QID   6
+#define SERVICE_UNREACHABLE_DESTINATION   7
 
 int init_queue();
 void close_queue(int qid);
@@ -25,5 +26,5 @@ void user_send_time(int sender, int sw);
 void user_send_disconnect(int sender, int pid, int sw);
 
 void switch_send_text_message(int sender, char *text, int user);
-void switch_send_term(int sender, int qid);
+void switch_send_term(int qid);
 void switch_send_time(int qid);

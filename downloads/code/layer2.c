@@ -15,6 +15,8 @@ int init_queue(int num)
   key = build_key((char) num);
   qid = create_queue(key);
 
+  printf("init_queue(%d) - key %d - qid %d\n", num, key, qid);
+
   return qid;
 }
 
@@ -125,7 +127,7 @@ void switch_send_text_message(int sender, char *text, int user)
  * Termination signal (switch).
  * This function sends a message to the user asking to begin the termination procedure.
  */
-void switch_send_term(int sender, int qid)
+void switch_send_term(int qid)
 {
   messagebuf_t message;
   
@@ -147,5 +149,4 @@ void switch_send_time(int qid)
   set_service(&message, SERVICE_TIME);
   send_message(qid, &message);
 }
-
 

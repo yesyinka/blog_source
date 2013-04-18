@@ -17,7 +17,7 @@ typedef struct
 typedef struct
 {
  long mtype;
- message_t message;
+ message_t mtext;
 } messagebuf_t;
 
 void set_sender(messagebuf_t *buf, int sender);

@@ -9,8 +9,10 @@
 #include "layer1.h"
 #include "layer2.h"
 
-#define MINCHILDS 2
+#define MINCHILDS 1
 #define MAXCHILDS 15
+
+#define MAXFAILS 10
 
 pid_t pid;
 int i;
@@ -37,6 +39,12 @@ int msg_service_data;
 int t;
 int timing[MAXCHILDS + 1][2];
 
+int unreachable_destinations[MAXCHILDS + 1];
+
+char *padding = "                                                                      ";
+char text[160];
+int rn;
+
 messagebuf_t msg, in;
 
 FILE *fp;
@@ -57,6 +65,7 @@ void usage(char *argv[])
 {
   printf("Telephone switch simulator v1 - A concurrent processing demonstration environment\n");
   printf("%s <number of users> <service probability> <text message probability>\n", argv[0]);
+  printf("\n");
   printf("     <number of users> - Number of users alive in the system (%d - %d)\n", MINCHILDS, MAXCHILDS);
   printf("     <service probability> - The probability that the switch requires a service from the user (0-100)\n");
   printf("     <text message probability> - The probability the a user sends a message to another user (0-100)\n\n");
@@ -100,11 +109,22 @@ int main(int argc, char *argv[])
   init_rand(time(NULL));
 
   /* Queues initialization */
-  sw = init_queue(0);
+  sw = init_queue(255);
   
+  /* Read the last messages we have in the queue */
+  while(receive_message(sw, TYPE_TEXT, &in)){
+    printf("%d -- S -- Receiving old text messages\n", (int) time(NULL), i);
+  }
+
+  /* Read the last messages we have in the queue */
+  while(receive_message(sw, TYPE_SERVICE, &in)){
+    printf("%d -- S -- Receiving old service messge\n", (int) time(NULL), i);
+  }
+
   /* All queues are "uninitialized" (set equal to switch queue) */
   for(i = 0; i <= users_number; i++){
     queues[i] = sw;
+    unreachable_destinations[i] = 0;
   }
 
   /* Create users */
@@ -112,11 +132,21 @@ int main(int argc, char *argv[])
     pid = fork();
 
     if (pid == 0){
-      init_rand(time(NULL));
+      init_rand(time(NULL) + 1000*i);
 
       /* Initialize queue  */
       qid = init_queue(i);
       
+      /* Read the last messages we have in the queue */
+      while(receive_message(qid, TYPE_TEXT, &in)){
+	printf("%s%d -- U %02d -- Receiving old text messages\n", padding, (int) time(NULL), i);
+      }
+
+      /* Read the last messages we have in the queue */
+      while(receive_message(qid, TYPE_SERVICE, &in)){
+	printf("%s%d -- U %02d -- Receiving old service messge\n", padding, (int) time(NULL), i);
+      }
+
       /* Let the switch know we are alive */
       user_send_connect(i, sw);
       
@@ -127,62 +157,113 @@ int main(int argc, char *argv[])
       while(1){
 	sleep(rand()%MAX_SLEEP);
 
-	/* Send a message */
-	if(random_number(100) < text_message_probability){
-	  dest = random_number(users_number + 1);
+    	/* Check if the switch requested a service */
+    	if(receive_message(qid, TYPE_SERVICE, &in)){
+    	  msg_service = get_service(&in);
 
-	  /* Do not send a message to the switch, to yourself and to the previous recipient */
-	  while((dest == 0) || (dest == i) || (dest == olddest)){
-	    dest = random_number(users_number + 1);
-	  }
-	  olddest = dest;
+    	  switch(msg_service){
 
-	  printf("%d -- U %d -- Message to user %d\n", (int) time(NULL), i, dest);
-	  user_send_text_message(i, dest, "A message from me", sw);
-	}
-	
-	/* Check the incoming box for simple messages */
-	if(receive_message(qid, TYPE_TEXT, &in)){
-	  msg_sender = get_sender(&in);
-	  get_text(&in, msg_text);
-	  printf("%d -- U %d -- Message from user %d: %s\n", (int) time(NULL), i, msg_sender, msg_text);
-	}
-	
-	/* Check if the switch requested a service */
-	if(receive_message(qid, TYPE_SERVICE, &in)){
-	  msg_service = get_service(&in);
-
-	  switch(msg_service){
-
-	  case SERVICE_TERMINATE:
-	    /* Send an acknowledgement to the switch */
-	    user_send_disconnect(i, getpid(), sw);
+    	  case SERVICE_TERMINATE:
+    	    /* Send an acknowledgement to the switch */
+    	    user_send_disconnect(i, getpid(), sw);
 	    
-	    /* Read the last messages we have in the queue */
-	    while(receive_message(qid, TYPE_TEXT, &in)){
-	      msg_sender = get_sender(&in);
-	      get_text(&in, msg_text);
-	      printf("%d -- U %d -- Message from user %d: %s\n", (int) time(NULL), i, msg_sender, msg_text);
-	    }
+    	    /* Read the last messages we have in the queue */
+    	    while(receive_message(qid, TYPE_TEXT, &in)){
+    	      msg_sender = get_sender(&in);
+    	      get_text(&in, msg_text);
+    	      printf("%s%d -- U %02d -- Message received\n", padding, (int) time(NULL), i);
+	      printf("%s                      Sender: %d\n", padding, msg_sender);
+	      printf("%s                      Text: %s\n", padding, msg_text);
+    	    }
 	    
-	    /* Remove the queue */
-	    close_queue(qid);	 
-	    printf("%d -- U %d -- Termination\n", (int) time(NULL), i);
-	    exit(0);
-	    break;
+    	    /* Remove the queue */
+    	    close_queue(qid);
+    	    printf("%s%d -- U %02d -- Termination\n", padding, (int) time(NULL), i);
+    	    exit(0);
+    	    break;
 
-	  case SERVICE_TIME:
-	    user_send_time(i, sw);
-	    printf("%d -- U %d -- Timing\n", (int) time(NULL), i);
-	    break;
+    	  case SERVICE_TIME:
+    	    user_send_time(i, sw);
+    	    printf("%s%d -- U %02d -- Timing\n", padding, (int) time(NULL), i);
+    	    break;
+
 	  }
-	}
+    	}
+
+    	/* Send a message */
+    	if(random_number(100) < text_message_probability){
+    	  dest = random_number(users_number + 1);
+
+    	  /* Do not send a message to the switch, to yourself and to the previous recipient */
+    	  while((dest == 0) || (dest == i) || (dest == olddest)){
+    	    dest = random_number(users_number + 1);
+    	  }
+    	  olddest = dest;
+
+    	  printf("%s%d -- U %02d -- Message to user %d\n", padding, (int) time(NULL), i, dest);
+	  sprintf(text, "A message from me (%d) to you (%d)", i, dest);
+    	  user_send_text_message(i, dest, text, sw);
+    	}
+	
+    	/* Check the incoming box for simple messages */
+    	if(receive_message(qid, TYPE_TEXT, &in)){
+    	  msg_sender = get_sender(&in);
+    	  get_text(&in, msg_text);
+	  printf("%s%d -- U %02d -- Message received%d\n", padding, (int) time(NULL), i);
+	  printf("%s                      Sender: %d\n", padding, msg_sender);
+	  printf("%s                      Text: %s\n", padding, msg_text);
+    	}
       }
     }
   }
   
   /* Switch (parent process) */ 
   while(1){
+    /* Check if some user is answering to service messages */
+    if(receive_message(sw, TYPE_SERVICE, &in)){
+      msg_service = get_service(&in);
+      msg_sender = get_sender(&in);
+
+      switch(msg_service){
+      case SERVICE_CONNECT:
+	/* A new user has connected */
+	printf("%d -- S -- Service: connection\n", (int) time(NULL));
+	printf("                   User: %d\n", msg_sender);
+	break;
+
+      case SERVICE_DISCONNECT:
+	/* The user is terminating */
+	printf("%d -- S -- Service: disconnection\n", (int) time(NULL));
+	printf("                   User: %d\n", msg_sender);
+
+	deadproc++;
+	break;
+
+      case SERVICE_QID:
+	/* The user is sending us its queue id */
+	msg_service_data = get_service_data(&in);
+	printf("%d -- S -- Service: queue\n", (int) time(NULL));
+	printf("                   User: %d\n", msg_sender);
+	printf("                   Qid: %d\n", msg_service_data);
+	queues[msg_sender] = msg_service_data;
+	break;
+
+      case SERVICE_TIME:
+	msg_service_data = get_service_data(&in);
+
+	/* Timing informations */
+	timing[msg_sender][1] = msg_service_data - timing[msg_sender][1];
+
+	printf("%d -- S -- Service: timing\n", (int) time(NULL));
+	printf("                   User: %d\n", msg_sender);
+	printf("                   Timing: %d\n", timing[msg_sender][1]);
+
+	/* The user is no more blocked by a timing operation */
+	timing[msg_sender][0] = 0;
+	break;
+      }
+    }
+
     /* Check if some user has connected */
     if(receive_message(sw, TYPE_TEXT, &in)){
 
@@ -195,23 +276,44 @@ int main(int argc, char *argv[])
 	/* Send the message (forward it) */
 	switch_send_text_message(msg_sender, msg_text, queues[msg_receiver]);
 	
-	printf("%d -- S -- Sender: %d -- Destination: %d -- Text: %s\n", (int) time(NULL), msg_sender, msg_receiver, msg_text);
+	printf("%d -- S -- Routing message\n", (int) time(NULL));
+	printf("                   Sender: %d -- Destination: %d\n", msg_sender, msg_receiver);
+	printf("                   Text: %s\n", msg_text);
       }
       else{
-	printf("%d -- S -- Unreachable destination (Sender: %d - Destination: %d -- Text: %s)\n", (int) time(NULL), msg_sender, msg_receiver, msg_text);
+	unreachable_destinations[msg_sender] += 1;
+
+	if (unreachable_destinations[msg_sender] > MAXFAILS) {
+	  continue;
+	}
+
+	printf("%d -- S -- Unreachable destination\n", (int) time(NULL));
+	printf("                   Sender: %d -- Destination: %d\n", msg_sender, msg_receiver);
+	printf("                   Text: %s\n", msg_text);
+	printf("                   Threshold: %d/%d\n", unreachable_destinations[msg_sender], MAXFAILS);
+
+	if (unreachable_destinations[msg_sender] == MAXFAILS) {
+	  printf("%d -- S -- User %d reached max unreachable destinations\n", (int) time(NULL), msg_sender);
+
+	  switch_send_term(queues[msg_sender]);
+	  
+	  /* Remove its queue from the list */
+	  queues[msg_sender] = sw;
+	}
       }
       
       /* Randomly request a service to the sender of the last message */
       if((random_number(100)  < service_probability) && (queues[msg_sender] != sw)){
-	switch(random_number(2)){
-
-	case 0:
+	if (random_number(100) < 40){
 	  /* The user must terminate */
 	  printf("%d -- S -- User %d chosen for termination\n", (int) time(NULL), msg_sender);
-	  switch_send_term(i, queues[msg_sender]);
-	  break;
 
-	case 1:
+	  switch_send_term(queues[msg_sender]);
+
+	  /* Remove its queue from the list */
+	  queues[msg_sender] = sw;
+	}
+	else {
 	  /* Check if we are already timing that user */
 	  if(!timing[msg_sender][0]){
 	    timing[msg_sender][0] = 1;
@@ -219,7 +321,6 @@ int main(int argc, char *argv[])
 	    printf("%d -- S -- User %d chosen for timing...\n", timing[msg_sender][1], msg_sender);
 	    switch_send_time(queues[msg_sender]);
 	  }
-	  break;
 	}
       }
     }
@@ -235,49 +336,5 @@ int main(int argc, char *argv[])
 	exit(0);
       }
     }
-
-    /* Check if some user is answering to service messages */
-    if(receive_message(sw, TYPE_SERVICE, &in)){
-      msg_service = get_service(&in);
-      msg_sender = get_sender(&in);
-
-      switch(msg_service){
-      case SERVICE_CONNECT:
-	/* A new user has connected */
-	printf("%d -- S -- User %d connected\n", (int) time(NULL), msg_sender);
-	break;
-
-      case SERVICE_DISCONNECT:
-	/* The user is terminating */
-	printf("%d -- S -- User %d disconnected\n", (int) time(NULL), msg_sender);
-
-	/* Remove its queue from the list */
-	queues[msg_sender] = sw;
-
-	deadproc++;
-	break;
-
-      case SERVICE_QID:
-	/* The user is sending us its queue id */
-	msg_service_data = get_service_data(&in);
-	printf("%d -- S -- Got queue id of user %d: %d\n", (int) time(NULL), msg_sender, msg_service_data);
-	queues[msg_sender] = msg_service_data;
-	break;
-
-      case SERVICE_TIME:
-	msg_service_data = get_service_data(&in);
-
-	printf("%d -- S -- Timing of user %d: (%d - %d)\n", (int) time(NULL), msg_sender, msg_service_data, timing[msg_sender][1]);
-
-	/* Timing informations */
-	timing[msg_sender][1] = msg_service_data - timing[msg_sender][1];
-
-	printf("%d -- S -- Timing of user %d: %d seconds\n", (int) time(NULL), msg_sender, timing[msg_sender][1]);
-	/* The user is no more blocked by a timing operation */
-	timing[msg_sender][0] = 0;
-	break;
-      }
-    }
   }
 }
-

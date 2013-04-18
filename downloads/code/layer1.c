@@ -1,55 +1,56 @@
 #include "layer1.h"
+#include "errno.h"
 
 void set_type(messagebuf_t * buf, int type){
   buf->mtype = type;
 }
 
 int get_sender(messagebuf_t *buf){
-  return buf->message.sender;
+  return buf->mtext.sender;
 }
 
 void set_sender(messagebuf_t *buf, int sender){
-  buf->message.sender = sender;
+  buf->mtext.sender = sender;
 }
 
 void set_receiver(messagebuf_t *buf, int receiver){
-  buf->message.receiver = receiver;
+  buf->mtext.receiver = receiver;
 }
 
 int get_receiver(messagebuf_t *buf){
-  return buf->message.receiver;
+  return buf->mtext.receiver;
 }
 
 void set_text(messagebuf_t *buf, char *text){
-  strcpy(buf->message.text, text);
+  strcpy(buf->mtext.text, text);
 }
 
 void get_text(messagebuf_t *buf, char *text){
-  strcpy(text, buf->message.text);
+  strcpy(text, buf->mtext.text);
 }
 
 int get_service(messagebuf_t *buf){
-  return buf->message.service;
+  return buf->mtext.service;
 }
 
 void set_service(messagebuf_t *buf, int service){
-  buf->message.service = service;
+  buf->mtext.service = service;
 }
 
 void set_service_data(messagebuf_t *buf, int service_data){
-  buf->message.service_data = service_data;
+  buf->mtext.service_data = service_data;
 }
 
 int get_service_data(messagebuf_t *buf){
-  return buf->message.service_data;
+  return buf->mtext.service_data;
 }
 
 void init_message(messagebuf_t *buf){
-  buf->message.sender = -1;
-  buf->message.receiver = -1;
-  strcpy(buf->message.text, "");
-  buf->message.service = -1;
-  buf->message.service_data = -1;
+  buf->mtext.sender = -1;
+  buf->mtext.receiver = -1;
+  strcpy(buf->mtext.text, "");
+  buf->mtext.service = -1;
+  buf->mtext.service_data = -1;
 }
 
 /* This function creates a unique SysV IPC key */
@@ -69,7 +70,7 @@ int create_queue(key_t key){
     perror("msgget");
     exit(1);
   }
-  
+
   return qid;
 }
 
