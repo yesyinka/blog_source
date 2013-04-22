@@ -15,8 +15,6 @@ int init_queue(int num)
   key = build_key((char) num);
   qid = create_queue(key);
 
-  printf("init_queue(%d) - key %d - qid %d\n", num, key, qid);
-
   return qid;
 }
 

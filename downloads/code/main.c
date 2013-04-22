@@ -209,7 +209,7 @@ int main(int argc, char *argv[])
     	if(receive_message(qid, TYPE_TEXT, &in)){
     	  msg_sender = get_sender(&in);
     	  get_text(&in, msg_text);
-	  printf("%s%d -- U %02d -- Message received%d\n", padding, (int) time(NULL), i);
+	  printf("%s%d -- U %02d -- Message received\n", padding, (int) time(NULL), i);
 	  printf("%s                      Sender: %d\n", padding, msg_sender);
 	  printf("%s                      Text: %s\n", padding, msg_text);
     	}
@@ -332,6 +332,9 @@ int main(int argc, char *argv[])
 	/* Remove the switch queue */
 	remove_queue(sw);
 
+	printf("\n");
+	printf("No more active users. Switch turns off.\n");
+	
 	/* Terminate the program */
 	exit(0);
       }
