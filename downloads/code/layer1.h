@@ -32,6 +32,8 @@ void get_text(messagebuf_t *buf, char *text);
 int get_service(messagebuf_t *buf);
 int get_service_data(messagebuf_t *buf);
 
+void init_message(messagebuf_t *buf);
+
 /* This function creates a unique SysV IPC key */
 /* from a letter passed as a parameter */
 key_t build_key(char c);

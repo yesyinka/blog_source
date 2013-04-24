@@ -49,10 +49,6 @@ messagebuf_t msg, in;
 
 FILE *fp;
 
-int init_rand(unsigned int seed){
-  srandom(seed);
-}
-
 int random_number(int max)
 {
   double r,x;
@@ -106,7 +102,7 @@ int main(int argc, char *argv[])
   printf("\n");
 
   /* Initialize the random number generator */
-  init_rand(time(NULL));
+  srandom(time(NULL));
 
   /* Queues initialization */
   sw = init_queue(255);
@@ -132,7 +128,7 @@ int main(int argc, char *argv[])
     pid = fork();
 
     if (pid == 0){
-      init_rand(time(NULL) + 1000*i);
+      srandom(time(NULL) + 1000*i);
 
       /* Initialize queue  */
       qid = init_queue(i);

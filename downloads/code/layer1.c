@@ -89,6 +89,7 @@ int remove_queue(int qid){
 int send_message(int qid, messagebuf_t *qbuf){
   int result, lenght;
   lenght = sizeof(messagebuf_t) - sizeof(long);
+  
   if ((result = msgsnd(qid, qbuf, lenght, 0)) == -1){
     perror("msgsnd");
     exit(1);
