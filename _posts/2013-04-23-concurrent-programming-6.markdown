@@ -4,6 +4,7 @@ title: "Concurrent programming - 6"
 date: 2013-04-23 08:29
 comments: true
 categories: [operating systems, concurrent programming]
+series: pippo
 ---
 
 ## Abstract
