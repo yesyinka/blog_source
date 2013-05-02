@@ -61,14 +61,14 @@ void user_send_qid(int sender, int qid, int sw)
  * Text message (user).
  * This function sends a text message to another user.
  */
-void user_send_text_message(int sender, int receiver, char *text, int sw)
+void user_send_text_message(int sender, int recipient, char *text, int sw)
 {
   messagebuf_t message;
 
   init_message(&message);
   set_type(&message, TYPE_TEXT);
   set_sender(&message, sender);
-  set_receiver(&message, receiver);
+  set_recipient(&message, recipient);
   set_text(&message, text);
   send_message(sw, &message);
 }
@@ -124,7 +124,7 @@ void switch_send_text_message(int sender, char *text, int user)
  * Termination signal (switch).
  * This function sends a message to the user asking to begin the termination procedure.
  */
-void switch_send_term(int qid)
+void switch_send_terminate(int qid)
 {
   messagebuf_t message;
   

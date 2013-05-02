@@ -31,7 +31,7 @@ int olddest; /* Destination of the previous message */
 int queues[MAXCHILDS + 1]; /* Queue identifiers - 0 is the qid of the switch */
 
 int msg_sender;
-int msg_receiver;
+int msg_recipient;
 char msg_text[160];
 int msg_service;
 int msg_service_data;
@@ -43,11 +43,8 @@ int unreachable_destinations[MAXCHILDS + 1];
 
 char *padding = "                                                                      ";
 char text[160];
-int rn;
 
 messagebuf_t msg, in;
-
-FILE *fp;
 
 int random_number(int max)
 {
@@ -263,17 +260,17 @@ int main(int argc, char *argv[])
     /* Check if some user has connected */
     if(receive_message(sw, TYPE_TEXT, &in)){
 
-      msg_receiver = get_receiver(&in);
+      msg_recipient = get_recipient(&in);
       msg_sender = get_sender(&in);
       get_text(&in, msg_text);
       
       /* If the destination is connected */
-      if(queues[msg_receiver] != sw){
+      if(queues[msg_recipient] != sw){
 	/* Send the message (forward it) */
-	switch_send_text_message(msg_sender, msg_text, queues[msg_receiver]);
+	switch_send_text_message(msg_sender, msg_text, queues[msg_recipient]);
 	
 	printf("%d -- S -- Routing message\n", (int) time(NULL));
-	printf("                   Sender: %d -- Destination: %d\n", msg_sender, msg_receiver);
+	printf("                   Sender: %d -- Destination: %d\n", msg_sender, msg_recipient);
 	printf("                   Text: %s\n", msg_text);
       }
       else{
@@ -284,14 +281,14 @@ int main(int argc, char *argv[])
 	}
 
 	printf("%d -- S -- Unreachable destination\n", (int) time(NULL));
-	printf("                   Sender: %d -- Destination: %d\n", msg_sender, msg_receiver);
+	printf("                   Sender: %d -- Destination: %d\n", msg_sender, msg_recipient);
 	printf("                   Text: %s\n", msg_text);
 	printf("                   Threshold: %d/%d\n", unreachable_destinations[msg_sender], MAXFAILS);
 
 	if (unreachable_destinations[msg_sender] == MAXFAILS) {
 	  printf("%d -- S -- User %d reached max unreachable destinations\n", (int) time(NULL), msg_sender);
 
-	  switch_send_term(queues[msg_sender]);
+	  switch_send_terminate(queues[msg_sender]);
 	  
 	  /* Remove its queue from the list */
 	  queues[msg_sender] = sw;
@@ -304,7 +301,7 @@ int main(int argc, char *argv[])
 	  /* The user must terminate */
 	  printf("%d -- S -- User %d chosen for termination\n", (int) time(NULL), msg_sender);
 
-	  switch_send_term(queues[msg_sender]);
+	  switch_send_terminate(queues[msg_sender]);
 
 	  /* Remove its queue from the list */
 	  queues[msg_sender] = sw;

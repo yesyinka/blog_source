@@ -19,10 +19,10 @@ void close_queue(int qid);
 
 void user_send_connect(int sender, int sw);
 void user_send_qid(int sender, int qid, int sw);
-void user_send_text_message(int sender, int receiver, char *text, int sw);
+void user_send_text_message(int sender, int recipient, char *text, int sw);
 void user_send_time(int sender, int sw);
 void user_send_disconnect(int sender, int pid, int sw);
 
 void switch_send_text_message(int sender, char *text, int user);
-void switch_send_term(int qid);
+void switch_send_terminate(int qid);
 void switch_send_time(int qid);

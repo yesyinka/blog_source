@@ -8,7 +8,7 @@
 typedef struct
 {
  int sender;
- int receiver;
+ int recipient;
  char text[160];
  int service;
  int service_data;
@@ -21,13 +21,13 @@ typedef struct
 } messagebuf_t;
 
 void set_sender(messagebuf_t *buf, int sender);
-void set_receiver(messagebuf_t *buf, int receiver);
+void set_recipient(messagebuf_t *buf, int recipient);
 void set_text(messagebuf_t *buf, char *text);
 void set_service(messagebuf_t *buf, int service);
 void set_service_data(messagebuf_t *buf, int data);
 
 int get_sender(messagebuf_t *buf);
-int get_receiver(messagebuf_t *buf);
+int get_recipient(messagebuf_t *buf);
 void get_text(messagebuf_t *buf, char *text);
 int get_service(messagebuf_t *buf);
 int get_service_data(messagebuf_t *buf);

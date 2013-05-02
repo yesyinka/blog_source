@@ -13,12 +13,12 @@ void set_sender(messagebuf_t *buf, int sender){
   buf->mtext.sender = sender;
 }
 
-void set_receiver(messagebuf_t *buf, int receiver){
-  buf->mtext.receiver = receiver;
+void set_recipient(messagebuf_t *buf, int recipient){
+  buf->mtext.recipient = recipient;
 }
 
-int get_receiver(messagebuf_t *buf){
-  return buf->mtext.receiver;
+int get_recipient(messagebuf_t *buf){
+  return buf->mtext.recipient;
 }
 
 void set_text(messagebuf_t *buf, char *text){
@@ -47,7 +47,7 @@ int get_service_data(messagebuf_t *buf){
 
 void init_message(messagebuf_t *buf){
   buf->mtext.sender = -1;
-  buf->mtext.receiver = -1;
+  buf->mtext.recipient = -1;
   strcpy(buf->mtext.text, "");
   buf->mtext.service = -1;
   buf->mtext.service_data = -1;
