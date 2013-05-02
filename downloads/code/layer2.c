@@ -10,7 +10,6 @@ int init_queue(int num)
 {
   key_t key;
   int qid;
-  int i;
     
   key = build_key((char) num);
   qid = create_queue(key);

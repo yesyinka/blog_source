@@ -9,7 +9,7 @@ series: pippo
 
 ## Abstract
 
-It's time to build something bsed on the concepts introduced in the past articles, to demonstrate a practical use of IPC structures. In this article I am going to show and comment the code of a very simple communication simulator written in C. The code leverages IPC queues to allow multiple processes to talk each other while running concurrently.
+Issue 5 of this series ended with a small program where two processes exchanged ten numbers through a message queue, thus being a synchronized producer-consumer couple. This time I am going to show and comment the code of a very simple communication simulator written in C. The code leverages IPC queues to allow multiple processes to talk each other while running concurrently.
 
 ## The simulator
 
@@ -48,10 +48,24 @@ typedef struct
 
 Here `sender` and `receiver` are numbers that identify the switch and the users (0 is the switch, then users are numbered increasingly when they connect to the switch); `text` is the content of a message a user sends to another user, and is 160 characters long to mimic SMS behaviour. Last `service` is the identifier of some system operation, like a request the switch sends to the users; `service_data` carries the optional data the service needs to communicate. Actual services are implemented in layer 2, I am going to describe them later.
 
+#### Other functions
+
 Layer 1 exposes many functions: some are simple set and get functions to deal with the message structure, while five simplify the access to IPC structures; `build_key()` makes an IPC key from a given character, `create_queue()` and `remove_queue()` manage IPC queues and last `send_message()` and `receive_message()` give a simple way to route messages.
 
 These functions are a straightforward implementation of what was presented in the previous articles so I do not comment the code line by line. I just point out that very simple error management code has been introduced. C language does not allow to use exceptions, so errors have to be managed by functions or returned through the `return` statement. A solid error management in C is outside the scope of this article, so here you will find the bare minimum.
 
 The error management of `receive_message()` needs a little explanation, however: `msgrcv()` fails even when there are no messages of the given type, producing a `ENOMSG` error. This is the reason why that case has been ignored through the `if(errno == ENOMSG)` construct.
 
+## Layer 2
 
+#### The protocol
+
+Layer2 implements the actual communication protocol between the switch and the users. I defined some useful constants in the header file: `MAX_SLEEP` is the maximum number of seconds a user waits before performing an action, while `TYPE_SERVICE` and `TYPE_TEXT` identify the type of the message. The defines which name starts with `SERVICE_` list all the possible services: `SERVICE_TERMINATE` forces a user to quit; `SERVICE_TIME` makes it perform a timing operation; `SERVICE_CONNECT` and `SERVICE_DISCONNECT` tell the switch a new user has connected or disconnected; `SERVICE_QID` bears the identifier of the user queue to the switch; `SERVICE_UNREACHABLE_DESTINATION` communicates a user that the receiver of a message is no more online.
+
+#### Queues
+
+Two functions are dedicated to queues, `init_queue()` and `close_queue()`. The first builds a IPC key from a given number (previously converting it to a char) and runs the create_queue() system call. Because of the char conversion the range of integers it can accept is 0-255 and for simplicity's sake there is no check in the whole code that a queue key has not yet been assigned. For this example I am simply leveraging that different numbers return different key and, thus, queues. The second function closes the queue running the `remove_queue()` system call. The system call are not used directly to allow the introduction of more complex checks on the assigned queues.
+
+#### User functions
+
+Users have five functions that implement their part of the protocol. Two functions communicate to the switch that the user connected or disconnected, namely `user_send_connect()` and `user_send_disconnect()`; both carry the `sender` id and the switch id `sw`, which however in the main program is always 0. Two functions implement 
