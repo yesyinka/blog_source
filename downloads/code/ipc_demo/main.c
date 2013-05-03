@@ -14,38 +14,6 @@
 
 #define MAXFAILS 10
 
-pid_t pid;
-int i;
-
-int users_number;
-int service_probability;
-int text_message_probability;
-
-int status;
-int deadproc; /* A counter of the already terminated user processes */
-int qid;
-int sw; /* Qid of the switch */
-int dest; /* Destination of the message */
-int olddest; /* Destination of the previous message */
-
-int queues[MAXCHILDS + 1]; /* Queue identifiers - 0 is the qid of the switch */
-
-int msg_sender;
-int msg_recipient;
-char msg_text[160];
-int msg_service;
-int msg_service_data;
-
-int t;
-int timing[MAXCHILDS + 1][2];
-
-int unreachable_destinations[MAXCHILDS + 1];
-
-char *padding = "                                                                      ";
-char text[160];
-
-messagebuf_t msg, in;
-
 int random_number(int max)
 {
   double r,x;
@@ -56,7 +24,7 @@ int random_number(int max)
 
 void usage(char *argv[])
 {
-  printf("Telephone switch simulator v1 - A concurrent processing demonstration environment\n");
+  printf("Telephone switch simulator\n");
   printf("%s <number of users> <service probability> <text message probability>\n", argv[0]);
   printf("\n");
   printf("     <number of users> - Number of users alive in the system (%d - %d)\n", MINCHILDS, MAXCHILDS);
@@ -66,6 +34,37 @@ void usage(char *argv[])
 
 int main(int argc, char *argv[])
 {
+  pid_t pid;
+  int i;
+
+  int users_number;
+  int service_probability;
+  int text_message_probability;
+
+  int status;
+  int deadproc; /* A counter of the already terminated user processes */
+  int qid;
+  int sw; /* Qid of the switch */
+  int dest; /* Destination of the message */
+  int olddest; /* Destination of the previous message */
+
+  int queues[MAXCHILDS + 1]; /* Queue identifiers - 0 is the qid of the switch */
+
+  int msg_sender;
+  int msg_recipient;
+  char msg_text[160];
+  int msg_service;
+  int msg_service_data;
+
+  int t;
+  int timing[MAXCHILDS + 1][2];
+
+  int unreachable_destinations[MAXCHILDS + 1];
+
+  char *padding = "                                                                      ";
+  char text[160];
+
+  messagebuf_t msg, in;
 
   /* Command line argument parsing */
   if(argc != 4){
@@ -101,7 +100,7 @@ int main(int argc, char *argv[])
   /* Initialize the random number generator */
   srandom(time(NULL));
 
-  /* Queues initialization */
+  /* Switch queue initialization */
   sw = init_queue(255);
   
   /* Read the last messages we have in the queue */

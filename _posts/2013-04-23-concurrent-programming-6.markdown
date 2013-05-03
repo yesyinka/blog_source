@@ -102,46 +102,9 @@ Now I will briefly review the whole application code to better explain the diffe
 #define MAXCHILDS 15
 
 #define MAXFAILS 10
-
-pid_t pid;
-int i;
-
-int users_number;
-int service_probability;
-int text_message_probability;
-
-int status;
-int deadproc; /* A counter of the already terminated user processes */
-int qid;
-int sw; /* Qid of the switch */
-int dest; /* Destination of the message */
-int olddest; /* Destination of the previous message */
 ```
 
-After the list of includes you will find three defines that rule the number of child processes the system can spawn and the maximum number of messages a user can send to unreachable recipients before the switch asks it to terminate. The `dest` and `olddest` variables are used to avoid a user to send a message to the recipient of the previous one.
-
-
-``` c
-int queues[MAXCHILDS + 1]; /* Queue identifiers - 0 is the qid of the switch */
-
-int msg_sender;
-int msg_recipient;
-char msg_text[160];
-int msg_service;
-int msg_service_data;
-
-int t;
-int timing[MAXCHILDS + 1][2];
-
-int unreachable_destinations[MAXCHILDS + 1];
-
-char *padding = "                                                                      ";
-char text[160];
-
-messagebuf_t msg, in;
-```
-
-Many of this variables are just helpers that simplify the code; `queues` holds the queue identifier of each process. Remember that in C you have to declare variables at the beginning of the program, while in C++ you can declare them anywhere. This means that child processes, that are a copy of the parent, carry in memory some variables such as `queues` and `timings` that are used only by the switch. This is both a waste of resources and a dangerous situation, so remember that in general statically allocated variables are not a good choice for concurrent programs. The `padding` variable is a quick and dirty way to create two columns, the left one filled by swtich messages and the right one by user ones.
+After the list of includes you will find three defines that rule the number of child processes the system can spawn and the maximum number of messages a user can send to unreachable recipients before the switch asks it to terminate.
 
 ``` c
 int random_number(int max)
@@ -154,7 +117,7 @@ int random_number(int max)
 
 void usage(char *argv[])
 {
-  printf("Telephone switch simulator v1 - A concurrent processing demonstration environment\n");
+  printf("Telephone switch simulator\n");
   printf("%s <number of users> <service probability> <text message probability>\n", argv[0]);
   printf("\n");
   printf("     <number of users> - Number of users alive in the system (%d - %d)\n", MINCHILDS, MAXCHILDS);
@@ -163,22 +126,179 @@ void usage(char *argv[])
 }
 ```
 
+The `random_number()` function is used to extract a random number between 0 and a maximum `max`; RAND_MAX is a define of the standard library and represents the maximum number the `random()` function can return and in the GNU C library it is 2^31 (2147483647); here it is used to calculate a proportion with the maximum value given by the caller. The `usage()` function helps the user remembering the command line arguments; as you can see, the program receives 3 mandatory input values: the number of users that the switch can spawn; the probability that the switch requests a service to a user when this latter sends a message; the probability that a user sends a text message to another user.
+
+``` c
+int main(int argc, char *argv[])
+{
+  pid_t pid;
+  int i;
+
+  int users_number;
+  int service_probability;
+  int text_message_probability;
+
+  int status;
+  int deadproc; /* A counter of the already terminated user processes */
+  int qid;
+  int sw; /* Qid of the switch */
+  int dest; /* Destination of the message */
+  int olddest; /* Destination of the previous message */
+
+  int queues[MAXCHILDS + 1]; /* Queue identifiers - 0 is the qid of the switch */
+
+  int msg_sender;
+  int msg_recipient;
+  char msg_text[160];
+  int msg_service;
+  int msg_service_data;
+
+  int t;
+  int timing[MAXCHILDS + 1][2];
+
+  int unreachable_destinations[MAXCHILDS + 1];
+
+  char *padding = "                                                                      ";
+  char text[160];
+
+  messagebuf_t msg, in;
+
+```
+Many of this variables are just helpers that simplify the code; `queues` holds the queue identifier of each process; `timing` holds the information about user timing service results; `unreachable_destinations` contains how many times each user sent a message to an unreachable recipient; `dest` and `olddest` are used to avoid a user to send a message to the recipient of the previous one.  The `padding` variable is a quick and dirty way to create two columns, the left one filled by swtich messages and the right one by user ones.
+
+Remember that in C you have to declare variables at the beginning of the program, while in C++ you can declare them anywhere. This means that child processes, that are a copy of the parent, carry in memory some variables such as `queues` and `timings` that are used only by the switch. This is both a waste of resources and a dangerous situation, so remember that in general statically allocated variables are not a good choice for concurrent programs.
+
+``` c
+  /* Command line argument parsing */
+  if(argc != 4){
+    usage(argv);
+    exit(0);
+  }
+
+  users_number = strtol(argv[1], NULL, 10);  
+  service_probability = strtol(argv[2], NULL, 10);
+  text_message_probability = strtol(argv[3], NULL, 10);
+  
+
+  if((users_number < MINCHILDS) || (users_number > MAXCHILDS)){
+    usage(argv);
+    exit(1);
+  }
+
+  if((service_probability < 0) || (service_probability > 100)){
+    usage(argv);
+    exit(0);
+  }
+
+  if((text_message_probability < 0) || (text_message_probability > 100)){
+    usage(argv);
+    exit(0);
+  }
+
+  printf("Number of users: %d\n", users_number);
+  printf("Probability of a service request: %d%%\n", service_probability);
+  printf("Probability of a text message: %d%%\n", text_message_probability);
+  printf("\n");
+
+  /* Initialize the random number generator */
+  srandom(time(NULL));
+```
+
+All these lines contain initialization code and checks for the values passed on the command line.
+
+``` c
+  /* Switch queue initialization */
+  sw = init_queue(255);
+  
+  /* Read the last messages we have in the queue */
+  while(receive_message(sw, TYPE_TEXT, &in)){
+    printf("%d -- S -- Receiving old text messages\n", (int) time(NULL), i);
+  }
+
+  /* Read the last messages we have in the queue */
+  while(receive_message(sw, TYPE_SERVICE, &in)){
+    printf("%d -- S -- Receiving old service messge\n", (int) time(NULL), i);
+  }
+
+  /* All queues are "uninitialized" (set equal to switch queue) */
+  for(i = 0; i <= users_number; i++){
+    queues[i] = sw;
+    unreachable_destinations[i] = 0;
+  }
+```
+
+The switch initializes its queue; this has to be done before spawining users since the `sw` variable will be copied in each child process and used to communicate with the switch. The queue is initialized with the number `255` just to be sure that no child process initializes the same queue. As explained, IPC queues provide no mechanism to ensure uniqueness of the instanced queues, so we have to establish our own system; in this simple example we spawn a maximum of 15 users, so we could also use `16` or `MAXCHILDS+1` to initialize the switch queue. Since queues are shared structures and nothig prevents the system to assign to a process a previously used queue we must ensure that the queue is empty, so the switch reads and discards all text and service messages found in its queue. Last, the `queues` and `unreachable_destinations` arrays are initialized.
 
 
 ``` c
+  /* Create users */
+  for(i = 1; i <= users_number; i++){
+    pid = fork();
+
+    if (pid == 0){
+      srandom(time(NULL) + 1000*i);
+
+      /* Initialize queue  */
+      qid = init_queue(i);
+      
+      /* Read the last messages we have in the queue */
+      while(receive_message(qid, TYPE_TEXT, &in)){
+        printf("%s%d -- U %02d -- Receiving old text messages\n", padding, (int) time(NULL), i);
+      }
+
+      /* Read the last messages we have in the queue */
+      while(receive_message(qid, TYPE_SERVICE, &in)){
+        printf("%s%d -- U %02d -- Receiving old service messge\n", padding, (int) time(NULL), i);
+      }
+
+      /* Let the switch know we are alive */
+      user_send_connect(i, sw);
+      
+      /* Let the switch know how to reach us */
+      user_send_qid(i, qid, sw);
 ```
 
-``` c
-```
+This code spawns the users and from here the code splits in two and the code of the user processes is inside the if construct. As you can see, the user acts like the switch at the very beginning, initializing its own queue and flushing the possible messages it contains. After this the user sends the switch a message to communicate that it is alive and sends its qid to allow the user to communicate.
 
 ``` c
+      /* Enter the main loop */
+      while(1){
+	    sleep(rand()%MAX_SLEEP);
+		
+		/* Check if the switch requested a service */
+		if(receive_message(qid, TYPE_SERVICE, &in)){
+		  msg_service = get_service(&in);
+		  
+		  switch(msg_service){
+		  
+    	  case SERVICE_TERMINATE:
+    	    /* Send an acknowledgement to the switch */
+    	    user_send_disconnect(i, getpid(), sw);
+	    
+    	    /* Read the last messages we have in the queue */
+    	    while(receive_message(qid, TYPE_TEXT, &in)){
+    	      msg_sender = get_sender(&in);
+    	      get_text(&in, msg_text);
+    	      printf("%s%d -- U %02d -- Message received\n", padding, (int) time(NULL), i);
+			  printf("%s                      Sender: %d\n", padding, msg_sender);
+			  printf("%s                      Text: %s\n", padding, msg_text);
+    	    }
+	    
+    	    /* Remove the queue */
+    	    close_queue(qid);
+    	    printf("%s%d -- U %02d -- Termination\n", padding, (int) time(NULL), i);
+    	    exit(0);
+    	    break;
+
+    	  case SERVICE_TIME:
+    	    user_send_time(i, sw);
+    	    printf("%s%d -- U %02d -- Timing\n", padding, (int) time(NULL), i);
+    	    break;
+		  }
+    	}
 ```
 
-``` c
-```
-
-``` c
-```
+The user loops infinitely and at each loop sleeps a random number of seconds
 
 ``` c
 ```
