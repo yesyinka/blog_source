@@ -42,7 +42,7 @@ int main(int argc, char *argv[])
   int text_message_probability;
 
   int status;
-  int deadproc; /* A counter of the already terminated user processes */
+  int deadproc = 0; /* A counter of the already terminated user processes */
   int qid;
   int sw; /* Qid of the switch */
   int dest; /* Destination of the message */
