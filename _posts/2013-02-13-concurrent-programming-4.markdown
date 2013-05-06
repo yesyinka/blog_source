@@ -9,14 +9,14 @@ version: 1
 
 ## Abstract
 
-In the past issue of this series of articles about concurrent programming we started to concern ourselves with the problems of synchronization between processes. In this installment we will investigate further the subject introducing some structures and functions collectively known as _Unix System V IPC_.
+In the past issue, of this series of articles about concurrent programming we started to concern ourselves with the problems of synchronization between processes. In this installment, we will investigate further the subject introducing some structures and functions collectively known as _Unix System V IPC_.
 <!--more-->
 
 ## IPC: InterProcess Communication
 
-Communication between processes, either running on the same machine or over a network, is one of the most interesting topics in computer science and, despite its age, new solutions to this problem keep arising. With the widespread availability of Internet access the subject is now a little shifted towards pure network communication, which represents just a part of the techniques known as **IPC**: InterProcess Communication.
+Communication between processes, either running on the same machine or over a network, is one of the most interesting topics in computer science and, despite its age, new solutions to this problem keep arising. With the widespread availability of Internet access, the subject is now a little shifted towards pure network communication, which represents just a part of the techniques known as **IPC**: InterProcess Communication.
 
-This abbreviation encompasses several different scopes in the field of multiprocessing, the most important ones being **synchronization**, **shared data management** and **messaging**. In this article we will focus on local IPC, i.e. communication between processes running on the same machine. The underlying concepts and techniques, however, can be easily applied to a network environment too, but they require a layer to manage network communication, which is out of the scope of this series.
+This abbreviation encompasses several different scopes in the field of multiprocessing, the most important ones being **synchronization**, **shared data management** and **messaging**. In this article, we will focus on local IPC, i.e. communication between processes running on the same machine. The underlying concepts and techniques, however, can be easily applied to a network environment too, but they require a layer to manage network communication, which is out of the scope of this series.
 
 ## More on synchronization
 
@@ -24,7 +24,7 @@ As briefly shown in the last article synchronization problems are not only among
 
 Let's reconsider and formalize the example given in the last post. Say we create two different processes working on the same data. If the two processes just read the same data from memory (or disk) no problems can arise: data are static, and accessing does not change them. So the execution of the two processes is called **consistent**, which highlights that repeated executions or executions spanning a long time will always result in the same system behaviour.
 
-If now one of the processes wants to modify data different situations can come up, depending on the actual timing of the operations. Say we have two processes `A` and `B` and an element `d`; process `A` increases element `d` by 1, while process `B` prints the element value on the screen. In a sort of metalanguage we could express this situation with the following syntax
+If now one of the processes wants to modify data different situations can come up, depending on the actual timing of the operations. Say we have two processes `A` and `B` and an element `d`; process `A` increases element `d` by 1 while process `B` prints the element value on the screen. In a sort of metalanguage, we could express this situation with the following syntax
 
 ```
 A { d->d+1 } & B { d->output }
@@ -46,15 +46,15 @@ while the other is
 (A) d = 6
 ```
 
-As you can see, different timings can lead to different results; let's pretend that element `d` is the amount of money in your bank account and you will suddenly realize the importance of the matter. Such a reliance of data on timing or system conditions is know as **data inconsistency**.
+As you can see, different timings can lead to different results; let's pretend that element `d` is the amount of money in your bank account, and you will suddenly realize the importance of the matter. Such a reliance of data on timing or system conditions is known as **data inconsistency**.
 
-As we already described, waiting is a trivial form of synchronization that can solve this problem. However it is as simple as inefficient, as it blocks the execution of one process, while the other is operating and this happens even if the blocked process is no more operating on shared data. The block is indeed based on the simple assumption that one process could lead to data inconsistency.
+As we already described, waiting is a trivial form of synchronization that can solve this problem. However it is as simple as inefficient as it blocks the execution of one process while the other is operating and this happens even if the blocked process is no more operating on shared data. The block is indeed based on the simple assumption that one process could lead to data inconsistency.
 
-It is thus necessary to increase the **granularity** of this block. Granularity is the scope of an action: the higher is the granularity, the narrowest is the scope. So we have to restrict the scope of the block, which by now covers the whole process.
+It is thus necessary to increase the **granularity** of this block. Granularity is the scope of an action: the higher is the granularity the narrowest is the scope. So we have to restrict the scope of the block, which by now covers the whole process.
 
 ## System V keys
 
-A part of the IPC structures introduced by Unix System V is explicitly dedicated to resource identification, that is the capability of labelling arbitrary objects and to limit access management to them. This is done through the use of the so-called _SysV IPC Keys_: a **key**, in this context, is a number used to univocally identify an IPC structure. An IPC key can be generated by `ftok()`
+A part of the IPC structures introduced by Unix System V is explicitly dedicated to resource identification, the capability of labelling arbitrary objects and limiting access management to them. This is done through the use of the so-called _SysV IPC Keys_: a **key**, in this context, is a number used to identify univocally an IPC structure. An IPC key can be generated by `ftok()`
 
 ``` c
 key_t ftok(const char *pathname, int proj_id);
@@ -66,21 +66,21 @@ where `pathname` is an existing file name with the full path and `proj_id` is a 
 
 The idea of traffic light can be profitably borrowed to control access to resources. A **semaphore**, in the IPC world, is a structure capable of containing a positive or null integer and which manages a queue of processes waiting for a particular condition of the semaphore itself.
 
-Despite their simplicity, the power of semaphores is big, thus their correct use is not trivial. We will therefore start writing code without error control, just to focus on the real subject. Please remember that in real world applications error control code can vary from 40% up to 80% of the total amount, so bear in mind that code without error control is good only for the purpose of understanding concepts.
+Despite their simplicity, the power of semaphores is big, thus their correct use is not trivial. We will therefore start writing code without error control, just to focus on the real subject. Please remember that in real world applications, error control code can vary from 40% up to 80% of the total amount, so bear in mind that code without error control is good only for the purpose of understanding concepts.
 
-The first possible use of a semaphore is that of access controller: the value of the semaphore represents the number of processes that can concurrently access the resource. Every time a process access the resource it decrements the value of the semaphore and every time a process releases the resource it increments the value. If the resource is exclusive (that is only one process can access the resource at a time) the maximum value of the semaphore will be 1.
+The first possible use of a semaphore is that of access controller: the value of the semaphore represents the number of processes that can concurrently access the resource. Every time a process access the resource it decrements the value of the semaphore and every time a process releases the resource it increments the value. If the resource is exclusive (that is only one process can access the resource at a time), the maximum value of the semaphore will be 1.
 
-A second use of the semaphore is that of resource counter. The value in this case is the number of resources available to processes, e.g. memory cells, network connections, and so on. As you can easily understand using a resource is equivalent to locking its access.
+A second use of the semaphore is that of resource counter. The value in this case is the number of resources available to processes, e.g. memory cells, network connections, and so on. As you can easily understand, using a resource is equivalent to locking its access.
 
 Let's consider a practical case where both the uses of semaphores will be useful.
 
-We build a buffer of length L where n processes W1,..., Wn can write to, but from which just one process R can read. Say also that just one process can access the buffer at a given time T. As you can easily understand W processes can write at any time except when the buffer is full, while the process R can read at any time except when the buffer is empty.
+We build a buffer of length L where n processes W1,..., Wn can write to, but from which just one process R can read. Say also that just one process can access the buffer at a given time T. As you can easily understand W processes can write at any time except when the buffer is full while the process R can read at any time except when the buffer is empty.
 
-This buffer could be easily managed in a standard single task environment by declaring 2 flags, the first to signal overflow and the second to signal underflow. But we are in a multitasking environment now, so flags declared before the fork operation are not shared between processes (each process has its own copy of the flags, and they are not linked). So we have to use a shared structure and this is where IPC semaphores take the field.
+This buffer could be easily managed in a standard single task environment by declaring 2 flags, the first to signal overflow and the second to signal underflow. We are in a multitasking environment now, so flags declared before the fork operation are not shared between processes (each process has its own copy of the flags, and they are not linked). So we have to use a shared structure, and this is where IPC semaphores take the field.
 
-We can declare three semaphores: the first one will manage the access to the buffer, while the second and third will keep track of how many elements are in the buffer (later it will become clear why two semaphores are not sufficient).
+We can declare three semaphores: the first one will manage access to the buffer while the second and third will keep track of how many elements are in the buffer (later it will become clear why two semaphores are not sufficient).
 
-Given that the access to the buffer is exclusive the first semaphore will be a binary one (which value thus will be 0 or 1), while the second and the third will have values linked to the length of the buffer.
+Given that access to the buffer is exclusive the first semaphore will be a binary one (which value thus will be 0 or 1) while the second and the third will have values linked to the length of the buffer.
 
 In C language the SysV primitive to create a semaphore is
 
@@ -88,7 +88,7 @@ In C language the SysV primitive to create a semaphore is
 int semget(key_t key, int nsems, int semflg);
 ```
 
-where `key` is an IPC key created with `ftok()`, `nsems` is the number of semaphores we want to create and `semflg` a set of flags controlling the access to the semaphores. Access to IPC structures is ruled by a 12 bit system which is almost identical to the Unix file system access control, but we will not dive into it. As you can also notice `semget()` manages sets of semaphores, which helps us keeping the code compact.
+where `key` is an IPC key created with `ftok()`, `nsems` is the number of semaphores we want to create and `semflg` a set of flags controlling access to the semaphores. Access to IPC structures is ruled by a 12 bit system which is almost identical to the Unix file system access control, but we will not dive into it. As you can also notice `semget()` manages sets of semaphores, which helps us to keep the code compact.
 
 Let's review the full code to create a semaphore
 
@@ -113,7 +113,7 @@ int main(void)
 }
 ```
 
-Do not compile and execute it by now. As you can see from the `#include` statements IPC structures are provided by the operating system itself and not by the standard C library. The key is created by passing to `ftok()` a file that certainly exists in the system and the PID of the current process. To know more about permission flags check the manual page for `semget()`.
+Do not compile and execute it by now. As you can see from the `#include` statements, IPC structures are provided by the operating system itself and not by the standard C library. The key is created by passing to `ftok()` a file that certainly exists in the system and the PID of the current process. To know more about permission flags check the manual page for `semget()`.
 
 Let's go on learning to manage and remove semaphores; the primitive used to interact with a semaphore is
 
@@ -194,7 +194,7 @@ Now you can compile and run it. As you can imagine the program seems to do nothi
 
 ## Semaphores - part 2
 
-Time to effectively use the semaphore: the function that allows to performs operations on a semaphore is 
+Time to use effectively the semaphore: the function that allows to performs operations on a semaphore is 
 
 ``` c
 int semop(int semid, struct sembuf *sops, unsigned nsops);
@@ -212,19 +212,19 @@ struct sembuf {
 
 For the time being we will always set `sem_flg` to 0. Operations are always integers and obey the following rules
 
-1. `sem_op` < 0 This signals that you want to decrease the semaphore value, or in other words lock one of the resources controlled by it. If the value of the semaphore can be decremented without becoming negative it will be and the process running `semop()` continues. Otherwise the calling process falls in a sleep status until the semaphore has that number of resources available.
+1. `sem_op` < 0 This signals that you want to decrease the semaphore value, or in other words lock one of the resources controlled by it. If the value of the semaphore can be decremented without becoming negative it will be and the process running `semop()` continues. Otherwise, the calling process falls in a sleep status until the semaphore has that number of resources available.
 
-2. `sem_op` = 0 This signals that you are waiting for the semaphore to reach value zero, that is the condition where no resources are available. The calling process falls in a sleep status until that moment.
+2. `sem_op` = 0 This signals that you are waiting for the semaphore to reach value zero; that is the condition where no resources are available. The calling process falls in a sleep status until that moment.
 
 3. `sem_op` > 0 This signals that you want increase the semaphore value, or in other words release the given number of resources.
 
-Now we can write some code to implement the buffer example given above. We are going to create 5 processes called W (writers) and a process called R (reader). Each W process tries to lock the resource (the buffer) through a semaphore and if the buffer is not full, adds an element and releases the lock. The R process tries to lock the buffer, removes an element if available (buffer not empty) and releases the lock.
+Now we can write some code to implement the buffer example previously given. We are going to create 5 processes called W (writers) and a process called R (reader). Each W process tries to lock the resource (the buffer) through a semaphore, and if the buffer is not full, adds an element and releases the lock. The R process tries to lock the buffer, removes an element if available (buffer not empty) and releases the lock.
 
-Since we did not yet talk about shared memory we have to simulate read and write operation, i.e. pretend the operation has been performed. This is necessary since each process has its own memory space and cannot access that of another process. So each process has its own copy of the buffer and the copies are not linked each other. Later in this series we will talk about techniques to share memory regions between processes.
+Since we did not yet talk about shared memory we have to simulate read and write operation, i.e. pretend the operation has been performed. This is necessary since each process has its own memory space and cannot access that of another process. So each process has its own copy of the buffer, and the copies are not linked each other. Later in this series we will talk about techniques that allow sharing memory regions between processes.
 
-As already stated we need 3 semaphores: the first acts as access controller and its maximum value is 1, while the other two manage overflow and underflow conditions. A single semaphore could not handle both conditions, since `semop()` acts one-way only.
+As already stated, we need 3 semaphores: the first acts as access controller and its maximum value is 1 while the other two manage overflow and underflow conditions. A single semaphore could not handle both conditions, since `semop()` acts one-way only.
 
-Let's clarify this latter statement before looking at the code. Say we have a single semaphore to manage over- and underflow conditions, with a value equal to the number of empty spaces in the buffer. Each time a W process fills the buffer it can decrease the semaphore value by one unit, until the value reaches 0, which represents the condition of full buffer. This way, however the empty buffer condition cannot be managed since the R process can increment the value of the semaphore without any limit. Semaphores, indeed, just control the lower boundary and not the upper one.
+Let's clarify this latter statement before looking at the code. Say we have a single semaphore to manage over- and underflow conditions, with a value equal to the number of empty spaces in the buffer. Each time a W process fills the buffer it can decrease the semaphore value by one unit until the value reaches 0, which represents the condition of full buffer. This way however the empty buffer condition cannot be managed since the R process can increment the value of the semaphore without any limit. Semaphores, indeed, just control the lower boundary and not the upper one.
 
 ``` c
 #include <stdio.h>
@@ -345,7 +345,7 @@ Let us review the most interesting parts of the code.
   struct sembuf pop[2] = {1, 1, IPC_NOWAIT, 2, -1, IPC_NOWAIT};
 ```
 
-These four lines of code declare the actions we will use later on the semaphore set. The first two are single actions, while the second two are double ones. The first action, `lock_res`, is used to lock the buffer: as you can see the semaphore number 0 is decremented by 1 and in case of busy resource the strategy is waiting (the last 0 in the action). The second action releases the buffer and is the mirror image of the first one.
+These four lines of code declare the actions we will use later on the semaphore set. The first two are single actions while the second two are double ones. The first action, `lock_res`, is used to lock the buffer: as you can see the semaphore number 0 is decremented by 1 and in case of busy resource the strategy is waiting (the last 0 in the action). The second action releases the buffer and is the mirror image of the first one.
 
 The third and fourth actions are specular too; each of them is an array of two actions, the first on the semaphore number 1 and the second on the semaphore number 2; while the first one is incremented the second is decremented and vice versa. The policy is changed from the first two actions: `IPC_NOWAIT` forces the process to continue execution, in contrast with the previous case, when the process was put on hold.
 
@@ -386,7 +386,7 @@ Next, semaphores must be initialized: as already stated the first one is set to 
 	semop(semid, &rel_res, 1);
 ```
 
-Child process code (a writer) tries first of all to lock the buffer using `lock_res`; once the control over the resource has been acquired it performs the `push` action and writes on the standard output a meaningful message. Otherwise it signals that the buffer is full. The last action it performs is to release the resource through `rel_res`.
+Child process code (a writer) tries first of all to lock the buffer using `lock_res`; once the control over the resource has been acquired it performs the `push` action and writes on the standard output a meaningful message. Otherwise, it signals that the buffer is full. The last action it performs is to release the resource through `rel_res`.
 
 ``` c
     /* Try to lock the buffer - sem #0 */
@@ -413,7 +413,7 @@ Try to change the parameters such as the buffer length (on the command line) or 
 
 ## Conclusions
 
-In the next article we will introduce and deal with atomicity, which is a very important concept in concurrent programming and database systems. We will also introduce a new IPC structure, which has a broad use in distributed systems: message queues.
+In the next article, we will introduce and deal with atomicity, which is a very important concept in concurrent programming and database systems. We will also introduce a new IPC structure, which has a broad use in distributed systems: message queues.
 
 ## Past articles
 
