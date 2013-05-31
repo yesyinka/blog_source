@@ -11,7 +11,7 @@ categories: [erlang, concurrent programming]
 This article aims to summarize Erlang error handling both in sequential and in concurrent environments. The targets of this article are novices that, like me, make their first steps into the beautiful world of Erlang. Moreover, I always find that trying to explain things makes me understand them better.
 
 Disclaimer (for Erlang gurus): I'm a complete Erlang novice so please be indulgent with me while you read my thoughts. Corrections and suggestions are welcome!
-
+<!--more-->
 ## Introduction
 
 Recently I started studying Erlang; coming from a pure imperative background (C, C++, and Python) I have to say that Erlang has been a surprise and a joy. I did not find something so innovative since long, even if the pure functional part of the language was not totally new since it is available in Python too.
