@@ -13,6 +13,7 @@ When using pika to develop a component-based system I tried to write some code t
 Most notably it provides a handler mechanism for consumers that makes message processing a breeze.
 
 Postage is freely available under the GPL2. It is based on the pika BlockingConnection since I had no experience with other adapters. If you want to hack it, feel free to [fork it on Github](https://github.com/lgiordani/postage) and submit a pull request.
+<!--more-->
 
 ## A simple ping example
 
