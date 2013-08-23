@@ -9,6 +9,7 @@ categories: [rabbitmq, amqp]
 Everyone who started using AMQP learned from the very beginning that there are three different types of exchanges, namely direct, fanout and topic. In this post, I am going to highlight some interesting properties of direct exchanges, which were not clear to me when I started using RabbitMQ.
 
 Now some time has passed since I started, and reading the [RabbitMQ tutorials](http://www.rabbitmq.com/getstarted.html) again I can see that these properties are no mystery. However, in this short post I want to clearly point out three different uses of direct exchanges, in the hope that other novices will be helped to better understand those powerful components of an AMQP system.
+<!--more-->
 
 ## Movie cast
 
