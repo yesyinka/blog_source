@@ -6,6 +6,8 @@ comments: true
 categories: [rabbitmq, amqp]
 ---
 
+_EDIT: thanks to Alvaro Videla that pointed out that a queue can be connected to more than one exchange; sorry for the wrong information._
+
 Everyone who started using AMQP learned from the very beginning that there are three different types of exchanges, namely direct, fanout and topic. In this post, I am going to highlight some interesting properties of direct exchanges, which were not clear to me when I started using RabbitMQ.
 
 Now some time has passed since I started, and reading the [RabbitMQ tutorials](http://www.rabbitmq.com/getstarted.html) again I can see that these properties are no mystery. However, in this short post I want to clearly point out three different uses of direct exchanges, in the hope that other novices will be helped to better understand those powerful components of an AMQP system.
@@ -21,7 +23,7 @@ The consumers are those which are interested in getting messages from the exchan
 
 The queues are the real core of the system. They actually extract messages from the exchange according to their configuration, and you are not wrong if you think that they are the real routing component of AMQP; indeed exchanges do not exist as separate components, so the routing game is played by the channel and the queues. 
 
-Let us consider queues at a deeper level. They are two sided components, messages enter from one side and exit from the other one. Thus each queue can establish connections on both sides: on the input side a queue fetches messages from **just one exchange** (but nothing forbids more than a queue to connect to the same exchange) while on the output side the queue can be connected to **one or more consumers**.
+Let us consider queues at a deeper level. They are two sided components, messages enter from one side and exit from the other one. Thus each queue can establish connections on both sides: on the input side a queue fetches messages from **one or more exchanges** while on the output side the queue can be connected to **one or more consumers**. From the single queue point of view being connected to more than one exchange with the same routing key is transparent, since the only thing that concerns the queue itself are the incoming messages; being connected to more than one exchange with different routing keys leads to complex scenarios, so in this article I will consider a single direct exchange delivering messages to queues.
 
 ## Three configurations
 
