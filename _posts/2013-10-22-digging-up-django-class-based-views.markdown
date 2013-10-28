@@ -15,6 +15,7 @@ Django programmers that started with versions prior to 1.3 are used to deal with
 This change, however, has not been harmless for Django novices: the django-users mailing list and StackOverflow are full of questions about views and classes, and the official documentation on this topic is still a little unorganized. Well, open source things are always ready to be improved, aren't they? This post aims to share some thoughts and insights about CBVs, and hopefully it can also lead to an improvement of the official documentation.
 
 I want to thank all Django developers for their work. Despite the previous criticism on documentation, this post wants to be a thanksgiving for their efforts.
+<!--more-->
 
 Feel free to comment [here](https://plus.google.com/u/0/b/110554719587236016835/110554719587236016835/posts) or to submit issues [here](https://github.com/lgiordani/lgiordani.github.com/issues).
 
