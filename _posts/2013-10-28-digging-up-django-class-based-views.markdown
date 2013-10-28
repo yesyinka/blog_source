@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "Digging up Django class-based views - 1"
-date: 2013-10-22 08:43
+date: 2013-10-28 08:43
 comments: true
 categories: [python, django]
 ---
