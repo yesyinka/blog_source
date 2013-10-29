@@ -129,7 +129,7 @@ class ArticleListView(ListView):
     model = Article
 	
 	def dispatch(self, request, *args, **kwargs):
-		super(ArticleListView, self).dispatch(request, *args, **kwds)
+		super(ArticleListView, self).dispatch(request, *args, **kwargs)
 ```
 
 the class does not change its behaviour. What we did was to override the `dispatch()` method with a call to the parent's method, i.e. we explicitly wrote what Python does by default. You can find detailed information about `super()` [here](http://docs.python.org/2/library/functions.html#super). Please be also sure to understand the star and double star notation to define variable number of arguments; the official documentation is [here](http://docs.python.org/2.7/tutorial/controlflow.html#more-on-defining-functions).
@@ -147,7 +147,7 @@ class ArticleListView(ListView):
 	
 	def dispatch(self, request, *args, **kwargs):
 		print(request)
-		super(ArticleListView, self).dispatch(request, *args, **kwds)
+		super(ArticleListView, self).dispatch(request, *args, **kwargs)
 ```
 
 This prints the content of the `request` object on the standard output of the Python code, that is on the standard output of the server that is running the Django project. If you are running the Django development server, you will find the output on the text console where you issued the `django-admin.py runserver` command (or `manage.py runserver`).
@@ -213,3 +213,5 @@ Let me know if this post helped you in understanding the matter and feel free to
 ## Updates
 
 As pointed out by [mbrochh](http://www.reddit.com/user/mbrochh) on Reddit, there is a very useful resource for Django programmers: [Classy Class-Based Views](http://ccbv.co.uk/). It is a comprensive index of all CBGVs with ancestors and method signatures. Make sure to have it in you Django bookmarks!
+
+2013-10-29: I fixed a couple of typos when overriding `dispatch()`. Thanks to Tom Evans for spotting them.
