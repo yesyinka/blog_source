@@ -196,7 +196,7 @@ class ArticleListView(ListView):
 	
 	def get_context_data(self, **kwargs):
 		context = super(ArticleListView, self).get_context_data(**kwargs)
-		context['readers'] = Readers.objects.count()
+		context['readers'] = Reader.objects.count()
 		return context
 ```
 
@@ -209,3 +209,7 @@ In this first post I tried to uncover some of the mysteries behind CBVs and CBGV
 In the next posts I will discuss DetailView, the generic view to show detail about an object, how to create custom CBVs and hot to use CBVs to process forms, i.e. POST requests.
 
 Let me know if this post helped you in understanding the matter and feel free to point out any error or to ask questions.
+
+## Updates
+
+As pointed out by [mbrochh](http://www.reddit.com/user/mbrochh) on Reddit, there is a very useful resource for Django programmers: [Classy Class-Based Views](http://ccbv.co.uk/). It is a comprensive index of all CBGVs with ancestors and method signatures. Make sure to have it in you Django bookmarks!
