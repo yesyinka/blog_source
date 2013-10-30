@@ -45,7 +45,7 @@ The example is very trivial, but I think there is always time to tangle up the c
 
 ```python
 class EvenExtractor(object):
-    def __init__(alist):
+    def __init__(self, alist):
         self.l = alist
         
     def extract(self):
@@ -72,7 +72,7 @@ Let's continue the above example, first by enriching the EvenExtractor class:
 
 ``` python
 class EvenExtractor(object):
-    def __init__(alist):
+    def __init__(self, alist):
         self.l = [int(elem) for elem in alist]
         
     def extract(self):
@@ -212,6 +212,8 @@ Let me know if this post helped you in understanding the matter and feel free to
 
 ## Updates
 
-As pointed out by [mbrochh](http://www.reddit.com/user/mbrochh) on Reddit, there is a very useful resource for Django programmers: [Classy Class-Based Views](http://ccbv.co.uk/). It is a comprensive index of all CBGVs with ancestors and method signatures. Make sure to have it in you Django bookmarks!
+2013-10-29: As pointed out by [mbrochh](http://www.reddit.com/user/mbrochh) on Reddit, there is a very useful resource for Django programmers: [Classy Class-Based Views](http://ccbv.co.uk/). It is a comprensive index of all CBGVs with ancestors and method signatures. Make sure to have it in you Django bookmarks!
 
 2013-10-29: I fixed a couple of typos when overriding `dispatch()`. Thanks to Tom Evans for spotting them.
+
+2013-10-30: Fixed the `__init__()` method of `EvenExtractor`, that was missing the `self` parameter. Thanks [meatypocket](http://www.reddit.com/user/meatypocket).
