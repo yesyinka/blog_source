@@ -11,7 +11,7 @@ categories: [python, django]
 _This post refers to Django 1.5. Please be warned that some of the matters discussed here, some solutions or the given code can be outdated by more recent Django versions_
 
 In the first installment of this short series I introduced the theory behind Django class-based views and the reason why in this context classes are more powerful than pure functions. I also introduced one of the generic views Django provides out-of-the-box, which is `ListView`.
-In this second post I want to talk about the second most used generic view, `DetailView`, and about custom querysets and arguments. Last, I'm going to introduce unspecialized generic views that allow you to build more complex Web pages. To fully understand `DetailView`, however, you need to grasp two essential concepts, namely **querysets** and **view parameters**. So I'm sorry for you but this time too I'm going to start with some pure programming topics.
+In this second post I want to talk about the second most used generic view, `DetailView`, and about custom querysets and arguments. Last, I'm going to introduce unspecialized generic views that allow you to build more complex Web pages. To fully understand `DetailView`, however, you need to grasp two essential concepts, namely **querysets** and **view parameters**. So I'm sorry for the learn-by-doing readers but this time too I'm going to start with some pure programming topics.
 
 <!--more-->
 
@@ -21,7 +21,7 @@ One of the most important parts of Django is the ORM (Object Relational Mapper),
 
 When you use one of the methods of a manager you get as a result a `QuerySet`, which most of the time is used as a list, but is more than this. You can find [here](https://docs.djangoproject.com/en/1.5/topics/db/queries/) and [here](https://docs.djangoproject.com/en/1.5/ref/models/querysets/) the official documentation about queries and QuerySets, a very recommended reading.
 
-What I want to stress here is that QuesySets are not evaluated until you perform an action that access the content like slicing or iterating on it. This means that we can build QuerySets, pass them to functions, store them, and even build them programmatically or metaprogramming them without the DB being hitted. If you think at QuerySets as recipes you are not far from the truth: they are objects that store how you want to retrieve the objects of your interest. Actually retriving them is another part of the game. This separation between the definition of something and its execution is called **lazy evaluation**.
+What I want to stress here is that QuesySets are not evaluated until you perform an action that access the content like slicing or iterating on it. This means that we can build QuerySets, pass them to functions, store them, and even build them programmatically or metaprogramming them without the DB being hitted. If you think at QuerySets as recipes you are not far from the truth: they are objects that store how you want to retrieve the data of your interest. Actually retriving them is another part of the game. This separation between the definition of something and its execution is called **lazy evaluation**.
 
 Let me give you a very trivial example to show why the lazy evaluation of QuerySets is important.
 
@@ -44,13 +44,50 @@ Being such flexible objects, QuerySets are an important part of generic views, s
 
 URLs are the API of our Web site or service. This can be more or less evident for the user that browses through the pages, but from the programmer's point of view URLs are the entry points of a computer system. As such, they are not very different from the API of a library: here, static pages are just like constants, or functions that always return that same value (such as a configuration parameter), while dynamic pages are like functions that process incoming data (parameters) and return a result.
 
-So Web URLs can accept parameters, and our underlying view shall do the same. You basically have two methods to convey parameters from the user's browser to your server using HTTP. The first method is named [query string](http://en.wikipedia.org/wiki/Query_string) and lists parameters directly in the URL through a universal syntax. The second method is storing parameters in the HTTP request body, which is what by POST requests do. We will dicuss this method in a later post about forms.
+So Web URLs can accept parameters, and our underlying view shall do the same. You basically have two methods to convey parameters from the user's browser to your server using HTTP. The first method is named [query string](http://en.wikipedia.org/wiki/Query_string) and lists parameters directly in the URL through a universal syntax. The second method is storing parameters in the HTTP request body, which is what POST requests do. We will dicuss this method in a later post about forms.
 
 The first method has one big drawback: most of the time URLs are long (and sometimes *too* long), and difficult to use as a real API. To soften this effect the concept of [clean URL](http://en.wikipedia.org/wiki/Clean_URL) arose, and this is the way Django follows natively (though, if you want, you can also stick to the query string method).
 
-Now, [you know](https://docs.djangoproject.com/en/1.5/topics/http/urls/) that you can collect parameters contained in the URL parsing it with a regular expression; what we need to discover is then how class-based views receive and process them.
+Now, [you know](https://docs.djangoproject.com/en/1.5/topics/http/urls/) that you can collect parameters contained in the URL parsing it with a regular expression; what we need to discover is how class-based views receive and process them.
 
-In the previous post we already discussed the `as_view()` method ([views/generic/base.py#L46](https://github.com/django/django/blob/stable/1.5.x/django/views/generic/base.py#L46)) that instances the class and returns the result of `dispatch()` ([views/generic/base.py#L68](https://github.com/django/django/blob/stable/1.5.x/django/views/generic/base.py#L68)). Now look at what the `view()` wrapper function actually does with the instanced class ([views/generic/base.py#L65](https://github.com/django/django/blob/stable/1.5.x/django/views/generic/base.py#L65)); not surprisingly it stores the `request`, `args` and `kwargs` the URLconf passes when calling the function into as many class attributes with the same names. This means that, everywhere in our CBVs we can access the original call parameters simply reading `self.request`, `self.args` and `self.kwargs`.
+In the previous post we already discussed the `as_view()` method ([views/generic/base.py#L46](https://github.com/django/django/blob/stable/1.5.x/django/views/generic/base.py#L46))
+
+``` python
+    @classonlymethod
+    def as_view(cls, **initkwargs):
+        """
+        Main entry point for a request-response process.
+        """
+        # sanitize keyword arguments
+        for key in initkwargs:
+            if key in cls.http_method_names:
+                raise TypeError("You tried to pass in the %s method name as a "
+                                "keyword argument to %s(). Don't do that."
+                                % (key, cls.__name__))
+            if not hasattr(cls, key):
+                raise TypeError("%s() received an invalid keyword %r. as_view "
+                                "only accepts arguments that are already "
+                                "attributes of the class." % (cls.__name__, key))
+
+        def view(request, *args, **kwargs):
+            self = cls(**initkwargs)
+            if hasattr(self, 'get') and not hasattr(self, 'head'):
+                self.head = self.get
+            self.request = request
+            self.args = args
+            self.kwargs = kwargs
+            return self.dispatch(request, *args, **kwargs)
+
+        # take name and docstring from class
+        update_wrapper(view, cls, updated=())
+
+        # and possible attributes set by decorators
+        # like csrf_exempt from dispatch
+        update_wrapper(view, cls.dispatch, assigned=())
+        return view
+```
+
+that instances the class and returns the result of `dispatch()` ([views/generic/base.py#L68](https://github.com/django/django/blob/stable/1.5.x/django/views/generic/base.py#L68)). Now look at what the `view()` wrapper function actually does with the instanced class ([views/generic/base.py#L65](https://github.com/django/django/blob/stable/1.5.x/django/views/generic/base.py#L65)); not surprisingly it stores the `request`, `args` and `kwargs` the URLconf passes when calling the function into as many class attributes with the same names. This means that, everywhere in our CBVs we can access the original call parameters simply reading `self.request`, `self.args` and `self.kwargs`.
 
 ## Details
 
