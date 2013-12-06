@@ -50,7 +50,7 @@ The first method has one big drawback: most of the time URLs are long (and somet
 
 Now, [you know](https://docs.djangoproject.com/en/1.5/topics/http/urls/) that you can collect parameters contained in the URL parsing it with a regular expression; what we need to discover is how class-based views receive and process them.
 
-In the previous post we already discussed the `as_view()` method ([views/generic/base.py#L46](https://github.com/django/django/blob/stable/1.5.x/django/views/generic/base.py#L46))
+In the previous post we already discussed the `as_view()` method that instances the class and returns the result of `dispatch()` ([views/generic/base.py#L46](https://github.com/django/django/blob/stable/1.5.x/django/views/generic/base.py#L46)).
 
 ``` python
     @classonlymethod
@@ -87,49 +87,72 @@ In the previous post we already discussed the `as_view()` method ([views/generic
         return view
 ```
 
-that instances the class and returns the result of `dispatch()` ([views/generic/base.py#L68](https://github.com/django/django/blob/stable/1.5.x/django/views/generic/base.py#L68)). Now look at what the `view()` wrapper function actually does with the instanced class ([views/generic/base.py#L65](https://github.com/django/django/blob/stable/1.5.x/django/views/generic/base.py#L65)); not surprisingly it stores the `request`, `args` and `kwargs` the URLconf passes when calling the function into as many class attributes with the same names. This means that, everywhere in our CBVs we can access the original call parameters simply reading `self.request`, `self.args` and `self.kwargs`.
+Now look at what the `view()` wrapper function actually does with the instanced class ([views/generic/base.py#L65](https://github.com/django/django/blob/stable/1.5.x/django/views/generic/base.py#L65)); not surprisingly it takes the `request`, `args` and `kwargs` passed by the URLconf passes and converts them into as many class attributes with the same names. This means that *everywhere in our CBVs* we can access the original call parameters simply reading `self.request`, `self.args` and `self.kwargs`.
 
 ## Details
 
 Just after listing things, one of the most useful things a Web site does is giving details about objects. Obviously any e-commerce site is made for the most part by pages that list products and show product details, but also a blog is made of one or more pages with a list of posts and a page for each of them. So building a detail view of the content of our database is worth learning.
 
-To help us in this task Django provides `DetailView`, which indeed deals, as the name suggests, with the details of what we get from the DB. While `ListView`'s basic behaviour is to extract the list of all objects with a given model, `DetailView` extracts only one object. 
+To help us in this task Django provides `DetailView`, which indeed deals, as the name suggests, with the details of what we get from the DB. While `ListView`'s basic behaviour is to extract the list of all objects with a given model, `DetailView` extracts a single object. How does it know what object shall be extracted?
 
 When `dispatch()` is called on an incoming HTTP request the only thing it does is to look at the `method` attribute, which for `HttpRequest` objects contains the name of the HTTP verb used (e.g. `'GET'`); then `dispatch()` looks for a method of the class with the lowercase name of the verb (e.g. `'GET'` --> `get()`) ([views/generic/base.py#L78](https://github.com/django/django/blob/stable/1.5.x/django/views/generic/base.py#L78)). This handler is then called with the same parameters of `dispatch()`, namely the `request` itself, `*args` and `**kwargs`.
 
-`DetailView` inherits everything from `SingleObjectTemplateResponseMixin` and `BaseDetailView`; this latter implements the `get()` method ([generic/detail.py#L107](https://github.com/django/django/blob/stable/1.5.x/django/views/generic/detail.py#L107)). As you can see this method extracts the single object it shall represent calling `self.get_object()`, then calls `self.get_context_data()` (that we met in the previous post) and calls the familiar `self.render_to_response()` that is the class equivalent of the well know Django function.
+`DetailView` has no body and inherits everything from two objects, namely `SingleObjectTemplateResponseMixin` and `BaseDetailView`; this latter implements the `get()` method ([generic/detail.py#L107](https://github.com/django/django/blob/stable/1.5.x/django/views/generic/detail.py#L107)).
 
-
-
-
-* DetailView
-* Queryset for ListView and DetailView
-* Passing arguments to CBVs
-* View
-
-
-Queryset
-
-If you use Django you already know what a Queryset is, otherwise please look at the documentation to introduce yourself to this powerful mechanism. Class-based generic views are intimately related to a queryset since their aim is to provide objects extracted from the DB and this implies building a queryset. As you know, however, a queryset can be built only if it has been defined, i.e. if the SQL query can be built. As you can already guess, CBGVs hide a pre-constructed queryset and provide their result through it. The specific point where a CBV builds the queryset is the get_queryset() method; for ListView it is defined by one of its ancestors, namely MultipleObjectMixin (list.py). The default queryset for ListView is (list.py:36) `self.model._default_manager.all()`, which exctracts every object with that model. Pay attention that it uses `_default_manager` and this allows a certain degree of customization from the model class itself. if you loo at the code some line above, however, you can see that MultipleObjectMixin first checks the queryset attribute. This is the same pattern we met for the model attribute, with the difference that here the class can provide a default behaviour (providing a default model to manage makes no sense).
-
-??? cosa fa qui con queryset.all()?
-
-When we define a CBV like
-
-```
-from myapp.models import Element
-from django.views import ListView ??? Check
-
-class ElementList(ListView):
-      model = Element
+``` python
+def get(self, request, *args, **kwargs):
+    self.object = self.get_object()
+    context = self.get_context_data(object=self.object)
+    return self.render_to_response(context)
 ```
 
-what Django does internally is to execute `Element.objects.all()`, if `objects` is the default manager. This means that our view lists all objects in the Element table, and this is perfectly fine when we need complete listings. Sometimes, however, we would like be able to show a subset of objects, and here the queryset attribute comes to the rescue. Say for example that we want to show all Element objects with a `weight` greater than 100 (don't bother with measure units for the moment being).
+As you can see this method extracts the single object it shall represent calling `self.get_object()`, then calls `self.get_context_data()` (that we met in the previous post) and last the familiar `self.render_to_response()` that is the class equivalent of the well know Django function. The method `self.get_object()` is provided by `SingleObjectMixin` ([generic/detail.py#L10](https://github.com/django/django/blob/stable/1.5.x/django/views/generic/detail.py#L10)): the most important parts of its code, for the sake of our present topic are
 
-```
-...
-class BigElementList(ListView):
-      model = Element
-      queryset = Element.objects.filter(weight__gt=100)
+``` python
+def get_object(self, queryset=None):
+    if queryset is None:
+        queryset = self.get_queryset()
+
+    pk = self.kwargs.get(self.pk_url_kwarg, None)
+    if pk is not None:
+        queryset = queryset.filter(pk=pk)
+    
+    obj = queryset.get()
+    
+    return obj
 ```
 
+**Warning**: I removed many lines from the previous function to improve readability; please check the original source code for the complete implementation.
+
+The code shows where `DetailView` gets the queryset from; the `get_queryset()` method is provided by `SingleObjectMixin` itself and basically returns `self.queryset` if present, otherwise returns all objects of the given model (acting just like `ListView` does). This `queryset` is then refined by a `filter()` and last by a `get()`. Here `get()` is not used directly (I think) to manage the different error cases and raise the correct exceptions.
+
+The parameter `pk` used in `filter()` comes directly from `self.kwargs`, so it is taken directly from the URL. Since this is a core concept of views in general I want to look at this part carefully.
+
+Our `DetailView` is called by an URLconf that provides a regular expression to parse the URL, for example `url(r'^(?P<pk>\d+)/$',`. This regex extracts a parameter and gives it the name `pk`, so `kwargs` of the view will contain `pk` as key and the actual number in the URL as value. For example the URL `123/` will result in `{'pk': 123}`. The default behaviour of `DetailView` is to look for a `pk` key and use it to perform the filtering of the queryset, since `self.pk_url_kwarg` is `'pk'`.
+
+So if we want to change the name of the parameter we can simply define the `pk_url_kwarg` of our class and provide a regex that extract the primary key with the new name. For example `url(r'^(?P<key>\d+)/$',` extracts it with the name `key`, so we will define `pk_url_kwarg = 'key'` in our class.
+
+So from this quick exploration we learned that `DetailView`:
+
+* provides a context whit the `object` key initialized to a single object
+* **must** be configured with a `model` class attribute, to know what objects to exctract
+* **can** be configured with a `queryset` class attribute, to refine the set of objects where the single object is extracted from
+* **must** be called from a URL that includes a regexp that extracts the primary key of the searched object as `pk`
+* **can** be configured to use a different name for the primary key through the `pk_url_kwarg` class attribute
+
+The basic use of `DetailView` is thus exemplified by the following code.
+
+``` python
+class BookDetail(DetailView):
+    model = Book
+    
+urlpatterns = patterns('',
+    url(r'^(?P<pk>\d+)/$',
+        BookDetail.as_view(),
+        name='detail'),
+    )
+```
+
+The view extracts a single object with the `Book` model; the regex is configured with the standard `pk` name.
+
+As shown for 
