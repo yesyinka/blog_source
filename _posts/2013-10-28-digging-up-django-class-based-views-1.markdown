@@ -206,7 +206,7 @@ As always, when overriding a method we first call the ancestor's one, so that we
 
 In this first post I tried to uncover some of the mysteries behind CBVs and CBGVs in Django, by showing step by step what happens to a GET request that hits a class-based view. Hopefully the matter has now been demystified a little!
 
-In the next posts I will discuss DetailView, the generic view to show detail about an object, how to create custom CBVs and hot to use CBVs to process forms, i.e. POST requests.
+In the next posts I will discuss DetailView, the generic view to show detail about an object, how to create custom CBVs and how to use CBVs to process forms, i.e. POST requests.
 
 Let me know if this post helped you in understanding the matter and feel free to point out any error or to ask questions.
 
@@ -217,3 +217,8 @@ Let me know if this post helped you in understanding the matter and feel free to
 2013-10-29: I fixed a couple of typos when overriding `dispatch()`. Thanks to Tom Evans for spotting them.
 
 2013-10-30: Fixed the `__init__()` method of `EvenExtractor`, that was missing the `self` parameter. Thanks [meatypocket](http://www.reddit.com/user/meatypocket).
+
+## Next articles
+
+* [Digging Up Django Class-based Views - 2](/blog/2013/11/10/digging-up-django-class-based-views-2)
+

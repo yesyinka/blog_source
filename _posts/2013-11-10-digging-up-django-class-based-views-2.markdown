@@ -11,7 +11,7 @@ categories: [python, django]
 _This post refers to Django 1.5. Please be warned that some of the matters discussed here, some solutions or the given code can be outdated by more recent Django versions_
 
 In the first installment of this short series I introduced the theory behind Django class-based views and the reason why in this context classes are more powerful than pure functions. I also introduced one of the generic views Django provides out-of-the-box, which is `ListView`.
-In this second post I want to talk about the second most used generic view, `DetailView`, and about custom querysets and arguments. Last, I'm going to introduce unspecialized generic views that allow you to build more complex Web pages. To fully understand `DetailView`, however, you need to grasp two essential concepts, namely **querysets** and **view parameters**. So I'm sorry for the learn-by-doing readers but this time too I'm going to start with some pure programming topics.
+In this second post I want to talk about the second most used generic view, `DetailView`, and about custom querysets and arguments. Last, I'm going to introduce unspecialized class-based views that allow you to build more complex Web pages. To fully understand `DetailView`, however, you need to grasp two essential concepts, namely **querysets** and **view parameters**. So I'm sorry for the learn-by-doing readers but this time too I'm going to start with some pure programming topics.
 
 <!--more-->
 
@@ -155,4 +155,40 @@ urlpatterns = patterns('',
 
 The view extracts a single object with the `Book` model; the regex is configured with the standard `pk` name.
 
-As shown for 
+As shown for `ListView` in the previous post, any CBV uses `get_context_data()` to return the context dictionary to the rendering engine. So views that inherit from `DetailView` can add data to the context following the same pattern
+
+``` python
+class BookDetail(DetailView):
+    model = Book
+
+    def get_context_data(self, **kwargs):
+		context = super(BookDetail, self).get_context_data(**kwargs)
+		context['similar'] = get_similar_books(self.object)
+		return context
+
+urlpatterns = patterns('',
+    url(r'^(?P<pk>\d+)/$',
+        BookDetail.as_view(),
+        name='detail'),
+    )
+```
+
+As explained before, you can access the object being shown through `self.object`, which in the above example is passed to a service function we implemented somewhere in our code.
+
+## More views
+
+Django provides other class-based views that simplify dealing with objects extracted or ordered by date. These views are described 
+
+## Using the unspecialized view
+
+Sometimes, when dealing with complex pages, the generic CBVs that Django provides are not the right choice. This usually becomes evident when you start overriding method to prevent the view to perform its standard behaviour. As an instance say that you want to show detailed information of more than one object: probably DetailView will soon show its limits, being built to show only one object.
+
+In all those cases that cannot be easily solved by one of the generic CBVs your way 
+
+
+
+
+## Previous articles
+
+* [Digging Up Django Class-based Views - 1](/blog/2013/10/28/digging-up-django-class-based-views-1)
+
