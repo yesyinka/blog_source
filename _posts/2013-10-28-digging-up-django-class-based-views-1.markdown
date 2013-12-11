@@ -220,5 +220,5 @@ Let me know if this post helped you in understanding the matter and feel free to
 
 ## Next articles
 
-* [Digging Up Django Class-based Views - 2](/blog/2013/11/10/digging-up-django-class-based-views-2)
+* [Digging Up Django Class-based Views - 2](/blog/2013/12/11/digging-up-django-class-based-views-2)
 
