@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "Digging up Django class-based views - 2"
-date: 2013-11-10 15:53
+date: 2013-12-11 09:00
 comments: true
 categories: [python, django]
 ---
@@ -135,9 +135,9 @@ Our `DetailView` is called by an URLconf that provides a regular expression to p
 
 So if we want to change the name of the parameter we can simply define the `pk_url_kwarg` of our class and provide a regex that extract the primary key with the new name. For example `url(r'^(?P<key>\d+)/$',` extracts it with the name `key`, so we will define `pk_url_kwarg = 'key'` in our class.
 
-So from this quick exploration we learned that `DetailView`:
+From this quick exploration we learned that a class inheriting from `DetailView`:
 
-* provides a context whit the `object` key initialized to a single object
+* provides a context with the `object` key initialized to a single object
 * **must** be configured with a `model` class attribute, to know what objects to extract
 * **can** be configured with a `queryset` class attribute, to refine the set of objects where the single object is extracted from
 * **must** be called from a URL that includes a regexp that extracts the primary key of the searched object as `pk`
@@ -184,9 +184,9 @@ Sometimes, when dealing with complex pages, the generic display CBVs that Django
 
 In all those cases that cannot be easily solved by one of the generic display CBVs, your way goes through other classes: `RedirectView`, `TemplateView`, and `View`. The documentation for these base views is [here](https://docs.djangoproject.com/en/1.5/ref/class-based-views/base/), while the source code is in [views/generic/base.py](https://github.com/django/django/blob/stable/1.5.x/django/views/generic/base.py).
 
-I'm not going to fully describe those views; I want however to point out some peculiarities.
+I'm not going to fully describe those views; I want however to briefly point out some peculiarities.
 
-`View` is by now an old friend of us; we met it when we discussed the `as_view()` and `dispatch()` method. It is the most generic view class and can be leveraged to perform very specialized tasks such as rendering pages without templates (for example when returning JSON results).
+`View` is by now an old friend of us; we met it when we discussed the `as_view()` and `dispatch()` method. It is the most generic view class and can be leveraged to perform very specialized tasks such as rendering pages without templates (for example when returning JSON data in AJAX techniques).
 
 `TemplateView` is the best choice to render pages from a template keeping in the meanwhile freedom as regards the context content. Chances are that this is going to be the view you will use the most after `ListView` and `DetailView`. Basically you just need to inherit from it and define the `get_context_data()` method. As you can see from the [source code](https://github.com/django/django/blob/stable/1.5.x/django/views/generic/base.py#L147) `TemplateView` answers to GET requests only.
 
@@ -202,7 +202,7 @@ Remember that date-based views are CBVs, so they are based on `View`, just like 
 
 In this post we covered `DetailView` in deep and, more quickly, all the remaining base and data-based views. In the next post we will step into the rich (and strange) world of forms.
 
-Feel free to use [the blog Google+ page](https://plus.google.com/u/0/b/110554719587236016835/110554719587236016835/posts) or [GitHub](https://github.com/lgiordani) to comment the post or to ask for an in-depth analysis of some topic.
+Feel free to use [the blog Google+ page](https://plus.google.com/u/0/b/110554719587236016835/110554719587236016835/posts) to comment the post or to ask for an in-depth analysis of some topic. [GitHub issues](https://github.com/lgiordani/lgiordani.github.com/issues) is the best place to submit corrections.
 
 ## Previous articles
 
