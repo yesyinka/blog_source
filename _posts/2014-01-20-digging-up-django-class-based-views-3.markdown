@@ -93,10 +93,44 @@ Now it is time to dig into the class-based forms Django provides us to understan
 
 Following the first example with notes we find the `CreateView` class in [views/generic/edit.py#202](https://github.com/django/django/blob/stable/1.5.x/django/views/generic/edit.py#L202). It is an almost empty class that inherits from `SingleObjectTemplateResponseMixin` and from `BaseCreateView`. The first class deals with the template selected to render the response and we can leave it aside for the moment. The second class, on the other hand, can be found a couple of lines above, at [views/generic/edit.py#L187](https://github.com/django/django/blob/stable/1.5.x/django/views/generic/edit.py#L187), and implements two methods which names are self explaining, `get()` and `post()`.
 
-We already met the `get()` method in the [past article](/blog/2013/12/11/digging-up-django-class-based-views-2) when we talked about the `dispatch()` method of the `View` class.
+We already met the `get()` method in the [past article](/blog/2013/12/11/digging-up-django-class-based-views-2) when we talked about the `dispatch()` method of the `View` class. A quick recap of its purpose: this method is called when the incoming HTTP request bears the GET verb, and is used to process the request itself. Not surprisingly, the `post()` method is called when the incoming request is a POST one. The two methods are already defined by an ancestor of the `BaseCreateView` class, namely `ProcessFormView` ([views/generic/edit.py#L145](https://github.com/django/django/blob/stable/1.5.x/django/views/generic/edit.py#L145)). It is useful to take a peek at the source code of this last class:
 
+``` python
+class ProcessFormView(View):
+    """
+    A mixin that renders a form on GET and processes it on POST.
+    """
+    def get(self, request, *args, **kwargs):
+        """
+        Handles GET requests and instantiates a blank version of the form.
+        """
+        form_class = self.get_form_class()
+        form = self.get_form(form_class)
+        return self.render_to_response(self.get_context_data(form=form))
 
+    def post(self, request, *args, **kwargs):
+        """
+        Handles POST requests, instantiating a form instance with the passed
+        POST variables and then checked for validity.
+        """
+        form_class = self.get_form_class()
+        form = self.get_form(form_class)
+        if form.is_valid():
+            return self.form_valid(form)
+        else:
+            return self.form_invalid(form)
 
+```
+
+As you can see the two methods are pretty straightforward. They both retrieve the class of the form with `get_form_class()` and instance it with `get_form()` (more on them later). The `get()` method then just calls the `render_to_response()` method to render a template, passing it the context produced by the `get_context_data()` method. Note that the context receives the form as built by the `get_form()` method.
+
+The `post()` method does not directly render the template since it has to process incoming data before doing this last step. Instead the validation of the form is performed through its `is_valid()` method and the two methods `form_valid()` and `form_invalid()` are called depending on the result of the test. See the [official documentation](https://docs.djangoproject.com/en/1.5/ref/forms/validation/) for more information about form validation.
+
+Please note that the behaviour of these classes follow the same pattern of that used in the `ListView` and `DetailView`, as described in the previous two posts.
+
+The `ProcessFormView` class inherits from `View`, which was already described in depth in the first two posts of this series; there you can find the `as_view()` and `dispatch()` method that are the foundation of the CBVs system.
+
+The second inheritance path we can follow from `BaseCreateView` leads to `ModelFormMixin`, which is defined at [views/generic/edit.py#L75](https://github.com/django/django/blob/stable/1.5.x/django/views/generic/edit.py#L75). 
 
 http://www.peachybits.com/2011/09/django-1-3-form-api-modelform-example/
 
