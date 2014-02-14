@@ -16,7 +16,7 @@ This third issue wants to introduce the reader to the class-based version of Dja
 
 ## A very basic example
 
-To start working with CBFs (class-based forms) let's suppose we are working with a `StickyNote` class which represents a simple text note with a date:
+To start working with CBFs (class-based forms) let's say we are working with a `StickyNote` class which represents a simple text note with a date:
 
 ``` python
 class StickyNote(models.Model):
