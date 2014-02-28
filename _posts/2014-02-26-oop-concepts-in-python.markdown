@@ -33,7 +33,7 @@ OOP is such a wide topic that it is very hard to find a set of concepts universa
 
 Please note that many of those concepts overlap and sometimes is difficult to talk about one of them without referring to another one.
 
-## Why "objects"?
+## Back to the object
 
 Computer science deals with data and procedures to manipulate them. Everything, from the earliest Fortran programs to the latest mobile apps is about data and its manipulation. 
 
@@ -100,7 +100,7 @@ Chances are that this separation between data and procedures doesn't perfectly f
 
 This is exactly what leads to the concept of _object_: an object, in the OOP context, is a structure holding data _and_ procedures operating on them.
 
-## What is "type"?
+## What about "type"?
 
 When you talk about data you immediately need to introduce the concept of _type_. This concept can have two meanings that are worth being mentioned in computer science: the _behavioural_ and the _structural_ one.
 
@@ -110,11 +110,11 @@ The structural meaning identifies the type of something by looking at its intern
 
 Both points of view can be valid, and different languages may implement and emphasize one meaning of type or the other, and even both.
 
-## Python classes and instances
+## Python classes and instances <----------
 
-Objects in Python may be build describing their structure through a _class_. A class is the programming representation of a generic object, such as "a book", "a car", "a door": when I talk about "a door" everyone can understand what I'm saying, without the need of referring to a specific door in the room.
+Objects in Python may be built describing their structure through a _class_. A class is the programming representation of a generic object, such as "a book", "a car", "a door": when I talk about "a door" everyone can understand what I'm saying, without the need of referring to a specific door in the room.
 
-In Python the type of an object is represented by the class used to build the object: that is, in Python the word type has the same meaning of the word class (more on this later).
+In Python the type of an object is represented by the class used to build the object: that is, in Python the word _type_ has the same meaning of the word _class_ (more on this later).
 
 For example, one of the built-in classes of Python is `int`, which represents an integer number
 
@@ -128,7 +128,7 @@ For example, one of the built-in classes of Python is `int`, which represents an
 <type 'int'>
 ```
 
-As you can see the built-in function `type()` returns the content of the _magic attribute_ `__class__` (magic means that its value is managed by Python itself offstage). The type of the variable `a`, or its class, is `int`.
+As you can see the built-in function `type()` returns the content of the _magic attribute_ `__class__` (magic here means that its value is managed by Python itself offstage). The type of the variable `a`, or its class, is `int`.
 
 Once you have a class you can _instantiate_ it to get a concrete object of that type (_instance_), i.e. built according to the structure of that class. The Python syntax to instantiate a class is the same of a function call
 
@@ -144,8 +144,8 @@ When you create an instance you can pass some values, according to the class def
 >>> b = int()
 >>> print b
 0
->>> b = int(7)
->>> print b
+>>> c = int(7)
+>>> print c
 7
 ```
 
@@ -208,7 +208,7 @@ Objects are described by a _class_, which can generate one or more _instances_, 
 
 ## Python classes strike again
 
-The Python implementation of classes has some peculiarities. The bare thruth is that in Python the class of an object is an object itself. You can check this by issuing `type()` on the class itself
+The Python implementation of classes has some peculiarities. The bare truth is that in Python the class of an object is an object itself. You can check this by issuing `type()` on the class itself
 
 ``` python
 >>> type(door1)
@@ -246,7 +246,7 @@ However if we use `id()` on the class of the two instances we discover that the 
 
 Well this is very important. In Python, a class is not just the schema used to build an object. Rather, the class is a shared living object, which code is accessed at run time.
 
-As we already tested, however, attributes are not stored in the class but in every instance, due to the fact that `__init__` works on `self` when creating them. Classes can be given _class attributes_, that is attributes that are stored in the class object, thus being shared among the class instances
+As we already tested, however, attributes are not stored in the class but in every instance, due to the fact that `__init__` works on `self` when creating them. Classes, however, can be given attributes like any other object; with a terrific effort of imagination, let's call them _class attributes_. As you can expect, class attributes are shared among the class instances just like their container
 
 ``` python
 class Door(object):
@@ -289,6 +289,23 @@ The `color` attribute here is not created using `self`, and any change of its va
 '0xb74c5420L'
 ```
 
+## Raiders of the lost attribute
+
+Any Python object is automatically given a `__dict__` attribute, which contains its list of attributes. Let's investigate what this attribute contains for our example objects:
+
+``` python
+>>> Door.__dict__
+dict_proxy({'__module__': '__main__', 'color': 'brown', '__weakref__': <attribute '__weakref__' of 'Door' objects>, '__dict__': <attribute '__dict__' of 'Door' objects>, 'close': <function close at 0xb6a8a56c>, 'open': <function open at 0xb6a8a534>, '__doc__': None, '__init__': <function __init__ at 0xb6a8a48c>})
+>>> door1.__dict__
+{'status': 'closed', 'number': 1}
+```
+
+Leaving aside the `dict_proxy` object, you can see that the `color` attribute is listed among the `Door` class attributes, while `status` and `number` are listed for the instance. How comes, then, that we can call `door1.color`, if that attribute is not listed for that instance?
+
+
+
+
+
 What happens to methods? Are they shared or not? Let us test it a bit
 
 ``` python
@@ -311,6 +328,7 @@ What happens to methods? Are they shared or not? Let us test it a bit
 
 Well this puts some new stuff into play. First of all you see that the method can be _unbound_ or _bound_, then its type is `instancemethod`. Last, you see that despite of being bound and unbound, the method is always the same (its address is the same for the class and for the two instances).
 
+What is the meaning of bound and unboud? 
 
 
 
