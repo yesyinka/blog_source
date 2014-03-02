@@ -250,7 +250,7 @@ As we already tested, however, attributes are not stored in the class but in eve
 
 ``` python
 class Door(object):
-    color = 'brown'
+    colour = 'brown'
 
     def __init__(self, number, status):
         self.number = number
@@ -263,44 +263,68 @@ class Door(object):
         self.status = 'closed'
 ```
 
-The `color` attribute here is not created using `self`, and any change of its value reflects on all instances
+The `colour` attribute here is not created using `self`, and any change of its value reflects on all instances
 
 ``` python
 >>> door1 = Door(1, 'closed')
 >>> door2 = Door(2, 'closed')
->>> Door.color
+>>> Door.colour
 'brown'
->>> door1.color
+>>> door1.colour
 'brown'
->>> door2.color
+>>> door2.colour
 'brown'
->>> Door.color = 'white'
->>> Door.color
+>>> Door.colour = 'white'
+>>> Door.colour
 'white'
->>> door1.color
+>>> door1.colour
 'white'
->>> door2.color
+>>> door2.colour
 'white'
->>> hex(id(Door.color))
+>>> hex(id(Door.colour))
 '0xb74c5420L'
->>> hex(id(door1.color))
+>>> hex(id(door1.colour))
 '0xb74c5420L'
->>> hex(id(door2.color))
+>>> hex(id(door2.colour))
 '0xb74c5420L'
 ```
 
 ## Raiders of the lost attribute
 
-Any Python object is automatically given a `__dict__` attribute, which contains its list of attributes. Let's investigate what this attribute contains for our example objects:
+Any Python object is automatically given a `__dict__` attribute, which contains its list of attributes. Let's investigate what this dictionary contains for our example objects:
 
 ``` python
 >>> Door.__dict__
-dict_proxy({'__module__': '__main__', 'color': 'brown', '__weakref__': <attribute '__weakref__' of 'Door' objects>, '__dict__': <attribute '__dict__' of 'Door' objects>, 'close': <function close at 0xb6a8a56c>, 'open': <function open at 0xb6a8a534>, '__doc__': None, '__init__': <function __init__ at 0xb6a8a48c>})
+dict_proxy({'__module__': '__main__', 'colour': 'brown', '__weakref__': <attribute '__weakref__' of 'Door' objects>, '__dict__': <attribute '__dict__' of 'Door' objects>, 'close': <function close at 0xb6a8a56c>, 'open': <function open at 0xb6a8a534>, '__doc__': None, '__init__': <function __init__ at 0xb6a8a48c>})
 >>> door1.__dict__
 {'status': 'closed', 'number': 1}
 ```
 
-Leaving aside the `dict_proxy` object, you can see that the `color` attribute is listed among the `Door` class attributes, while `status` and `number` are listed for the instance. How comes, then, that we can call `door1.color`, if that attribute is not listed for that instance?
+Leaving aside the difference between a dictionary and a `dict_proxy` object, you can see that the `colour` attribute is listed among the `Door` class attributes, while `status` and `number` are listed for the instance. How comes, then, that we can call `door1.color`, if that attribute is not listed for that instance? This is a job performed by the magic `__getattribute__()` method; in Python the dotted syntax automatically invokes this method so when we write `door1.colour`, Python executes `door1.__getattribute__('colour')`. That method performs the  _attribute  lookup_ action, i.e. finds the value of the attribute by looking in different places. The standard implementation of `__getattribute__()` searches first the internal dictionary (`__dict__`) of an object, then the type of the object itself; in this case `door1.__getattribute__('colour')` executes first `door1.__dict__['colour']` and then `door1.__class__.__dict__['colour']`
+
+``` python
+>>> door1.__dict__['colour']
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+KeyError: 'colour'
+>>> door1.__class__.__dict__['colour']
+'brown'
+```
+
+When we try to assigna for an instance a value to a class attribute, we just put in the `__dict__` of the instance a value with that name, and this value masks the class attribute since it is found first by `__getattribute__()`. As you can see from the examples of the previous section, this is different from changing the value of the attribute on the class itself.
+
+``` python
+>>> door1.colour = 'white'
+>>> door1.__dict__['colour']
+'white'
+>>> door1.__class__.__dict__['colour']
+'brown'
+>>> Door.colour = 'red'
+>>> door1.__dict__['colour']
+'white'
+>>> door1.__class__.__dict__['colour']
+'red'
+```
 
 
 
