@@ -110,7 +110,7 @@ The structural meaning identifies the type of something by looking at its intern
 
 Both points of view can be valid, and different languages may implement and emphasize one meaning of type or the other, and even both.
 
-## Python classes and instances <----------
+## Class games
 
 Objects in Python may be built describing their structure through a _class_. A class is the programming representation of a generic object, such as "a book", "a car", "a door": when I talk about "a door" everyone can understand what I'm saying, without the need of referring to a specific door in the room.
 
@@ -311,6 +311,13 @@ KeyError: 'colour'
 'brown'
 ```
 
+Indeed, if we check the objects equality through the `is` operator we can confirm that both `door1.colour` and `Door.colour` are exactly the same object
+
+``` python
+>>> door1.colour is Door.colour
+True
+```
+
 When we try to assigna for an instance a value to a class attribute, we just put in the `__dict__` of the instance a value with that name, and this value masks the class attribute since it is found first by `__getattribute__()`. As you can see from the examples of the previous section, this is different from changing the value of the attribute on the class itself.
 
 ``` python
@@ -326,36 +333,219 @@ When we try to assigna for an instance a value to a class attribute, we just put
 'red'
 ```
 
+## Revenge of the methods
 
-
-
-
-What happens to methods? Are they shared or not? Let us test it a bit
+Let's play the same game with methods. First of all you can see that, just like class attributes, methods are listed only in the class `__dict__`. Chances are that they behave the same as attributes when we get them
 
 ``` python
->>> Door.__init__
-<unbound method Door.__init__>
->>> door1.__init__
-<bound method Door.__init__ of <__main__.Door object at 0x869a28c>>
->>> type(Door.__init__)
-<type 'instancemethod'>
->>> type(door1.__init__)
-<type 'instancemethod'>
->>> hex(id(Door.__init__))
-'0x854e964'
->>> hex(id(door1.__init__))
-'0x854e964'
->>> hex(id(door2.__init__))
-'0x854e964'
->>> 
+>>> door1.open is Door.open
+False
 ```
 
-Well this puts some new stuff into play. First of all you see that the method can be _unbound_ or _bound_, then its type is `instancemethod`. Last, you see that despite of being bound and unbound, the method is always the same (its address is the same for the class and for the two instances).
+Ops. Let us further investigate the matter
 
-What is the meaning of bound and unboud? 
+``` python
+>>> Door.__dict__['open']
+<function open at 0xb73ee10c>  
+>>> Door.open
+<unbound method Door.open>
+>>> door1.open                                                                                                                                                                    <bound method Door.open of <__main__.Door object at 0xb73f956c>>                                                                                                                  
+```
 
+So, the class method is listed in the members dictionary as _function_. So far, so good. The same method, taken directly from the class is returned as _unbound method_, while taking it from the instance it changes to _bound method_. Well, a _function_ is a procedure you named and defined with the `def` statement. When you refer to a function as part of a class you get an unbound method. The name _method_ simply means "a function inside a class", according to the usual OOP definitions, while _unbound_ signals that the method is not bound to any instance. As you can see, as soon as you access the method from an instance, the method becomes _bound_.
 
+Why does Python bother with methods being bound or unbound? And how does Python transform an unbound method into a bound one?
 
-#### Inheritance ???
+First of all, if you try to call an unboun method you get an error
+
+``` python
+>>> Door.open()
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+TypeError: unbound method open() must be called with Door instance as first argument (got nothing instead)
+```
+
+so by default Python considers methods as functions that shall operate on instances, and calling them from the class leaves the interpreter puzzled. Let us try to pass the instance as suggested by the exception message
+
+``` python
+>>> Door.open(door1)
+>>> door1.status
+'open'
+```
+
+Python does not complain here, and the method works as expected. So `Door.open(door1)` is the same as `door1.open()`. Again, under the hood, `__getattribute__()` is working to make everything work and when we call `door1.open()`, Python actually calls `door1.__class__.open(door1)`. However, `door1.__class__.open` is an unbound method, so there is something more that converts it into a bound method that Python can safely call.
+
+When you access a member of an object, Python calls `__getattribute__()` to satisfy the request. This magic method, however, conforms to a procedure known as _descriptor protocol_. For the read access `__getattribute__()` checks if the object has a `__get__()` method and calls this latter. So for function the conversion from an unbound into a bound method is made by such a mechanism. Let us review it by means of an example.
+
+``` python
+>>> door1.__class__.__dict__['open']
+<function open at 0xb73ee10c>
+```
+
+This syntax retrieves the function defined in the class; the function knows nothing about objects, but it _is_ an object (remember "everything is an object"). So we can look inside it with the `dir()` built-in function
+
+``` python
+>>> dir(door1.__class__.__dict__['open'])
+['__call__', '__class__', '__closure__', '__code__', '__defaults__', '__delattr__', '__dict__', '__doc__', '__format__', '__get__', '__getattribute__', '__globals__', '__hash__', '__init__', '__module__', '__name__', '__new__', '__reduce__', '__reduce_ex__', '__repr__', '__setattr__', '__sizeof__', '__str__', '__subclasshook__', 'func_closure', 'func_code', 'func_defaults', 'func_dict', 'func_doc', 'func_globals', 'func_name']
+>>> door1.__class__.__dict__['open'].__get__
+<method-wrapper '__get__' of function object at 0xb73ee10c>
+```
+
+As you can see, a `__get__` method is listed among the members of the function, and Python recognizes it as a _method-wrapper_. This method shall connect the `open` function to the `door1` instance, so we can call it passing the instance alone
+
+``` python
+>>> door1.__class__.__dict__['open'].__get__(door1)
+<bound method ?.open of <__main__.Door object at 0xb73f956c>>
+```
+
+Ok, something is missing. Indeed `__get__` in this case also accepts the _owner_ class, i.e. the class we are trying to get the attribute from. So the correct form is
+
+``` python
+>>> door1.__class__.__dict__['open'].__get__(door1, Door)
+<bound method Door.open of <__main__.Door object at 0xb73f956c>>
+```
+
+## Class methods
+
+If we use `type()` on an unbound method, we get an interesting result
+
+``` python
+>>> door1.__class__.__dict__['open']
+<function open at 0xb6aa548c>
+>>> type(door1.__class__.open)
+<type 'instancemethod'>
+```
+
+The method is an _instance method_; as we discovered, it shall be bound to an instance to work, so the name is a good choice. Does this imply that we can also define a _class method_? Indeed we can, through the `classmethod` decorator
+
+``` python
+class Door(object):
+    colour = 'brown'
+
+    def __init__(self, number, status):
+        self.number = number
+        self.status = status
+
+    @classmethod
+    def knock(cls):
+        print "Knock!"
+
+    def open(self):
+        self.status = 'open'
+        
+    def close(self):
+        self.status = 'closed'
+```
+
+Such a definition makes the method callable on both the instance and the class
+
+``` python
+>>> door1.knock()
+Knock!
+>>> Door.knock()
+Knock!
+>>> door1.knock
+<bound method type.knock of <class '__main__.Door'>>
+>>> Door.knock
+<bound method type.knock of <class '__main__.Door'>>
+```
+
+And this is possible since, as you can see, both the class method and the instance method are bound. The class method is bound to the class itself, while the instance method is bound to the class of the instance. What about the type of the mehthod?
+
+``` python
+>>> door1.__class__.__dict__['knock']
+<classmethod object at 0xb6a8db6c>
+>>> type(door1.__class__.knock)
+<type 'instancemethod'>
+```
+
+Puzzled? Don't be confused! When you look in the `__dict__` you are not going through the `__getattribute__()` and `__get__()` machinery, so you get the plain unprocessed attribute. With standard methods you find `function` objects in the members dictionary, while for class methods you find `classmethod` objects.
+
+On the other side, when you check the type of `door1.__class__.knock` you implicitly invoke `__get__()`, which binds the method to the class.
+
+``` python
+>>> type(door1.__class__.__dict__['knock'].__get__(door1, Door))
+<type 'instancemethod'>
+>>> type(door1.__class__.__dict__['knock'])
+<type 'classmethod'>
+```
+
+After all, it is no surprise that a class method is bound, since a class is an instance of `type`.
+
+## Intermezzo
+
+I realize now that I introduced this post as "a set of thoughts for Python beginners". Sorry. If you are reading this, however, chances are that you are still alive. Calm down. breathe. Relaxed? Ready to go? Let's dive into inheritance!
+
+#### The Delegation Run
 
 Our experience shows us also that it makes sense to talk about _concrete instances_ of concepts. When I talk about "my cat" I am referring to a concrete instance of the "cat" concept, which is a _subtype_ of "animal". So there is a very important difference between types and instances, despite being them both objects. While types can be _specialized_, instances cannot.
+
+In the real world an object B is said to be a specialization of an object A when:
+
+* B has all the features of an object A
+* B can provide new features
+* B can perform some or all the tasks performed by A in a different way
+
+Those targets are very general and valid for any system and the key to achieve them with the maximum reuse of already existing components is _delegation_. Delegation means that an object shall perform only what it knows best, and leave the rest to other objects.
+
+Delegation can be implemented with two differen mechanisms: _composition_ and _inheritance_. Sadly, very often inheritance is listed among the pillars of OOP techniques, forgetting that it is an implementation of the more generic and foundamental mechanism of delegation; perhaps a better nomenclature for the two techniques could be _explicit delegation_ (composition) and _implicit delegation_ (inheritance). Please note that, again, when talking about composition and inheritance we are talking about focusing on a behavioural or structural delegation. If you want the composition vs inheritance depate may be summarized with the sentence "to know or to be".
+
+Please, please, please do not forget composition: in many cases, composition can lead you to a simpler system, with benefits on maintainability and changability. 
+
+Usually composition is said to be a very generic technique that needs no special syntax, while inheritance and its rules are strongly dependent on the language of choice. Actually, the strong dynamic nature of Python softens the boundary line between the two techniques.
+
+## Inheritance Now
+
+In Python a class can be declared as an _extension_ of one or more different classes, through the _class inheritance_ mechanism. The child class (the one that inherits) internally has the same structure of the parent class (the one that is inherited), and for the case of multiple inheritance the language has very specific rules to manage possible conflicts or redefinitions among the parent classes. A very simple example of inheritance is
+
+``` ptyhon
+class SecurityDoor(Door):
+    pass
+```
+
+where we declare a new class `SecurityDoor` that, at the moment, is a perfect copy of the `Door` class. Let us investigate what happens when we access attributes and methods. First we instance the class
+
+``` python
+>>> sdoor = SecurityDoor(1, 'closed')
+```
+
+The first check we can do is that class attributes are still global and shared
+
+``` python
+>>> SecurityDoor.colour is Door.colour
+True
+>>> sdoor.colour is Door.colour
+True
+```
+
+This shows us that Python tries to resolve instance members not only looking into the class the instance comes from, but also investigating the parent classes. In this case `sdoor.colour` becomes `SecurityDoor.colour`, that in turn becomes `Door.colour`.
+
+If we investigate the content of `__dict` we can catch a glimpse of the inheritance mechanism in action
+
+>>> sdoor.__dict__
+{'status': 'closed', 'number': 1}
+>>> sdoor.__class__.__dict__
+dict_proxy({'__module__': '__main__', '__doc__': None})
+>>> Door.__dict__
+dict_proxy({'knock': <classmethod object at 0xb6a8db6c>, '__module__': '__main__', '__weakref__': <attribute '__weakref__' of 'Door' objects>, '__dict__': <attribute '__dict__' of 'Door' objects>, 'close': <function close at 0xb6aa5454>, 'colour': 'brown', 'open': <function open at 0xb6aa53e4>, '__doc__': None, '__init__': <function __init__ at 0xb6aa51ec>})
+```
+
+As you can see the content of `__dict__` for `SecurityDoor` is very narrow compared to that of `Door`. As you can now easily figure out the inheritance mechanism takes care of the missing elements by climbing up the classes tree. Where does Python get the parent classes? A class always contains a `__bases__` tuple that lists them
+
+``` python
+>>> SecurityDoor.__bases__
+(<class '__main__.Door'>,)
+```
+
+So an example of what Python does to resolve a class method call through the inheritance tree is
+
+``` python
+>>> sdoor.__class__.__bases__[0].__dict__['knock'].__get__(sdoor, SecurityDoor)
+<bound method type.knock of <class '__main__.SecurityDoor'>>
+>>> sdoor.knock
+<bound method type.knock of <class '__main__.SecurityDoor'>>
+```
+
+Please note that this is just an example that does not consider multiple inheritance.
+
+Let us try now to override some methods and attributes. In Python you can override a parent class member simply by redefining it in the child class.
