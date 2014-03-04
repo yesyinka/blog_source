@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "OOP concepts in Python"
+title: "OOP concepts in Python 2.x"
 date: 2014-02-26 10:45:36 +0100
 comments: true
 categories: [python]
@@ -12,28 +12,11 @@ Object-oriented programming (OOP) has been the leading programming paradigm for 
 
 So one of the most interesting aspects of a OOP language is to understand how it implements those concepts. In this post I am going to try and start analyzing the OOP implementation of the Python language. Due to the richness of the topic, however, I consider this attempt just like a set of thoughts for Python beginners trying to find their way into this beautiful (and sometimes peculiar) language.
 
-## The basic ideas behind OOP
+_This post refers to the internals of Python 2.x - please note that Python 3.x changes (improves) some of the features shown here. As soon as I feel comfortable with my Python 3 knowledge, I will post an update._
 
-OOP is such a wide topic that it is very hard to find a set of concepts universally addressed as its "basic concepts". Since this is a post focused on Python, however, I list here the OOP concepts that this language implements and takes advantage of, using the language specific nomenclature:
+<!--more-->
 
-* Objects
-* Classes and instances
-* Interfaces and types
-* Encapsulation (methods and attributes)
-* Inheritance
-* Polymorphism
-
-(
-* Metaprogramming and meta-classes
-* Lazy binding
-* Dynamic typing
-* Message passing between objects
-* Abstract base classes
-)
-
-Please note that many of those concepts overlap and sometimes is difficult to talk about one of them without referring to another one.
-
-## Back to the object
+## Back to the Object
 
 Computer science deals with data and procedures to manipulate them. Everything, from the earliest Fortran programs to the latest mobile apps is about data and its manipulation. 
 
@@ -100,7 +83,7 @@ Chances are that this separation between data and procedures doesn't perfectly f
 
 This is exactly what leads to the concept of _object_: an object, in the OOP context, is a structure holding data _and_ procedures operating on them.
 
-## What about "type"?
+## What About Type?
 
 When you talk about data you immediately need to introduce the concept of _type_. This concept can have two meanings that are worth being mentioned in computer science: the _behavioural_ and the _structural_ one.
 
@@ -110,7 +93,7 @@ The structural meaning identifies the type of something by looking at its intern
 
 Both points of view can be valid, and different languages may implement and emphasize one meaning of type or the other, and even both.
 
-## Class games
+## Class Games
 
 Objects in Python may be built describing their structure through a _class_. A class is the programming representation of a generic object, such as "a book", "a car", "a door": when I talk about "a door" everyone can understand what I'm saying, without the need of referring to a specific door in the room.
 
@@ -206,7 +189,7 @@ You can create as many instances as needed and they are completely unrelated eac
 
 Objects are described by a _class_, which can generate one or more _instances_, unrelated each other. A class contains _methods_, which are functions, and they accept at least one argument called `self`, which is the actual instance on which the method has been called. A special method, `__init__` deals with the initialization of the object, that is, sets the initial value of the _attributes_.
 
-## Python classes strike again
+## Python Classes Strike Again
 
 The Python implementation of classes has some peculiarities. The bare truth is that in Python the class of an object is an object itself. You can check this by issuing `type()` on the class itself
 
@@ -289,13 +272,20 @@ The `colour` attribute here is not created using `self`, and any change of its v
 '0xb74c5420L'
 ```
 
-## Raiders of the lost attribute
+## Raiders of the Lost Attribute
 
 Any Python object is automatically given a `__dict__` attribute, which contains its list of attributes. Let's investigate what this dictionary contains for our example objects:
 
 ``` python
 >>> Door.__dict__
-dict_proxy({'__module__': '__main__', 'colour': 'brown', '__weakref__': <attribute '__weakref__' of 'Door' objects>, '__dict__': <attribute '__dict__' of 'Door' objects>, 'close': <function close at 0xb6a8a56c>, 'open': <function open at 0xb6a8a534>, '__doc__': None, '__init__': <function __init__ at 0xb6a8a48c>})
+dict_proxy({'__module__': '__main__',
+    'colour': 'brown',
+    '__weakref__': <attribute '__weakref__' of 'Door' objects>,
+    '__dict__': <attribute '__dict__' of 'Door' objects>,
+    'close': <function close at 0xb6a8a56c>,
+    'open': <function open at 0xb6a8a534>,
+    '__doc__': None,
+    '__init__': <function __init__ at 0xb6a8a48c>})
 >>> door1.__dict__
 {'status': 'closed', 'number': 1}
 ```
@@ -333,7 +323,7 @@ When we try to assigna for an instance a value to a class attribute, we just put
 'red'
 ```
 
-## Revenge of the methods
+## Revenge of the Methods
 
 Let's play the same game with methods. First of all you can see that, just like class attributes, methods are listed only in the class `__dict__`. Chances are that they behave the same as attributes when we get them
 
@@ -342,14 +332,15 @@ Let's play the same game with methods. First of all you can see that, just like 
 False
 ```
 
-Ops. Let us further investigate the matter
+Whoops. Let us further investigate the matter
 
 ``` python
 >>> Door.__dict__['open']
-<function open at 0xb73ee10c>  
+<function open at 0xb73ee10c>
 >>> Door.open
 <unbound method Door.open>
->>> door1.open                                                                                                                                                                    <bound method Door.open of <__main__.Door object at 0xb73f956c>>                                                                                                                  
+>>> door1.open
+<bound method Door.open of <__main__.Door object at 0xb73f956c>>
 ```
 
 So, the class method is listed in the members dictionary as _function_. So far, so good. The same method, taken directly from the class is returned as _unbound method_, while taking it from the instance it changes to _bound method_. Well, a _function_ is a procedure you named and defined with the `def` statement. When you refer to a function as part of a class you get an unbound method. The name _method_ simply means "a function inside a class", according to the usual OOP definitions, while _unbound_ signals that the method is not bound to any instance. As you can see, as soon as you access the method from an instance, the method becomes _bound_.
@@ -362,7 +353,8 @@ First of all, if you try to call an unboun method you get an error
 >>> Door.open()
 Traceback (most recent call last):
   File "<stdin>", line 1, in <module>
-TypeError: unbound method open() must be called with Door instance as first argument (got nothing instead)
+TypeError: unbound method open() must be called with
+    Door instance as first argument (got nothing instead)
 ```
 
 so by default Python considers methods as functions that shall operate on instances, and calling them from the class leaves the interpreter puzzled. Let us try to pass the instance as suggested by the exception message
@@ -386,7 +378,13 @@ This syntax retrieves the function defined in the class; the function knows noth
 
 ``` python
 >>> dir(door1.__class__.__dict__['open'])
-['__call__', '__class__', '__closure__', '__code__', '__defaults__', '__delattr__', '__dict__', '__doc__', '__format__', '__get__', '__getattribute__', '__globals__', '__hash__', '__init__', '__module__', '__name__', '__new__', '__reduce__', '__reduce_ex__', '__repr__', '__setattr__', '__sizeof__', '__str__', '__subclasshook__', 'func_closure', 'func_code', 'func_defaults', 'func_dict', 'func_doc', 'func_globals', 'func_name']
+['__call__', '__class__', '__closure__', '__code__', '__defaults__',
+ '__delattr__', '__dict__', '__doc__', '__format__', '__get__',
+ '__getattribute__', '__globals__', '__hash__', '__init__',
+ '__module__', '__name__', '__new__', '__reduce__', '__reduce_ex__',
+ '__repr__', '__setattr__', '__sizeof__', '__str__', '__subclasshook__',
+ 'func_closure', 'func_code', 'func_defaults', 'func_dict', 'func_doc',
+ 'func_globals', 'func_name']
 >>> door1.__class__.__dict__['open'].__get__
 <method-wrapper '__get__' of function object at 0xb73ee10c>
 ```
@@ -405,7 +403,7 @@ Ok, something is missing. Indeed `__get__` in this case also accepts the _owner_
 <bound method Door.open of <__main__.Door object at 0xb73f956c>>
 ```
 
-## Class methods
+## Class methods <-----------------
 
 If we use `type()` on an unbound method, we get an interesting result
 
@@ -498,7 +496,7 @@ Usually composition is said to be a very generic technique that needs no special
 
 In Python a class can be declared as an _extension_ of one or more different classes, through the _class inheritance_ mechanism. The child class (the one that inherits) internally has the same structure of the parent class (the one that is inherited), and for the case of multiple inheritance the language has very specific rules to manage possible conflicts or redefinitions among the parent classes. A very simple example of inheritance is
 
-``` ptyhon
+``` python
 class SecurityDoor(Door):
     pass
 ```
@@ -518,16 +516,25 @@ True
 True
 ```
 
-This shows us that Python tries to resolve instance members not only looking into the class the instance comes from, but also investigating the parent classes. In this case `sdoor.colour` becomes `SecurityDoor.colour`, that in turn becomes `Door.colour`.
+This shows us that Python tries to resolve instance members not only looking into the class the instance comes from, but also investigating the parent classes. In this case `sdoor.colour` becomes `SecurityDoor.colour`, that in turn becomes `Door.colour`. That is, inheritance implements the _to be_ part of the sentence "to know or to be": `SecurityDoor` is a `Door`.
 
-If we investigate the content of `__dict` we can catch a glimpse of the inheritance mechanism in action
+If we investigate the content of `__dict__` we can catch a glimpse of the inheritance mechanism in action
 
+``` python
 >>> sdoor.__dict__
 {'status': 'closed', 'number': 1}
 >>> sdoor.__class__.__dict__
 dict_proxy({'__module__': '__main__', '__doc__': None})
 >>> Door.__dict__
-dict_proxy({'knock': <classmethod object at 0xb6a8db6c>, '__module__': '__main__', '__weakref__': <attribute '__weakref__' of 'Door' objects>, '__dict__': <attribute '__dict__' of 'Door' objects>, 'close': <function close at 0xb6aa5454>, 'colour': 'brown', 'open': <function open at 0xb6aa53e4>, '__doc__': None, '__init__': <function __init__ at 0xb6aa51ec>})
+dict_proxy({'knock': <classmethod object at 0xb6a8db6c>,
+    '__module__': '__main__',
+    '__weakref__': <attribute '__weakref__' of 'Door' objects>,
+    '__dict__': <attribute '__dict__' of 'Door' objects>,
+    'close': <function close at 0xb6aa5454>,
+    'colour': 'brown',
+    'open': <function open at 0xb6aa53e4>,
+    '__doc__': None,
+    '__init__': <function __init__ at 0xb6aa51ec>})
 ```
 
 As you can see the content of `__dict__` for `SecurityDoor` is very narrow compared to that of `Door`. As you can now easily figure out the inheritance mechanism takes care of the missing elements by climbing up the classes tree. Where does Python get the parent classes? A class always contains a `__bases__` tuple that lists them
@@ -548,4 +555,104 @@ So an example of what Python does to resolve a class method call through the inh
 
 Please note that this is just an example that does not consider multiple inheritance.
 
-Let us try now to override some methods and attributes. In Python you can override a parent class member simply by redefining it in the child class.
+Let us try now to override some methods and attributes. In Python you can _override_ (redefine) a parent class member simply by redefining it in the child class.
+
+``` python
+class SecurityDoor(Door):
+    colour = 'gray'
+    locked = True
+    
+    def open(self):
+        if not self.locked:
+            self.status = 'open'
+```
+
+As you can forecast, the overridden members now are present in the `__dict__` of the `SecurityDoor` class
+
+``` python
+>>> SecurityDoor.__dict__
+dict_proxy({'locked': True,
+    '__module__': '__main__',
+    'open': <function open at 0xb73d8844>,
+    'colour': 'gray',
+    '__doc__': None})
+```
+
+So when you override a member, the one you put in the child class is used instead of the one in the parent class simply because the former is found before the latter while climbing the class hierarchy. This shows you also that Python does not implicitly call the parent implementation when you override a method. So, overriding is a way to block implicit delegation.
+
+If we want to call the parent implementation we have to do it explicitely. In the former example we could write
+
+``` python
+class SecurityDoor(Door):
+    colour = 'gray'
+    locked = True
+    
+    def open(self):
+        if self.locked:
+            return
+        Door.open(self)
+```
+
+You can easily test that this implementation is working correctly. This form of explicit parent delegation is heavily discouraged, however. The first reason is because of the very high coupling that result from explicitely naming the parent class again when calling the method; if you decide to use a new parent class you have to manually propagate the change to every method that calls it. Moreover, since in Python the class hierarchy can be dynamically changed (i.e. at runtime), this form of explicit delegation could be not only annoying but wrong.
+
+The second reason is that in general you need to deal with multiple inheritance, where you do not know a priori which parent class implements the original form of the method you are overriding.
+
+To solve these issues, Python supplies the `super()` built-in function, that climbs the class hierarchy and returns the correct class that shall be called. The syntax for calling `super()` is
+
+``` python
+class SecurityDoor(Door):
+    colour = 'gray'
+    locked = True
+    
+    def open(self):
+        if self.locked:
+            return
+        super(SecurityDoor, self).open(self)
+```
+
+As you can see you have to explicitely pass the class you are in and the current instance. This is a (indeed very light) form of repetition that has been fixed in Python 3.x.
+
+## Composition
+
+"To know or to be": if inheritance implements the _to be_ part, composition implements the _to know_. In composition an object knows another object, that is knows how to reach it, and explicitely delegates some tasks to this latter. While inheritance is implicit, composition is explicit: in Python, however, things are far more interesting than this =).
+
+First of all let us implement the classic composition, which usually makes an object part of the other as an attribute
+
+``` python
+class SecurityDoor(object):
+    colour = 'gray'
+    locked = True
+    
+    def __init__(self, number, status):
+        self.door = Door(number, status)
+        
+    def open(self):
+        if self.locked:
+            return
+        self.door.open()
+        
+    def close(self):
+        self.door.close()
+```
+
+The primary goal of composition is to relax the coupling between objects. This little example shows that now `SecurityDoor` is an `object` and no more a `Door`, which means that the internal structure of `Door` is not copied. For this very simple example both `Door` and `SecurityDoor` are not big classes, but in a real system objects can very complex; this means that their allocation consumes a lot of memory and if a system contains thousands or millions of objects that could be an issue.
+
+
+
+The composition presented here is far from perfect, however.
+
+
+## Polymorphism
+
+## Interfaces and types
+
+## Metaclasses
+
+## Movie Trivia
+
+If you are wondering why section titles are so weird chances are that you missed some good movies to watch while you are not coding =). The movies are: Back to the Future, What About Bob, Wargames, The Empire Strikes Back, Raiders of the Lost Ark, Revende of the Nerds, XXXXXXX, Apocalypse Now, YYYYYYYYYY.
+
+## Sources
+
+Some sources for the content of this 
+
