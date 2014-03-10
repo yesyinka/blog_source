@@ -467,7 +467,7 @@ Knock!
 <bound method type.knock of <class '__main__.Door'>>
 ```
 
-And this is possible since, as you can see, both the class method and the instance method are bound. The class method is bound to the class itself, while the instance method is bound to the class of the instance. What about the type of the method?
+And this is possible since, as you can see, both the class method and the instance method are bound. The class method is bound to the class itself, while the instance method is bound to the instance of the class. What about the type of the method?
 
 ``` python
 >>> door1.__class__.__dict__['knock']
@@ -712,6 +712,10 @@ Some sources for the content of this post. Thank you authors!
 * [Python’s super() considered super! - by Raymond Hettinger](http://rhettinger.wordpress.com/2011/05/26/super-considered-super/)
 * [Design Patterns in Python - by Alex Martelli](www.aleax.it/gdd_pydp.pdf)
 * Many [Stackoverflow](http://stackoverflow.com/questions/tagged/python) questions and answers
+
+## Updates
+
+2014-03-08: "When methods met classes" section had a typo: the sentence "The class method is bound to the class itself, while the instance method is bound to the class of the instance." is "while the instance method is bound to instance of the class.". Thanks [Mohcin Shah](https://plus.google.com/u/0/116309787480950087834/posts) for spotting it!
 
 ## Feedback
 
