@@ -710,12 +710,14 @@ Some sources for the content of this post. Thank you authors!
 * [The official Python documentation](http://docs.python.org/2/tutorial/classes.html) and the Python source code.
 * [Python Types and Objects - by Shalabh Chaturvedi](http://www.cafepy.com/article/python_types_and_objects/)
 * [Python’s super() considered super! - by Raymond Hettinger](http://rhettinger.wordpress.com/2011/05/26/super-considered-super/)
-* [Design Patterns in Python - by Alex Martelli](www.aleax.it/gdd_pydp.pdf)
+* [Design Patterns in Python - by Alex Martelli](http://www.aleax.it/gdd_pydp.pdf)
 * Many [Stackoverflow](http://stackoverflow.com/questions/tagged/python) questions and answers
 
 ## Updates
 
 2014-03-08: "When methods met classes" section had a typo: the sentence "The class method is bound to the class itself, while the instance method is bound to the class of the instance." is "while the instance method is bound to instance of the class.". Thanks [Mohcin Shah](https://plus.google.com/u/0/116309787480950087834/posts) for spotting it!
+
+2014-03-10: Fixed link to Alex Martelli's presentation.
 
 ## Feedback
 
