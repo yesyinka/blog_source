@@ -8,7 +8,7 @@ categories: [python]
 
 ## Abstract
 
-This post continues the analysis of the Python OOP implementation started with [this post](), which I recommend reading before taking on this new one.
+This post continues the analysis of the Python OOP implementation started with [this post](/blog/2014/03/05/oop-concepts-in-python-2-dot-x-part-1), which I recommend reading before taking on this new one.
 
 This second post discusses the following OOP features in Python:
 
@@ -26,7 +26,7 @@ The term _polymorphism_, in the OOP lingo, refers to the ability of an object to
 
 In Python polymorphism is one of the key concept, and we can say that it is a built-in feature. Let us deal with this concept step by step.
 
-First of all, you know that in Python the type of a variable is not explicitely declared. Beware that this does not mean that Python variables are _untyped_. On the contrary, everything in Python has a type, it just happens that the type is implicitly assigned. If you remeber the last paragraph of the previous post, I stated that in Python variables are just pointers (using a C-like nomenclature), in other words they just tell the language _where_ in memory a variable has been stored. What is at that address is not a business of the variable.
+First of all, you know that in Python the type of a variable is not explicitly declared. Beware that this does not mean that Python variables are _untyped_. On the contrary, everything in Python has a type, it just happens that the type is implicitly assigned. If you remeber the last paragraph of the previous post, I stated that in Python variables are just pointers (using a C-like nomenclature), in other words they just tell the language _where_ in memory a variable has been stored. What is stored at that address is not a business of the variable.
 
 ``` python
 >>> a = 5
@@ -47,12 +47,12 @@ First of all, you know that in Python the type of a variable is not explicitely 
 
 This little example shows a lot about the Python typing system. The variable `a` is not statically declared, after all it can contain only one type of data: a memory address. When we assign the number 5 to it, Python stores in `a` the _address_ of the number 5 (`0x89812b0` in my case, but your result will be different). The `type()` built-in function is smart enough to understand that we are not asking about the type of `a` (which is always a reference), but about the type of the content. When you store another value in `a`, the string `"five"`, Python shamelessly replaces the previous content of the variable with the new address.
 
-So, thanks to the reference system, Python type system is both _strong_ and _dynamic_. The definition of those two concepts is not universal, so if you are interested in those concepts be ready to dive into a brad matter. However, in Python, the meaning of those two words is the following:
+So, thanks to the reference system, Python type system is both _strong_ and _dynamic_. The definition of those two concepts is not universal, so if you are interested in those concepts be ready to dive into a broad matter. However, in Python, the meaning of those two words is the following:
 
 * type system is _strong_ because everything has a well-defined type, that you can check with the `type()` built-in
 * type system is _dynamic_ since the type of a variable is not explicitly declared, but changes with the content
 
-Onward! We just scratched the surface.
+Onward! We just scratched the surface of the whole thing.
 
 To explore the subject a little more, try to define the simplest function in Python (apart from an empty function)
 
@@ -61,15 +61,118 @@ def echo(a):
     return a
 ```
 
-Pretty straightforward, isn't it? Well if you come from a static compiled language such as C or C++ you should be at leat puzzled. What is `a`? I mean: what type of data does it contain? And how can Pyton know what it is returning if there is no type specification?
+Pretty straightforward, isn't it? Well if you come from a static compiled language such as C or C++ you should be at least puzzled. What is `a`? I mean: what type of data does it contain? And how can Python know what it is returning if there is no type specification?
 
-Again, if you recall the references stuff, everything becomes clear: that function accepts a reference and returns a reference. In other words we just defined a sort of universal function, that does that same thing regardless of the input.
+Again, if you recall the references stuff everything becomes clear: that function accepts a reference and returns a reference. In other words we just defined a sort of universal function, that does the same thing regardless of the input.
 
-This is exactly the problem that polymorphism wants to solve. We want to describe an action regardless of the type of objects, and this is what we do when we talk among humans. When you explain how to move an object by pushing it, you may explain it using a box, but you expect the person you are addressing to be able to repeat the action even if you need to move a pen, or a book, or a bottle.
+Well, this is exactly the problem that polymorphism wants to solve. We want to describe an action regardless of the type of objects, and this is what we do when we talk among humans. When you explain how to move an object by pushing it, you may explain it using a box, but you expect the person you are addressing to be able to repeat the action even if you need to move a pen, or a book, or a bottle.
 
-In a statically typed language like C++ polymorphism can be achieved defining as many function as types, all with the same name. The language is in charge of choosing the right implementation depending on the types of the variables you are using at a given time. In Python there is no need to do this: polymorphism is a built-in feature, thanks to the untyped variables.
+There are two main strategies you can apply to get code that performs the same operation regardless of the input types.
+
+The first strategy is to cover all cases, and this is a typical approach of procedural languages. If you need to sum two numbers that can be integers, float or complex, you just need to write three `sum()` functions, one bound to the integer type, the second bound to the float type and the third bound to the complex type, and to have some language feature that takes charge of choosing the correct implementation depending on the input type. This logic can be implemented by a compiler (if the language is statically typed) or by a runtime environment (if the language is dynamically typed) and is the approach chosen by C++. The disadvantage of this solution is that it requires the programmer to forecast all the possible situations: what if I need to sum an integer with a float? What if I need to sum two lists? (Please note that C++ is not so poorly designed, and the operator overloading technique allows to manage such cases, but the base polymorphism strategy of that language is the one exposed here).
+
+The second strategy, the one implemented by Python, is to simply require the input objects to solve the problem for you. In other words you _ask the data itself to perform the operation_, reversing the problem. Instead of writing a bunch on functions that sum all the possibile types in every possible combination you just write one function that requires the input data to sum, trusting that they know how to do it. Does it sound complex? It is not.
+
+Let's look at the Python implementation of the `+` operator. When we write `c = a + b`, Python actually executes `c = a.__add__(b)`. As you can see the sum operation is delegated to the first input variable. So if we write
+
+``` python
+def sum(a, b):
+    return a + b
+```
+
+there is no need to specify the type of the two input variables. The object `a` (the object contained in the variable `a`) shall be able to sum with the object `b`. This is a very beautiful and simple implementation of the polymorphism concept. Python functions are polymorphic simply because they accept everything and trust the input data to be able to do perform some actions.
+
+Let us consider another simple example before moving on. The built-in `len()` function returns the length of the input object. For example
+
+``` python
+>>> l = [1, 2, 3]
+>>> len(l)
+3
+>>> s = "Just a sentence"
+>>> len(s)
+15
+```
+
+As you can see it is perfectly polymorphic: you can feed both a list or a string to it and it just computes its length. Does it work with any type? let's check
+
+``` python
+>>> d = {'a': 1, 'b': 2}
+>>> len(d)
+2
+>>> i = 5
+>>> len(i)
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+TypeError: object of type 'int' has no len()
+```
+
+Ouch! Seems that the `len()` function is smart enough to deal with dictionaries, but not with integers. Well, after all, the lenght of an integer is not defined.
+
+Indeed this is exactly the point of Python polymorphism: _the integer type does not define a lenght operation_. While you blame the `len()` function, the `int` type is at fault. The `len()` function just calls the `__len__()` method of the input object, as you can see from this code
+
+``` python
+>>> l.__len__()
+3
+>>> s.__len__()
+15
+>>> d.__len__()
+2
+>>> i.__len__()
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+AttributeError: 'int' object has no attribute '__len__'
+```
+
+but the `'int' object` does not define any `__len__()` method.
+
+
+
+
+
+
+
+
+## Notes
+
+This raises a problem: where is the code that implements the actual opeation on that type? After all summing integers is different from summing lists, and joining two files is not the same as joining two databases. 
+
+The dirty secret is that Python simply trusts the objects to provide suitable methods to answer the requests made in a given code.
+
+
+
+
+
+
+Python implements the polymorphism techniques by converting every operation on an object in a method call, thus asking the object to answer a request.
+
+
+
+
+
+
+
+At this point it is convenient to talk about two different aspects of polymorphism: _operator overloading_ and _method
+
+
+In a statically typed language like C++, polymorphism can be achieved defining as many function as types, all with the same name. The language is in charge of choosing the right implementation depending on the types of the variables you are using at a given time. In Python there is no need to do this: polymorphism is a built-in feature, thanks to the untyped variables.
 
 Beware: the Python way has many advantages and many shortcomings, like any solution. I believe that the advantages are enough to overcome the disadvantages, but do not expect them to be the heal-all for your programming issues.
+
+Ok, we definitely understood that Python deals with references and not with actual values. A question, however, arises: if Python does not know in advance the type of the variables, how can it perform the correct action? For example, let us take a very simple unary operator, `len()`, which returns the length of an object. We know that calling `len(a)` returns the length of the object referenced by `a`, regardless of the type of that object. But there shall be a way for Python to select the correct 
+
+
+
+
+
+
+Do you see the problem? "The length of an object" is a very loose definition. For a list, the length is simply the number of elements contained in it. For a dictionary it is defined as the number of key/value couples in it. And for a file? The number of characters? The number of lines? And for an integer?
+
+This shows the essence of polymorphism: we use the same word for different actions, and we expect the objects to act accordingly. So polymorphism is an OOP feature, since it shifts the 
+
+
+
+
+So how does Python know how to perform actions on the variables? After all, you can talk about, for example, _addition_ bu
 
 
 
