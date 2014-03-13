@@ -125,7 +125,36 @@ AttributeError: 'int' object has no attribute '__len__'
 
 but the `'int' object` does not define any `__len__()` method.
 
+So, to sum up what we discovered until here, I would say that _Python polymorphism is based on delegation_. In the following sections we will talk about the [EAFP](docs.python.org/2/glossary.html) Python principle, and you will see that the delegation principle is somehow ubiquitous in this language.
 
+## Polymorphism II
+
+Another real-life concept that polymorphism wants to bring into a programming language is the ability to walk the class hierarchy, that is _to run code on specialized types_. This is a complex sentence to say something we are used to do every day. An example will clarify the matter.
+
+You know how to open a door, it is something you learned in your early years. Under an OOP point of view you are an object (sorry, no humiliation intended) which is capable of interacting with a wood rectangle rotating on hinges. When you can open a door, however, you can also open a window, which, after all, is a specialized type of wood-rectangle-with-hinges, hopefully with some glass in it too. You are also able to open the car door, which is also a specialized type (this one is a mix between a standard door and a window). This shows that, once you know how to interact with the most generic type (basic door) you can also interact with specialized types (window, car door) as soon as they act like the ancestor type (e.g. as soon as they rotate on hinges).
+
+This directly translates into OOP languages: polymorphism requires that _code written for a given type may also be run on derived types_. For example a list (a generic list object, not a Python one) that can contain "numbers" shall be able to accept integers because they _are_ numbers. The list could specify an ordering operation which requires the numbers to be able to compare each other. So, as soon as integers specify a way to compare each other they can be inserted into the list and ordered.
+
+Statically compiled languages shall provide specific language features to implement this part of the polymorphism concept. In C++, for example, the language needs to introduce the concept of pointer compatibility.
+
+In Python there is no need to provide special language features to implement subtype polymorphism. As we already discovered Python functions accept any variable without checking the type and rely on the variable itself to provide the correct methods. Since a subtype must provide the methods of the parent type, Python implements subtype polymorphism from the very beginning.
+
+I think this is one of the most important things to understand when working with this language. Python is not really interested in the actual type of the variables you are working with. It is interested in how those variables act, that is it just wants the variable _to provide the right methods_. So, if you come from statically typed languages, you need to make a special effort to think about _acting like_ instead of _being_. This is what we called "duck typing".
+
+Time to do an example.
+
+``` python
+example
+```
+
+Explanation.
+
+## List can contain anything
+
+If you recall the list object example I made before, you can now understand why Python lists can accept any type of object. The problem is not what type of object the list accepts, but what shall the object do to be hosted in a list. For example, Python could require the objects to be able to compare each other
+
+## EAFP
+## Abstract Base Classes
 
 
 
