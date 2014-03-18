@@ -149,7 +149,7 @@ example
 
 Explanation.
 
-## List can contain anything
+## Polymorphism in built-ins and operators
 
 If you recall the list object example I made before, you can now understand why Python lists can accept any type of object. The problem is not what type of object the list accepts, but what shall the object do to be hosted in a list. For example, Python could require the objects to be able to compare each other
 
