@@ -141,28 +141,162 @@ In Python there is no need to provide special language features to implement sub
 
 I think this is one of the most important things to understand when working with this language. Python is not really interested in the actual type of the variables you are working with. It is interested in how those variables act, that is it just wants the variable _to provide the right methods_. So, if you come from statically typed languages, you need to make a special effort to think about _acting like_ instead of _being_. This is what we called "duck typing".
 
-Time to do an example.
+Time to do an example. Let us define a very simple `Room` class
 
 ``` python
-example
+class Room(object):
+    def __init__(self, door):
+        self.door = door
+        
+    def open(self):
+        self.door.open()
+
+    def close(self):
+        self.door.close()
+
+    def is_open(self):
+        return self.door.is_open()
 ```
 
-Explanation.
+A very simple class, as you can see, just enough to exemplify polymorphism. The `Room` class accepts a `door` variable, and the type of this variable is not specified. Duck typing in action: the actual type of `door` is not declared, there is no "acceptance test" built in the language. Indeed, the incoming variable shall export the following methods that are used in the `Room` class: `open()`, `close()`, `is_open()`. So we can build the following classes
+
+``` python
+class Door(object):
+    def __init__(self):
+        self.status = "closed"
+
+    def open(self):
+        self.status = "open"
+
+    def close(self):
+        self.status = "closed"
+
+    def is_open(self):
+        return self.status == "open"
+
+
+class BooleanDoor(object):
+    def __init__(self):
+        self.status = True
+
+    def open(self):
+        self.status = True
+
+    def close(self):
+        self.status = False
+
+    def is_open(self):
+        return self.status
+```
+
+Both represent a door which can be open or closed, and they implement the concept in two different ways: the first class relies on strings, while the second leverages booleans. Despite _being_ two different types, both _act_ the same way, so both can be used to build a `Room` object.
+
+``` python
+>>> door = Door()
+>>> bool_door = BooleanDoor()
+>>> room = Room(door)
+>>> bool_room = Room(bool_door)
+
+>>> room.open()
+>>> print room.is_open()
+True
+>>> room.close()
+>>> print room.is_open()
+False
+
+>>> bool_room.open()
+>>> print bool_room.is_open()
+True
+>>> bool_room.close()
+>>> print bool_room.is_open()
+False
+```
+
+#### File-like objects
+
+File-like objects are a concrete and very useful example of polymorphism in Python. A file-like object is a class (or the instance of a class) that acts like a file, i.e. it provides those methods a file object exposes.
+
+Say for example that you code a class that parses an XML tree, and that you expect the XML code to be contained in a file. So your class accepts a file in its `__init__()` method, and reads the content from it
+
+``` python
+class XMLReader(object):
+    def __init__(xmlfile):
+        xmlfile.open()
+        self.content = xmlfile.read()
+        xmlfile.close()
+
+[...]
+```
+
+The class works well until your application shall be modified to receive XML content from a network stream. To use the class without modifying it you shall write the stream in a temporary file and load this latter, but this sounds a little overkill. So you plan to change the class to accept a string, but this way you shall change every single code that uses the class to read a file, since now you shall open, read and close the file on your own, outside the class.
+
+Polymorphism offers a better way. Why not store the incoming stream inside an object that _acts like_ a file, even if it is not an actual one? If you check the StringIO module you will find that such an object has been already invented and provided in the standard Python library.
+
+Other very useful file-like classes are those contained in the `gzip`, `bz2`, and `zipfile` modules (just to name some of the most used), which provide objects that allow you to manage compressed files ust like plain files, hiding the decompression/compression machinery.
+
+
+## EAFP
+
+EAFP is a Python acronym that stands for _easier to ask for forgiveness than permission_. This coding style is highly pushed in the Python community because it completely relies on the duck typing concept, thus fitting well with the language philosophy.
+
+The concept behind EAFP is fairly easy: instead of checking if an object has a given attribute or method before actually accessing or using it, just trust the object to provide what you need and manage the error case. This can be probably better understood by looking at some code. According to EAFP, instead of writing
+
+``` python
+if hasattr(someobj, 'open'):
+    [...]
+else:
+    [...]
+```
+
+you shall write
+
+``` python
+try:
+    someobj.open()
+    [...]
+except AttributeError:
+    [...]
+```
+
+As you can see, the second snippet directly uses the method and deals with the possible `AttributeError` exception (by the way: managing exceptions is one of the top Black Magic Topics in Python, more on it in a future post. A very quick preview: I think we may learn something from Erlang - check [this]()).
+
+Why is this coding style pushed so much in the Python community? I think the main reason is that through EAFP you _think_ polymorphically: you are not interested in knowing if the object _has_ the `open` attribute, you are interested in knowing if the object can satisfy your request, that is to perform the `open()` method call.
+
+This may sound a little theoretical, but the way you think while coding may raise very practical problems that will be shown in the next section.
+
+A final note on EAFP. In my opinion there is a case in which the EAFP try/except structure misses its purpose. Since its purpose is to allow the programmer to do what shall be done and manage the error case, that solution shall not be used when there is no mean to manage the possible exception. That is, when you end up with code like
+
+``` python
+try:
+    d[key] = somevalue
+except KeyError:
+    pass
+```
+
+this probably is better expressed by the classical "ask permission" form
+
+``` python
+if key in d:
+    d[key] = somevalue
+```
+
+## Abstract Base Classes
+
+So Python is a language that pushes polymorphism to the maximum, making OOP not an addition to the language but part of its structure from the ground up. Polymorphism has its drawbacks, anyway, and it is very interesting to read what Guido van Rossumas says in [PEP 3119](): _In classical OOP theory, invocation is the preferred usage pattern, and inspection is actively discouraged, being considered a relic of an earlier, procedural programming style. However, in practice this view is simply too dogmatic and inflexible, and leads to a kind of design rigidity that is very much at odds with the dynamic nature of a language like Python._
+
+
+
+
+In this section I want to show what are the major problems you may run into when leveraging polymorphism and the solution the Python developers proposed to tame them: Abstract base Classes. The [PEP 3119]() that introduces them is worth reading if you want to 
+
+The EAFP coding style requires you to trust the incoming objects to provide the attributes and methods you need, and you shall manage the possible exceptions, if you know how to do it. Sometimes, however, you need to test if the incoming object matches a complex behaviour, which can be represented by a 
+
+
+
 
 ## Polymorphism in built-ins and operators
 
 If you recall the list object example I made before, you can now understand why Python lists can accept any type of object. The problem is not what type of object the list accepts, but what shall the object do to be hosted in a list. For example, Python could require the objects to be able to compare each other
-
-## EAFP
-
-EAFP is a Python acronym that stands for _easier to ask for forgiveness than permission_. This coding style is highly pushed in the Python community because it completely relies on the duck typing concept, thus fitting well with the language philosophy. 
-
-## Abstract Base Classes
-
-
-
-
-
 
 ## Notes
 
