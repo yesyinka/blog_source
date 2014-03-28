@@ -141,7 +141,7 @@ In Python there is no need to provide special language features to implement sub
 
 I think this is one of the most important things to understand when working with this language. Python is not really interested in the actual type of the variables you are working with. It is interested in how those variables act, that is it just wants the variable _to provide the right methods_. So, if you come from statically typed languages, you need to make a special effort to think about _acting like_ instead of _being_. This is what we called "duck typing".
 
-Time to do an example. Let us define a very simple `Room` class
+Time to do an example. Let us define a `Room` class
 
 ``` python
 class Room(object):
@@ -280,16 +280,107 @@ if key in d:
     d[key] = somevalue
 ```
 
+## Intermezzo
+
+Now we will leave the polymorphism palace for a while to explore other parts of the Python OOP world. Don't worry, it is just to lay some foundation before diving another time into the matter.
+
+Are you still with me? Good. Now go, make yourself a cup of tea and fasten belts: the Python roller coaster is about to start.
+
+# Types and bases
+
+A frist step into the most intimate secrets of Python objects comes from two components we already met in the first post: `__class__` and `__bases__`. Let us briefly recall what these two attributes contain:
+
+# Metaclasses
+
+
+
+
+
+
+
 ## Abstract Base Classes
 
-So Python is a language that pushes polymorphism to the maximum, making OOP not an addition to the language but part of its structure from the ground up. Polymorphism has its drawbacks, anyway, and it is very interesting to read what Guido van Rossumas says in [PEP 3119](): _In classical OOP theory, invocation is the preferred usage pattern, and inspection is actively discouraged, being considered a relic of an earlier, procedural programming style. However, in practice this view is simply too dogmatic and inflexible, and leads to a kind of design rigidity that is very much at odds with the dynamic nature of a language like Python._
+So Python is a language that pushes polymorphism to the maximum, making OOP not an addition to the language but part of its structure from the ground up.
+
+It is however very interesting to read what Guido van Rossumas says in [PEP 3119](): _Invocation means interacting with an object by invoking its methods. Usually this is combined with polymorphism, so that invoking a given method may run different code depending on the type of an object. Inspection means the ability for external code (outside of the object's methods) to examine the type or properties of that object, and make decisions on how to treat that object based on that information. [...] In classical OOP theory, invocation is the preferred usage pattern, and inspection is actively discouraged, being considered a relic of an earlier, procedural programming style. However, in practice this view is simply too dogmatic and inflexible, and leads to a kind of design rigidity that is very much at odds with the dynamic nature of a language like Python._
+
+The author of Python recognizes that forcing the use of a pure polymorphic approach leads sometimes to solutions that are too complex or even incorrect. In this section I want to show some of the problems that can arise from a pure polymorphic approach and introduce Abstract base Classes, which aim to solve them. I strongly suggest to read [PEP 3119]() (as for any other PEP) since it contains a deeper and better explanation of the whole matter.
+
+The EAFP coding style requires you to trust the incoming objects to provide the attributes and methods you need, and to manage the possible exceptions, if you know how to do it. Sometimes, however, you need to test if the incoming object matches a complex behaviour. For example, you could be interested in testing if the object _acts_ like a list, but you quickly realize that the amount of methods a `list` provides is very big and this could lead to odd EAFP code like
+
+``` python
+try:
+    obj.append
+    obj.count
+    obj.extend
+    obj.index
+    obj.insert
+    [...]
+except AttributeError:
+    [...]
+```
+
+where the methods of the `list` type are accessed (not called) just to force the object to raise the `AttributeError` exception if they are not present. This code, however, is not only ugly but also wrong. If you recall the "Enter the Composition" section of the first post, you know that in Python you can always customize the `__getattr__()` method, which is called whenever the requested attribute is not found in the object. So I could write a class that passes the test but actually does not act like a list
+
+``` python
+class FakeList(object):
+    def fakemethod(self):
+        pass
+    
+    def __getattr__(self, name):
+        if name in ['append', 'count', 'extend', 'index`, 'insert', ...]:
+            return self.fakemethod
+```
+
+This is obviously just an example, and no one will ever write such a class, but this demonstrates that just accessing methods does not guarantee that a class _acts_ like the one we are expecting.
+
+There are many examples that could be done leveraging the highly dynamic nature of Python and its rich object model. I just summarize them by saying that sometimes you'd better to check the type of the incoming object.
+
+In Python you can obtain the type of an object using the `type()` built-in function, but to check it you'd better use `isinstance()`, which returns a boolean value. Let us see an example before moving on
+
+``` python
+>>> isinstance([], list)
+True
+>>> isinstance(1, int)
+True
+>>> class Door(object):
+...  pass
+... 
+>>> d = Door()
+>>> isinstance(d, Door)
+True
+>>> class EnhancedDoor(Door):
+...  pass
+... 
+>>> ed = EnhancedDoor()
+>>> isinstance(ed, EnhancedDoor)
+True
+>>> isinstance(ed, Door)
+True
+```
+
+As you can see the function can also walk the class hierarchy, so your check is not too trivial.
+
+This function, however, does not completely solve our problem. if we write a class that actually _acts_ like a `list` but does not inherit from it, `isinstance()` does not recognize the fact that the two may be considered the same type. The following code returns `False` regardless the content of the `MyList` class
+
+``` python
+>>> class MyList(object):
+...  pass
+... 
+>>> ml = MyList()
+>>> isinstance(ml, list)
+False
+```
+
+since `isinstance()` does not check the content of the class, just its actual class and its ancestors.
+
+The solution proposed through PEP 3119 is, in my opinion, very simple and elegant, and it perfectly fits the nature of Python, where things are usually agreed rather being enforced.
 
 
 
 
 In this section I want to show what are the major problems you may run into when leveraging polymorphism and the solution the Python developers proposed to tame them: Abstract base Classes. The [PEP 3119]() that introduces them is worth reading if you want to 
 
-The EAFP coding style requires you to trust the incoming objects to provide the attributes and methods you need, and you shall manage the possible exceptions, if you know how to do it. Sometimes, however, you need to test if the incoming object matches a complex behaviour, which can be represented by a 
 
 
 
