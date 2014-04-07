@@ -307,7 +307,7 @@ dict_proxy({'__module__': '__main__',
 
 Leaving aside the difference between a dictionary and a `dict_proxy` object, you can see that the `colour` attribute is listed among the `Door` class attributes, while `status` and `number` are listed for the instance.
 
-How comes that we can call `door1.color`, if that attribute is not listed for that instance? This is a job performed by the magic `__getattribute__()` method; in Python the dotted syntax automatically invokes this method so when we write `door1.colour`, Python executes `door1.__getattribute__('colour')`. That method performs the  _attribute  lookup_ action, i.e. finds the value of the attribute by looking in different places.
+How comes that we can call `door1.colour`, if that attribute is not listed for that instance? This is a job performed by the magic `__getattribute__()` method; in Python the dotted syntax automatically invokes this method so when we write `door1.colour`, Python executes `door1.__getattribute__('colour')`. That method performs the  _attribute  lookup_ action, i.e. finds the value of the attribute by looking in different places.
 
 The standard implementation of `__getattribute__()` searches first the internal dictionary (`__dict__`) of an object, then the type of the object itself; in this case `door1.__getattribute__('colour')` executes first `door1.__dict__['colour']` and then `door1.__class__.__dict__['colour']`
 
