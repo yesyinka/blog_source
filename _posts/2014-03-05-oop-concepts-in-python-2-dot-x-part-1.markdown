@@ -719,6 +719,8 @@ Some sources for the content of this post. Thank you authors!
 
 2014-03-10: Fixed link to Alex Martelli's presentation.
 
+2014-04-07: A typo when discussing `door1.colour` has been fixed. Thanks to [pujuma](http://www.reddit.com/user/pujuma).
+
 ## Feedback
 
 Feel free to use [the blog Google+ page](https://plus.google.com/u/0/b/110554719587236016835/110554719587236016835/posts) to comment the post. The [GitHub issues](https://github.com/lgiordani/lgiordani.github.com/issues) page is the best place to submit corrections.
