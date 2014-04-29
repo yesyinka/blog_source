@@ -208,3 +208,6 @@ Feel free to use [the blog Google+ page](https://plus.google.com/u/0/b/110554719
 
 * [Digging Up Django Class-based Views - 1](/blog/2013/10/28/digging-up-django-class-based-views-1)
 
+## Next articles
+
+* [Digging Up Django Class-based Views - 3](/blog/2014/02/14/digging-up-django-class-based-views-3)

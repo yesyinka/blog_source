@@ -3,7 +3,7 @@ layout: post
 title: "OOP concepts in Python 2.x - Part 1"
 date: 2014-03-05 12:46:06 +0100
 comments: false
-categories: [python]
+categories: [python, oop]
 ---
 
 ## Abstract
