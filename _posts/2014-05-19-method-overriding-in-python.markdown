@@ -193,11 +193,19 @@ When you use the `FileCatNoEmpty` object you get the result of the `FileCat` obj
 
 As you can see while in the first example the original implementation has been called as the last thing, in the second one it is called before everything else. There is therefore no fixed position for the call of the original method, and it depends on what you want to do.
 
+## Always call super()?
+
+Shall we *always* call the original method implementation? In theory a well designed API should make it always possible but we know that boundary cases exist: the original method may have side effect that you want to avoid and sometimes the API cannot be refactored to avoid them. In those cases you may prefer to skip the call to the original implementation of the method; Python does not make it mandatory, so feel free to walk that path if you think the situation requires it. Be sure to know what you are doing, however, and document why you are completely overwriting the method.
+
 ## Summary
 
-* Always call the original implementation of a method you are overriding. This meakes the underlying API work as expected.
+* Call the original implementation of a method you are overriding whenever possible. This meakes the underlying API work as expected. When in need of skipping the call be sure to document the reasons.
 * Always use `super(cls, self)` for Python 2.x or `super()` for Python 3.x to call the original implementation of a method. This respects the resolution order in case of multiple inheritance and, for Python 3.x, protects from changes in the class hierarchy.
-* Call to the original implementation of a method as soon as you have all the data you need to run it.
+* If you call to the original implementation of a method do it as soon as you have all the data you need to run it.
+
+## Updates
+
+2014-05-21 As suggested by [caseyweb](http://www.reddit.com/user/caseyweb) in [this comment](http://www.reddit.com/r/Python/comments/25y4hu/method_overriding_in_python/chn5v1q) the conclusions of the post were too strong, so I updated the post with a new section ("Always call super()?") and the summary. Many thanks caseyweb!
 
 ## Links
 
