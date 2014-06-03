@@ -275,7 +275,7 @@ We will leave the polymorphism palace for a while to explore other parts of the 
 
 The first step into the most intimate secrets of Python objects comes from two components we already met in the first post: `type` and `object`. These two things are the very fundamental elements of Python OOP system, so it is worth spending some time to understand how they work and relate each other.
 
-First of all recall that in Python _everything is an object_, that is everything inherits from `object`. Thus, `object` seems to be the deepest thing you can find digging into Python veriables. Let's check this
+First of all recall that in Python _everything is an object_, that is everything inherits from `object`. Thus, `object` seems to be the deepest thing you can find digging into Python variables. Let's check this
 
 ``` python
 >>> a = 5
