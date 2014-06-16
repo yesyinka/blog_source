@@ -20,7 +20,7 @@ As you know, Python leverages polymorphism at its maximum by dealing only with g
 
 It is however very interesting to read what Guido van Rossumas says in [PEP 3119](http://legacy.python.org/dev/peps/pep-3119/): _Invocation means interacting with an object by invoking its methods. Usually this is combined with polymorphism, so that invoking a given method may run different code depending on the type of an object. Inspection means the ability for external code (outside of the object's methods) to examine the type or properties of that object, and make decisions on how to treat that object based on that information. [...] In classical OOP theory, invocation is the preferred usage pattern, and inspection is actively discouraged, being considered a relic of an earlier, procedural programming style. However, in practice this view is simply too dogmatic and inflexible, and leads to a kind of design rigidity that is very much at odds with the dynamic nature of a language like Python._
 
-The author of Python recognizes that forcing the use of a pure polymorphic approach leads sometimes to solutions that are too complex or even incorrect. In this section I want to show some of the problems that can arise from a pure polymorphic approach and introduce Abstract base Classes, which aim to solve them. I strongly suggest to read [PEP 3119](http://legacy.python.org/dev/peps/pep-3119/) (as for any other PEP) since it contains a deeper and better explanation of the whole matter. Indeed I think that this PEP is so well written that any further explanation is hardly needed. I am however used to write explanations to check how much I understood about the topic, so I am going to try it this time too.
+The author of Python recognizes that forcing the use of a pure polymorphic approach leads sometimes to solutions that are too complex or even incorrect. In this section I want to show some of the problems that can arise from a pure polymorphic approach and introduce Abstract Base Classes, which aim to solve them. I strongly suggest to read [PEP 3119](http://legacy.python.org/dev/peps/pep-3119/) (as for any other PEP) since it contains a deeper and better explanation of the whole matter. Indeed I think that this PEP is so well written that any further explanation is hardly needed. I am however used to write explanations to check how much I understood about the topic, so I am going to try it this time too.
 
 The EAFP coding style requires you to trust the incoming objects to provide the attributes and methods you need, and to manage the possible exceptions, if you know how to do it. Sometimes, however, you need to test if the incoming object matches a complex behaviour. For example, you could be interested in testing if the object _acts_ like a list, but you quickly realize that the amount of methods a `list` provides is very big and this could lead to odd EAFP code like
 
@@ -88,22 +88,128 @@ The `isinstance()` function, however, does not completely solve the problem. If 
 False
 ```
 
-since `isinstance()` does not check the content of the class.
+since `isinstance()` does not check the content of the class or its behaviour, it just consider the class and its ancestors.
 
-The problem, thus, may be summed up with the following question: what is the best way to test that an object exposes a given interface? Here, the word _interface_ is used without any reference to other programming solutions, which however address the same problem.
+The problem, thus, may be summed up with the following question: what is the best way to test that an object exposes a given interface? Here, the word _interface_ is used for its natural meaning, without any reference to other programming solutions, which however address the same problem.
+
+A better way to address the problem could be to write inside an attribute of the object the list of interfaces it promises to implement, and to agree that any time we want to test the behaviour of an object we simply have to check the content of this attribute. This is eactly the path followed by Python.
 
 The solution proposed through PEP 3119 is, in my opinion, very simple and elegant, and it perfectly fits the nature of Python, where things are usually agreed rather being enforced. Not only, the solution follows the spirit of polymorphism, where information is provided by the object itself and not extracted by the calling code.
 
-From Python 2.6 `isinstance()` and `issubclass` may be overloaded in the metaclass using `__isinstancecheck__()` and `__subclasscheck__()`. This means that any class (to be more precise the class's metaclass) may define a custom method that is invoked by the `isinstance()` and `issubclass()` built-ins.
+Basically we recognize that `isinstance()` and `issubclass()` are the best way to give information about the behaviour of the object. Those are, however, plain functions and not methods, so we cannot simply override them into the object.
 
-before diving into the dailts of this solution let us first discuss the philosophy behind it. The original problem was to find a way to check if an object acts like a given type, so we need a way to store this information. Following the Python polymorphism principles the object is in charge of providing this information, so the basic solution is to give any object an attribute that lists the interfaces the object exposes.
+From Python 2.6 `isinstance()` and `issubclass()` first check the class of the object looking for the `__isinstancecheck__()` and `__subclasscheck__()` methods. If it finds them their result is returned, otherwise everything works as usual.
 
-This is the basic idea behind Abstract Base Classes: classes now have a way to tell you what interfaces they expose, or what types they implement.
+As you can see this solution leaves the object in charge of telling information about itself, even if we check it with an external function and not by directly calling one of its methods. Since the two methods are injected by the metaclass, that is, when the class is being built, this system does not interfere with the usual inheritance mechanism and does not involve multiple inheritance.
 
-The implementation of this idea, as already stated, involves two methods, `__isinstancecheck__()` and `__subclasscheck__()`. Methods here are a far better choice than attributes since they allow the programmer to use rich constructs such as conditional structures and may be easily overridden to redefine part of their behaviour.
+## The ABC library
 
+The [ABC]() library is a collection of metaclasses that provide some interesting "behaviours", which we could be interested in.
 
+## Slots
 
+## classattribute
+
+## method-wrapper vs method, slot wrapper vs slot, dict_proxy
+
+## Callable objects
+
+In the first post, when I discussed for the first time the concept of instantiation, I stated that an instance of a class may be obtained by calling the class itself just like a function. Let me recall you the example
+
+``` python
+>>> b = int()
+>>> type(b)
+<type 'int'>
+```
+
+Later, speking about methods and attributes, I defined _callable_ something in Python that can be called with that syntax. Thus, we can now say that classes are callables, just like methods. What makes an object callable, anyway? It turns out that, as many other things in Python, the solution is pretty straightforward: an object is callable if it contains the `__call__()` method. Simple, isn't it?
+
+When we execute a syntax like
+
+``` python
+>>> some_object()
+```
+
+Python executes under the hood the following code
+
+``` python
+>>> some_object.__call__()
+```
+
+where any parameter passed to the class is obviously passed to `__call__()`.
+
+What `__call__` does is to run the constructor mechanism as depicted in the second post, executing `__new__()` and `__init()__` to get a new instance and initialize it. The `__call__()` method is usually defined by `type`, that is the metaclass of the class under exam.
+
+The above definition of callable object is very powerful, since it allows to flatten the difference between class and function. In OOP many times the two are presented as two completely separated concepts, but in Python it is usually more convenient to talk about callables. Here, Python shows its polymorphic nature at its maximum: if I expect a function and what is given to me is something that acts like a function everything is fine.
+
+Since `__call__` is a method we can redefine it in any class, let us try and see what happens
+
+``` python
+class CallMe(object):
+    def __call__(self, *args, **kwds):
+        return 1
+```
+
+This is something new, in that we defined a method with the same name is the method which is contained in the metaclass. 
+
+************************************
+
+That means that we may redefine `__call__`  in a class
+
+in a class to return any value?
+No, it does not work.
+
+>>> class Pippo(object):
+...  def __call__(cls, *args, **kwds):
+...   return 1
+... 
+>>> p = Pippo()
+>>> p
+<__main__.Pippo object at 0xb700030c>
+>>> Pippo.__call__
+<unbound method Pippo.__call__>
+>>> Pippo()
+<__main__.Pippo object at 0xb700038c>
+>>> 
+>>> 
+
+Do not return something different, anyway, it is bad.
+
+For example, the `sort()` method of a list wants a callable. Can we pass a class? An instance?
+
+## function 
+
+>>> type(prova)
+<type 'function'>
+>>> dir(function)
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+NameError: name 'function' is not defined
+>>> dir(prova)   
+['__call__', '__class__', '__closure__', '__code__', '__defaults__', '__delattr__', '__dict__', '__doc__', '__format__', '__get__', '__getattribute__', '__globals__', '__hash__', '__init__', '__module__', '__name__', '__new__', '__reduce__', '__reduce_ex__', '__repr__', '__setattr__', '__sizeof__', '__str__', '__subclasshook__', 'func_closure', 'func_code', 'func_defaults', 'func_dict', 'func_doc', 'func_globals', 'func_name']
+>>> prova.__dict__
+{}
+>>> function
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+NameError: name 'function' is not defined
+>>> prova.__class__
+<type 'function'>
+>>> prova.__class__.__dict__
+dict_proxy({'func_closure': <member 'func_closure' of 'function' objects>, '__module__': <member '__module__' of 'function' objects>, '__getattribute__': <slot wrapper '__getattribute__' of 'function' objects>, '__dict__': <attribute '__dict__' of 'function' objects>, '__code__': <attribute '__code__' of 'function' objects>, 'func_code': <attribute 'func_code' of 'function' objects>, '__setattr__': <slot wrapper '__setattr__' of 'function' objects>, '__new__': <built-in method __new__ of type object at 0x83362c0>, '__closure__': <member '__closure__' of 'function' objects>, '__call__': <slot wrapper '__call__' of 'function' objects>, '__get__': <slot wrapper '__get__' of 'function' objects>, '__doc__': <member '__doc__' of 'function' objects>, 'func_dict': <attribute 'func_dict' of 'function' objects>, 'func_name': <attribute 'func_name' of 'function' objects>, '__name__': <attribute '__name__' of 'function' objects>, 'func_globals': <member 'func_globals' of 'function' objects>, '__defaults__': <attribute '__defaults__' of 'function' objects>, '__globals__': <member '__globals__' of 'function' objects>, '__delattr__': <slot wrapper '__delattr__' of 'function' objects>, 'func_defaults': <attribute 'func_defaults' of 'function' objects>, '__repr__': <slot wrapper '__repr__' of 'function' objects>, 'func_doc': <member 'func_doc' of 'function' objects>})
+
+## dir(afunction) __closure__
+
+## Method and slot wrapper
+Door.__call__
+type.__call___
+
+## first class objects
+
+## Previous articles
+
+* [OOP Concepts in Python 2.x - Part 1](/blog/2014/03/05/oop-concepts-in-python-2-dot-x-part-1)
+* [OOP Concepts in Python 2.x - Part 2](/blog/2014/03/10/oop-concepts-in-python-2-dot-x-part-2)
 
 
 
