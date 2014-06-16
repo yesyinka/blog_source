@@ -14,7 +14,7 @@ This post will continue the discussion about metaclasses, introducing Abstract B
 
 _This post refers to the internals of Python 2.x - please note that Python 3.x changes (improves!) some of the features shown here. As soon as I feel comfortable with my Python 3 knowledge, I will post an update._
 
-## The Inpection Club
+## The Inspection Club
 
 As you know, Python leverages polymorphism at its maximum by dealing only with generic references to objects. This makes OOP not an addition to the language but part of its structure from the ground up. Moreover, Python pushes the EAFP appoach, which tries to avoid direct inspection of objects as much as possible.
 
@@ -122,7 +122,7 @@ In the first post, when I discussed for the first time the concept of instantiat
 <type 'int'>
 ```
 
-Later, speking about methods and attributes, I defined _callable_ something in Python that can be called with that syntax. Thus, we can now say that classes are callables, just like methods. What makes an object callable, anyway? It turns out that, as many other things in Python, the solution is pretty straightforward: an object is callable if it contains the `__call__()` method. Simple, isn't it?
+Later, speaking about methods and attributes, I defined _callable_ something that can be called with that syntax. Thus, we can now say that classes are callables, just like methods. What makes an object callable, anyway? It turns out that, as many other things in Python, the solution is pretty straightforward: an object is callable if it contains the `__call__()` method. Simple, isn't it?
 
 When we execute a syntax like
 
