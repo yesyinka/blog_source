@@ -100,11 +100,27 @@ Basically we recognize that `isinstance()` and `issubclass()` are the best way t
 
 From Python 2.6 `isinstance()` and `issubclass()` first check the class of the object looking for the `__isinstancecheck__()` and `__subclasscheck__()` methods. If it finds them their result is returned, otherwise everything works as usual.
 
-As you can see this solution leaves the object in charge of telling information about itself, even if we check it with an external function and not by directly calling one of its methods. Since the two methods are injected by the metaclass, that is, when the class is being built, this system does not interfere with the usual inheritance mechanism and does not involve multiple inheritance.
+As you can see this solution leaves the object in charge of telling information about itself, even if we check it with an external function and not by directly calling one of its methods. Since the two methods are injected by the metaclass, that is, when the class is being built, this system does not interfere with the usual inheritance mechanism and does not involve multiple inheritance. ******************************* NO NO NO NO, non è una metaclasse, è registrata! ***************************** =( =( =( =( =( =(
 
-## The ABC library
+## The abc library and collections
 
-The [ABC]() library is a collection of metaclasses that provide some interesting "behaviours", which we could be interested in.
+The [abc](https://docs.python.org/2/library/abc.html) module is the direct implementation of PEP 3119 and there you can find the `ABCMeta` class that can be used as a metaclass to build an Abstract Base Class. The resulting object has a `register()` method that accepts any class and links this latter to the Abstract base Class. Let us consider the official example taken from the module documentation
+
+``` python
+from abc import ABCMeta
+
+class MyABC(object):
+    __metaclass__ = ABCMeta
+
+MyABC.register(tuple)
+
+assert issubclass(tuple, MyABC)
+assert isinstance((), MyABC)
+```
+
+First of all we define a new `MyABC` class that will be our Abstract Base Class. This means that it may define a "behaviour" of another class, changing the way `isinstance()` and `issubclass()` work
+
+library is a collection of metaclasses that provide some "behaviours", which we could be interested in. 
 
 ## Slots
 
