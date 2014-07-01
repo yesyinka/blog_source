@@ -18,7 +18,7 @@ _This post refers to the internals of Python 2.x - please note that Python 3.x c
 
 As you know, Python leverages polymorphism at its maximum by dealing only with generic references to objects. This makes OOP not an addition to the language but part of its structure from the ground up. Moreover, Python pushes the EAFP appoach, which tries to avoid direct inspection of objects as much as possible.
 
-It is however very interesting to read what Guido van Rossumas says in [PEP 3119](http://legacy.python.org/dev/peps/pep-3119/): _Invocation means interacting with an object by invoking its methods. Usually this is combined with polymorphism, so that invoking a given method may run different code depending on the type of an object. Inspection means the ability for external code (outside of the object's methods) to examine the type or properties of that object, and make decisions on how to treat that object based on that information. [...] In classical OOP theory, invocation is the preferred usage pattern, and inspection is actively discouraged, being considered a relic of an earlier, procedural programming style. However, in practice this view is simply too dogmatic and inflexible, and leads to a kind of design rigidity that is very much at odds with the dynamic nature of a language like Python._
+It is however very interesting to read what Guido van Rossum says in [PEP 3119](http://legacy.python.org/dev/peps/pep-3119/): _Invocation means interacting with an object by invoking its methods. Usually this is combined with polymorphism, so that invoking a given method may run different code depending on the type of an object. Inspection means the ability for external code (outside of the object's methods) to examine the type or properties of that object, and make decisions on how to treat that object based on that information. [...] In classical OOP theory, invocation is the preferred usage pattern, and inspection is actively discouraged, being considered a relic of an earlier, procedural programming style. However, in practice this view is simply too dogmatic and inflexible, and leads to a kind of design rigidity that is very much at odds with the dynamic nature of a language like Python._
 
 The author of Python recognizes that forcing the use of a pure polymorphic approach leads sometimes to solutions that are too complex or even incorrect. In this section I want to show some of the problems that can arise from a pure polymorphic approach and introduce Abstract Base Classes, which aim to solve them. I strongly suggest to read [PEP 3119](http://legacy.python.org/dev/peps/pep-3119/) (as for any other PEP) since it contains a deeper and better explanation of the whole matter. Indeed I think that this PEP is so well written that any further explanation is hardly needed. I am however used to write explanations to check how much I understood about the topic, so I am going to try it this time too.
 
@@ -92,15 +92,63 @@ since `isinstance()` does not check the content of the class or its behaviour, i
 
 The problem, thus, may be summed up with the following question: what is the best way to test that an object exposes a given interface? Here, the word _interface_ is used for its natural meaning, without any reference to other programming solutions, which however address the same problem.
 
-A better way to address the problem could be to write inside an attribute of the object the list of interfaces it promises to implement, and to agree that any time we want to test the behaviour of an object we simply have to check the content of this attribute. This is eactly the path followed by Python.
+A better way to address the problem could be to write inside an attribute of the object the list of interfaces it promises to implement, and to agree that any time we want to test the behaviour of an object we simply have to check the content of this attribute. This is exactly the path followed by Python, and it is very important to understand that the whole system is just about a promised behaviour.
 
-The solution proposed through PEP 3119 is, in my opinion, very simple and elegant, and it perfectly fits the nature of Python, where things are usually agreed rather being enforced. Not only, the solution follows the spirit of polymorphism, where information is provided by the object itself and not extracted by the calling code.
+The solution proposed through PEP 3119 is, in my opinion, very simple and elegant, and it perfectly fits the nature of Python, where things are usually agreed rather than being enforced. Not only, the solution follows the spirit of polymorphism, where information is provided by the object itself and not extracted by the calling code.
 
-Basically we recognize that `isinstance()` and `issubclass()` are the best way to give information about the behaviour of the object. Those are, however, plain functions and not methods, so we cannot simply override them into the object.
+In the next sections I am going to try and describe this solution in its main building blocks. The matter is complex so my explanation will lack some details (or even be slightly incorrect). Please refer to the forementioned PEP 3119 for a complete description.
 
-From Python 2.6 `isinstance()` and `issubclass()` first check the class of the object looking for the `__isinstancecheck__()` and `__subclasscheck__()` methods. If it finds them their result is returned, otherwise everything works as usual.
+## Overriding methods
 
-As you can see this solution leaves the object in charge of telling information about itself, even if we check it with an external function and not by directly calling one of its methods. Since the two methods are injected by the metaclass, that is, when the class is being built, this system does not interfere with the usual inheritance mechanism and does not involve multiple inheritance. ******************************* NO NO NO NO, non è una metaclasse, è registrata! ***************************** =( =( =( =( =( =(
+As already described, Python provides two built-ins to inspect objects and classes, which are `isinstance()` and `issubclass()` and it would be desirable that a solution to the inspection problem allows the programmer to go on with using those two functions.
+
+This means that we need to find a way to inject the "behaviour promise" into both classes and instances. This is the reason why metaclasses come in play. If you recall what we said about them in the second issue of this series, metaclasses are the classes used to build classes, which means that they are the preferred way to change the structure of a class, and, in consequence, of its instances.
+
+But `isinstance()` and `issubclass()` are buil-in functions, not object methods, so we cannot simply override them 
+
+
+
+Pay attention that while the first function works on object instances, the second expects a class as a parameter.
+
+
+
+
+Basically we recognize that `isinstance()` and `issubclass()` are the best way to give information about the behaviour of the object. Those are, however, built-in functions and not methods, so we cannot simply override them into the object.
+
+From Python 2.6 `isinstance()` and `issubclass()` first check the class of the object looking for the `__isinstancecheck__()` and `__subclasscheck__()` methods and return their result. If the object does not provide a suitable method everything works as usual. This means that we just have to find a way to inject a custom method into a class and call it a day.
+
+As it turns out, registering is a good way to perform this task. It allows to establish a link between two classes without interferring with the inheritance and method resolution mechanisms.
+
+**** QUESTIONS
+
+1) Why are we using registering instead of plain inheritance? We could inherit from an "abstract" class and obtain the custom methods.
+
+2) What prevents us from using inheritance is a theoretical problem or just an implementation choice? I suspect that there is a theoretical impossibility due to the fact that we would be solving an inheritance downside through inheritance itself. I shall think about it.
+
+3) How does registering work? How are the custom methods injected? How are they defined? abc should be a pure Python library, I can check the actual code.
+
+
+
+Let us briefly discuss the way we can achieve this result before introducing the current Python implementation. We need to inject into a class `C` a custom method (say `__isinstancecheck__()`) taking it from another class `A` (the abstract "interface").
+
+``` python
+class A(object):
+    def __isinstancecheck__([...]):
+        [...]
+
+class C(A):
+    pass
+```
+
+Then, later, an instance `c` of the class `C` may be queried by `isinstance()`, passing as a parameter the class `A`.
+
+
+The `__isinstancecheck__()` method is thus present in every `C` instance and shall be queried by the `isinstance()` function. and return `True` if the instance of `C`
+
+
+
+The simplest solultion is to make the class C inherit from A, so that C will have all the methods of its parent. This way C may receive the `__isinstancecheck__()` method and be correctly analyzed by `isinstance()`. C may also be subclassed and its child classes will also own the same `__isinstancecheck__()` method. This however is somehow against the way we started talking about interfaces and behaviours. We are interested in telling that the object _acts like_ something and enforcing it to _be_ something (through inheritance) is way too strong. Moreover, the case of multiple interfaces is not handled easily, because a class may inherit a method from just one of its ancestors, following specific resolution rules.
+
 
 ## The abc library and collections
 
