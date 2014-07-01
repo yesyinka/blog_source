@@ -98,66 +98,42 @@ The solution proposed through PEP 3119 is, in my opinion, very simple and elegan
 
 In the next sections I am going to try and describe this solution in its main building blocks. The matter is complex so my explanation will lack some details (or even be slightly incorrect). Please refer to the forementioned PEP 3119 for a complete description.
 
-## Overriding methods
+#### The metaclasses way
 
 As already described, Python provides two built-ins to inspect objects and classes, which are `isinstance()` and `issubclass()` and it would be desirable that a solution to the inspection problem allows the programmer to go on with using those two functions.
 
 This means that we need to find a way to inject the "behaviour promise" into both classes and instances. This is the reason why metaclasses come in play. If you recall what we said about them in the second issue of this series, metaclasses are the classes used to build classes, which means that they are the preferred way to change the structure of a class, and, in consequence, of its instances.
 
-But `isinstance()` and `issubclass()` are buil-in functions, not object methods, so we cannot simply override them 
+Another way to do the same job would be to leverage the inheritance mechanism, injecting the behaviour through a dedicated parent class. This solution has many downsides, which I'm am not going to detail. It is enough to say that affecting the class hierarchy may lead to complex situations or subtle bugs. Metaclasses may provide here a different entry point for the introduction of a "virtual base class" (as PEP 3119 specifies, this is not the same concept as in C++).
 
+#### Overriding methods
 
+As said, `isinstance()` and `issubclass()` are buil-in functions, not object methods, so we cannot simply override them providing a different implementation in a given class. So the first part of the solution is to change the behaviour of those two functions to first check if the class or the instance contains a special method, which is `__instancecheck__()` for `isinstance()` and `__subclasscheck__()` for `issubclass()`. So both built-ins try to run the respective special method, reverting to the standard algorithm if it is not present.
 
-Pay attention that while the first function works on object instances, the second expects a class as a parameter.
-
-
-
-
-Basically we recognize that `isinstance()` and `issubclass()` are the best way to give information about the behaviour of the object. Those are, however, built-in functions and not methods, so we cannot simply override them into the object.
-
-From Python 2.6 `isinstance()` and `issubclass()` first check the class of the object looking for the `__isinstancecheck__()` and `__subclasscheck__()` methods and return their result. If the object does not provide a suitable method everything works as usual. This means that we just have to find a way to inject a custom method into a class and call it a day.
-
-As it turns out, registering is a good way to perform this task. It allows to establish a link between two classes without interferring with the inheritance and method resolution mechanisms.
-
-**** QUESTIONS
-
-1) Why are we using registering instead of plain inheritance? We could inherit from an "abstract" class and obtain the custom methods.
-
-2) What prevents us from using inheritance is a theoretical problem or just an implementation choice? I suspect that there is a theoretical impossibility due to the fact that we would be solving an inheritance downside through inheritance itself. I shall think about it.
-
-3) How does registering work? How are the custom methods injected? How are they defined? abc should be a pure Python library, I can check the actual code.
-
-
-
-Let us briefly discuss the way we can achieve this result before introducing the current Python implementation. We need to inject into a class `C` a custom method (say `__isinstancecheck__()`) taking it from another class `A` (the abstract "interface").
+A note about naming. Methods may accept the object they belong to as the first argument, so the two special methods shall have the form
 
 ``` python
-class A(object):
-    def __isinstancecheck__([...]):
-        [...]
-
-class C(A):
-    pass
+def __instancecheck__(cls, inst):
+   [...]
+   
+def __subclasscheck__(cls, sub):
+   [...]
 ```
 
-Then, later, an instance `c` of the class `C` may be queried by `isinstance()`, passing as a parameter the class `A`.
+where `cls` is the class where they are injected, that is the one representing the promised behaviour. The two built-ins, however, have a reversed argument order, where the behaviour comes after the tested object: when you write `isinstance([], list)` you want to check if the `[]` instance has the `list` behaviour. This is the reason behind the name choice: just calling the methods `__isinstance__()` and `__issubclass__()` and passing arguments in a reversed order would have been confusing.
 
+#### The ABC Support Framework
 
-The `__isinstancecheck__()` method is thus present in every `C` instance and shall be queried by the `isinstance()` function. and return `True` if the instance of `C`
+The proposed solution is thus called Abstract Base Classes, as it provides a way to attach to a concrete class a virtual class with the only purpose of signaling a promised behaviour to anyone inspecting it with `isinstance()` or `issubclass()`.
 
+To help programmers implement Abstract Base Classes, the standard library has been given an `abc` module, thet contains the `ABCMeta` class (and other facilities). This class is the one that implements `__instancecheck__()` and `__subclasscheck__()` and shall be used as a metaclass to augment a standard class. This latter will then be able to register other classes as implementation of its behaviour.
 
-
-The simplest solultion is to make the class C inherit from A, so that C will have all the methods of its parent. This way C may receive the `__isinstancecheck__()` method and be correctly analyzed by `isinstance()`. C may also be subclassed and its child classes will also own the same `__isinstancecheck__()` method. This however is somehow against the way we started talking about interfaces and behaviours. We are interested in telling that the object _acts like_ something and enforcing it to _be_ something (through inheritance) is way too strong. Moreover, the case of multiple interfaces is not handled easily, because a class may inherit a method from just one of its ancestors, following specific resolution rules.
-
-
-## The abc library and collections
-
-The [abc](https://docs.python.org/2/library/abc.html) module is the direct implementation of PEP 3119 and there you can find the `ABCMeta` class that can be used as a metaclass to build an Abstract Base Class. The resulting object has a `register()` method that accepts any class and links this latter to the Abstract base Class. Let us consider the official example taken from the module documentation
+Sounds complex? An example may clarify the whole matter. The one from the official documentation is rather simple:
 
 ``` python
 from abc import ABCMeta
 
-class MyABC(object):
+class MyABC:
     __metaclass__ = ABCMeta
 
 MyABC.register(tuple)
@@ -166,9 +142,64 @@ assert issubclass(tuple, MyABC)
 assert isinstance((), MyABC)
 ```
 
-First of all we define a new `MyABC` class that will be our Abstract Base Class. This means that it may define a "behaviour" of another class, changing the way `isinstance()` and `issubclass()` work
+Here, the `MyABC` class is provided the `ABCMeta` metaclass. This puts the two `__isinstancecheck__()` and `__subclasscheck__()` methods inside `MyABC` so that you can use them like
 
-library is a collection of metaclasses that provide some "behaviours", which we could be interested in. 
+``` python
+d = {'a': 1}
+
+MyABC.__isinstancecheck__(d)
+```
+
+that returns `True` if the dictionary `d` is an instance of the Abstract Base Class `MyABC`. In other words if the dictionary `d` implements the behaviour promised by the `MyABC` class.
+
+After the definition of `MyABC` we need a way to signal that a given class is an instance of the Abstract Base Class and this happens through the `register()` method, provided by the `ABCMeta` metaclass. Calling `MyABC.register(tuple)` we record inside `MyABC` the fact that the `tuple` class shall be identified as a subclass of `MyABC` itself. This is analogous to saying that `tuple` inherits from `MyABC` but not wuite the same. As already said registering a class in an Abstract Base Class with `register()` does not affect the class hierarchy.
+
+## Collections
+
+In addition to the `abc` module, the standard library now provides a `collections` module that, besides some interesting container datatypes like `namedtuple` and `OrderedDict`, supplies a remarkable number of ABCs that represent container behaviours. An example is `collections.Sized` that pledges that the registered class will contain the `__len__()` method, enabling the code to pass it to the `len()` builtin. Let us exemplify that:
+
+``` python
+>>> class Snake(object):
+...   def __init__(self, meters):
+...     self.len = meters
+...   def __len__(self):
+...     return self.len
+... 
+>>> 
+>>> s = Snake(5)
+>>> len(s)
+5
+>>> 
+>>> import collections
+>>> collections.Sized.register(Snake)
+>>> 
+>>> issubclass(Snake, collections.Sized)
+True
+```
+
+If not stressed enough, ABCs assure that a given behaviour will be implemented but there is no actual check of this. For example:
+
+``` python
+>>> class FakeSnake(object):
+...   def __init__(self, meters):
+...     pass
+... 
+>>> 
+>>> collections.Sized.register(FakeSnake)
+>>> issubclass(FakeSnake, collections.Sized)
+True
+>>> f = FakeSnake(6)
+>>> len(f)
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+TypeError: object of type 'FakeSnake' has no len()
+```
+
+Remember that ABCs are classes just like any other standard Python class, which means that they can be inherited.
+
+TODO: Abstract methods?????????????????????? Decorator and friends...
+
+
 
 ## Slots
 
