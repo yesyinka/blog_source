@@ -147,9 +147,8 @@ assert isinstance((), MyABC)
 Here, the `MyABC` class is provided the `ABCMeta` metaclass. This puts the two `__isinstancecheck__()` and `__subclasscheck__()` methods inside `MyABC` so that you can use them like
 
 ``` python
-d = {'a': 1}
-
-MyABC.__isinstancecheck__(d)
+>>> d = {'a': 1}
+>>> MyABC.__isinstancecheck__(d)
 ```
 
 that returns `True` if the dictionary `d` is an instance of the Abstract Base Class `MyABC`. In other words if the dictionary `d` implements the behaviour promised by the `MyABC` class.
@@ -222,7 +221,7 @@ class AbstractCalculator(object):
 
 This is a class with `ABCMeta` as its metaclass, which makes `AbstractCalculator` an Abstract Base Class. The two `sum()` and `multiply()` methods are decorated with `@abstractmethod`, that raises an exception when we try to instance the class:
 
-``` ptyhon
+``` python
 >>> ac = AbstractCalculator()
 Traceback (most recent call last):
   File "<stdin>", line 1, in <module>
@@ -271,23 +270,23 @@ Python executes under the hood the following code
 
 where any parameter passed to the class is obviously passed to `__call__()`.
 
-For standard classes the `__call__` method is provided by `type`, which is the standard metaclass. So when we write
+For standard classes the `__call__()` method is provided by `type`, which is the standard metaclass. So when we write
 
 ``` python
-b = int()
+>>> b = int()
 ```
 
 python actually executes this code
 
 ``` python
-b = int.__class__.__call__(int)
+>>> b = int.__class__.__call__(int)
 ```
 
-This standard implementation of `__call__` runs the constructor mechanism as depicted in the second post, executing `__new__()` and `__init()__` to get a new instance and initialize it. 
+This standard implementation of `__call__()` runs the constructor mechanism as depicted in the second post, executing `__new__()` and `__init__()` to get a new instance and initialize it. 
 
 The definition of callable object is very powerful, since it allows to flatten the difference between classes and functions. In OOP many times the two are presented as two completely separated concepts, but in Python it is usually more convenient to talk about callables. Here, Python shows its polymorphic nature at its maximum: if I expect a function and what is given to me is something that acts like a function everything is fine. Functions, however, are themselves simple callable objects. Remember: in Python everything is an object.
 
-Since `__call__` is a method we can redefine it in any class, let us try and see what happens
+Since `__call__()` is a method we can redefine it in any class, let us try and see what happens
 
 ``` python
 class CallMe(object):
