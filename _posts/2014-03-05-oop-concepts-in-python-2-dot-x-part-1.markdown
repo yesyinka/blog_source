@@ -200,7 +200,7 @@ You can create as many instances as needed and they are completely unrelated eac
 
 #### Recap
 
-Objects are described by a _class_, which can generate one or more _instances_, unrelated each other. A class contains _methods_, which are functions, and they accept at least one argument called `self`, which is the actual instance on which the method has been called. A special method, `__init__()` deals with the initialization of the object, seting the initial value of the _attributes_.
+Objects are described by a _class_, which can generate one or more _instances_, unrelated each other. A class contains _methods_, which are functions, and they accept at least one argument called `self`, which is the actual instance on which the method has been called. A special method, `__init__()` deals with the initialization of the object, setting the initial value of the _attributes_.
 
 ## Python Classes Strike Again
 
