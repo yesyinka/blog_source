@@ -14,6 +14,8 @@ This post will continue the discussion about metaclasses, introducing Abstract B
 
 _This post refers to the internals of Python 2.x - please note that Python 3.x changes (improves!) some of the features shown here. As soon as I feel comfortable with my Python 3 knowledge, I will post an update._
 
+<!--more-->
+
 ## The Inspection Club
 
 As you know, Python leverages polymorphism at its maximum by dealing only with generic references to objects. This makes OOP not an addition to the language but part of its structure from the ground up. Moreover, Python pushes the EAFP appoach, which tries to avoid direct inspection of objects as much as possible.
