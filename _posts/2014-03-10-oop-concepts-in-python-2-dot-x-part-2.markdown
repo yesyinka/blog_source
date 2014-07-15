@@ -442,6 +442,9 @@ Feel free to use [the blog Google+ page](https://plus.google.com/u/0/b/110554719
 ## Previous articles
 
 * [OOP Concepts in Python 2.x - Part 1](/blog/2014/03/05/oop-concepts-in-python-2-dot-x-part-1)
+
+## Next articles
+
 * [OOP Concepts in Python 2.x - Part 3](/blog/2014/07/04/oop-concepts-in-python-2-dot-x-part-3)
 
 
