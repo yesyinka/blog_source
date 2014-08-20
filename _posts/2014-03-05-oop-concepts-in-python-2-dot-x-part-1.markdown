@@ -3,7 +3,7 @@ layout: post
 title: "OOP concepts in Python 2.x - Part 1"
 date: 2014-03-05 12:46:06 +0100
 comments: false
-categories: [python, oop]
+categories: [python2, python, oop]
 ---
 
 ## Abstract
@@ -126,7 +126,7 @@ For example, one of the built-in classes of Python is `int`, which represents an
 
 As you can see, the built-in function `type()` returns the content of the _magic attribute_ `__class__` (magic here means that its value is managed by Python itself offstage). The type of the variable `a`, or its class, is `int`. (This is a very inaccurate description of this rather complex topic, so remember that we are just scratching the surface).
 
-Once you have a class you can _instantiate_ it to get a concrete object (an _instance_) of that type, i.e. an objects built according to the structure of that class. The Python syntax to instantiate a class is the same of a function call
+Once you have a class you can _instantiate_ it to get a concrete object (an _instance_) of that type, i.e. an object built according to the structure of that class. The Python syntax to instantiate a class is the same of a function call
 
 ``` python
 >>> b = int()
@@ -701,7 +701,7 @@ There is much more that can be said about the Python implementation of objects, 
 
 ## Movie Trivia
 
-If you are wondering why section titles are so weird, chances are that you missed some good movies to watch while you are not coding =). The movies are: _Back to the Future_, _What About Bob?_, _Wargames_, _The Empire Strikes Back_, _Raiders of the Lost Ark_, _Revenge of the Nerds_, _When Harry Met Sally_, _Apocalypse Now_, _Enter the Dragon_.
+If you are wondering why section titles are so weird, chances are that you missed some good movies to watch while you are not coding =). The movies are: _Back to the Future_, _What About Bob?_, _Wargames_, _The Empire Strikes Back_, _Raiders of the Lost Ark_, _Revenge of the Nerds_, _When Harry Met Sally_, _The Cannonball Run_, _Apocalypse Now_, _Enter the Dragon_.
 
 ## Sources
 
