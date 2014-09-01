@@ -15,7 +15,7 @@ So one of the most interesting aspects of OOP languages is to understand how the
 
 This series of posts wants to introduce the reader to the Python 3 implementation of Object Oriented Programming concepts. The content of this and the following posts will not be completely different from that of the previous "OOP Concepts in Python 2.x" series, however. The reason is that while some of the internal structures change a lot, the global philosophy doesn't, being Python 3 an _evolution_ of Python 2 and not a new language.
 
-So I chose to split the previous series and to adapt the content to Python 3 instead of posting a mere list of corrections. I find this way to be more useful for new readers, that otherwise sould be forced to read the previoous series.
+So I chose to split the previous series and to adapt the content to Python 3 instead of posting a mere list of corrections. I find this way to be more useful for new readers, that otherwise sould be forced to read the previous series.
 
 
 ### Print
