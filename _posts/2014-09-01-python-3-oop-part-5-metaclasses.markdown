@@ -132,7 +132,7 @@ Metaclasses are a very powerful programming tool and leveraging them you can ach
 
 ## Coming to Instance
 
-Before introducing you to a very smart use of metaclasses by talking about Abstract Base Classes (read: to save some topics for the next part of this series), I want to dive into the object creation procedure in Python, that is what happens when you instance a class. In the first post this procedure was described only partially, by looking at the `__init_()` method.
+Before introducing you to a very smart use of metaclasses by talking about Abstract Base Classes (read: to save some topics for the next part of this series), I want to dive into the object creation procedure in Python, that is what happens when you instance a class. In the first post this procedure was described only partially, by looking at the `__init__()` method.
 
 In the first post I recalled the object-oriented concept of _constructor_, which is a special method of the class that is automatically called when the instance is created. The class may also define a destructor, which is called when the object is destroyed. In languages without a garbage collection mechanism such as C++ the destructor shall be carefully designed. In Python the destructor may be defined through the `__del__()` method, but it is hardly used.
 
