@@ -48,7 +48,7 @@ class FakeList(object):
         pass
     
     def __getattr__(self, name):
-        if name in ['append', 'count', 'extend', 'index`, 'insert', ...]:
+        if name in ['append', 'count', 'extend', 'index', 'insert', ...]:
             return self.fakemethod
 ```
 
@@ -112,7 +112,7 @@ Another way to do the same job would be to leverage the inheritance mechanism, i
 
 #### Overriding Places
 
-As said, `isinstance()` and `issubclass()` are buil-in functions, not object methods, so we cannot simply override them providing a different implementation in a given class. So the first part of the solution is to change the behaviour of those two functions to first check if the class or the instance contains a special method, which is `__instancecheck__()` for `isinstance()` and `__subclasscheck__()` for `issubclass()`. So both built-ins try to run the respective special method, reverting to the standard algorithm if it is not present.
+As said, `isinstance()` and `issubclass()` are built-in functions, not object methods, so we cannot simply override them providing a different implementation in a given class. So the first part of the solution is to change the behaviour of those two functions to first check if the class or the instance contain a special method, which is `__instancecheck__()` for `isinstance()` and `__subclasscheck__()` for `issubclass()`. So both built-ins try to run the respective special method, reverting to the standard algorithm if it is not present.
 
 A note about naming. Methods must accept the object they belong to as the first argument, so the two special methods shall have the form
 
@@ -146,11 +146,11 @@ assert issubclass(tuple, MyABC)
 assert isinstance((), MyABC)
 ```
 
-Here, the `MyABC` class is provided the `ABCMeta` metaclass. This puts the two `__isinstancecheck__()` and `__subclasscheck__()` methods inside `MyABC` so that you can use them like
+Here, the `MyABC` class is provided the `ABCMeta` metaclass. This puts the two `__instancecheck__()` and `__subclasscheck__()` behaviours inside `MyABC`. Please note however that those methods are not actually put into the object so that you can use them like
 
 ``` python
 >>> d = {'a': 1}
->>> MyABC.__isinstancecheck__(d)
+>>> MyABC.__metaclass__.__instancecheck__(MyABC, d)
 ```
 
 that returns `True` if the dictionary `d` is an instance of the Abstract Base Class `MyABC`. In other words if the dictionary `d` implements the behaviour promised by the `MyABC` class.
@@ -314,7 +314,7 @@ There is still a lot to say about Python OOP. Just to name one topic, functions 
 
 ## Movie Trivia
 
-Section titles of this issue come from the following movies: _The Breakfast Club_, _E.T. the Extra-Terrestrial_, _Who Framed Roger Rabbit_, _Trading Places_, _This is Spial Tap_, _Little Shop of Horrors_, _The Naked Gun_, _A Fish Called Wanda_.
+Section titles of this issue come from the following movies: _The Breakfast Club_, _E.T. the Extra-Terrestrial_, _Who Framed Roger Rabbit_, _Trading Places_, _This is Spinal Tap_, _Little Shop of Horrors_, _The Naked Gun_, _A Fish Called Wanda_.
 
 ## Sources
 
