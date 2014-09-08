@@ -21,9 +21,13 @@ This blog grows out of my desire to publish again a series of old articles on co
 
 Here you will however find a large degree of topics, since many are my interests in the field of computer science (and elsewhere too, but you will not find them here). Cats are curious animals: so the title implies this is blog about curiosity in the digital world.
 
-{% pullquote %}
-I strongly believe that learning is not a matter of procedures: that is just the surface of the real thing. {" Learning is understanding and understanding is asking why and how."} Thus on this blog I would like to avoid tutorials and howtos (if possible :-). I'd prefer to dive into topics, and the material you will find here is written directly by me, even if information comes obviously from the work of other people.
-{% endpullquote %}
+## License
+
+The content of this blog is the result of my studies and investigations into different computer science topics. Nothing could ever have been written, however, without the effort of many other peoples who shared their knowledge with me, mostly through free resources starting from BBSs during the 80s, sites and blogs, as well as the wide availability of source code.
+
+Thus, all the entries in this blog, all posts and code snippets, are released under [Creative Commons Attribution-ShareAlike 4.0 International (CC BY-SA 4.0)](http://creativecommons.org/licenses/by-sa/4.0/). I strongly believe that shared knowledge, in every field, is the only way to achieve real progress.
+
+_“We are like dwarfs standing on the shoulders of giants, so that we can see more than they, and things at a greater distance; not by virtue of any sharpness of sight on our part, or any physical distinction, but because we are carried high and raised up by their giant size.”_ (Bernard of Chartres)
 
 ## About errors
 
