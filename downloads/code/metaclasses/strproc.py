@@ -44,6 +44,8 @@ class MyStringProcessor(StringProcessor):
 if __name__ == '__main__':
     msp = MyStringProcessor()
     msp._filters
-    s = msp("a test  string")
-    print ("STRING", s)
+    input_string = "a test  string"
+    output_string = msp(input_string)
+    print ("INPUT STRING:", input_string)
+    print ("OUTPUT STRING:", output_string)
 

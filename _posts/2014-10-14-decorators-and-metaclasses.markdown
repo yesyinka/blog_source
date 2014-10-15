@@ -1,52 +1,18 @@
 ---
 layout: post
-title: "Decorators and metaclasses"
+title: "Advanced use of Python decorators and metaclasses"
 date: 2014-10-14 09:43:08 +0200
 comments: true
 categories: [python3, python, oop]
 ---
 
-## AAA
+## Abstract
 
-Python offers a rich and complex implementation of object-oriented concepts. Among them, the most importan points I want to highlight are:
+While introducing people to Python metaclasses I realized that sometimes the big problem of the most powerful Python features is that programmers do not perceive how they may simplify their usual tasks. Therefore, features like metaclasses are considered a fancy but rather unuseful addition to a standard OOP language, instead of a real game changer.
 
-1. Everything in Python is an object, also functions and classes.
-2. The use of references and delegation makes the language polymorphic by design.
-3. The use of __getattr__() may blend the separation between the two delegation techniques, inheritance and composition.
-4. Metaclasses provide an extended implementation of the constructor concept, giving the programmer a way to customize how the class itself is created.
+This post wants to show how to use metaclasses and decorators to create a powerful class that can be inherited and customized by easily adding decorated methods.
 
-Let me quickly review a couple of possibilities that these language features open.
-
-#### Sofcoding to the maximum
-
-Sofcoding is the programming technique in which a value is passed to the program at runtime from outside the program itself, as opposed to hardcoding, that embeds values directly into the code.
-
-The choice between hard- and softcoding is one of the big issues of software design as both provide advantages and drawback, so it is a very wide topic, outside the purpose of this post.
-
-Speaking about softcoding advantages, however, one of the possibilities given by the Python feature that "everything is an object" is that of passing classes and functions as arguments to other classes and functions. In other words, we may build a function that expects another function as argument and use this latter inside to code of the former.
-
-A quick example comes from the `list` built-in class, and specifically from its `sort()` method. This latter accepts a function as its only argument, which is used to compare the elements in the list, not differently from what happens in C with the `qsort()` function of the standard library.
-
-Thanks to the references mechanism, functions always accept "generic" objects, and being functions just callable objects you may also give that function a class, provided that it contains a `__call__()` method.
-
-Not only, we may also pass a class to another class that will later instantiate it, to easily implement the Abstract Factory design pattern.
-
-#### Parametrized inheritance
-
-A class may be composed with a class passed as argument at instantiation time, but the use of `__getattr__()` allows the external class to delegate some or all of its tasks to the contained one, just like the two were part of an inheritance tree. A quick example:
-
-``` python
-class SoftDelegation:
-    def __init__(self, _class, *args, **kwds):
-        self.delegate = _class(*args, **kwds)
-
-    def __getattr__(self, attr):
-        return getattr(self.delegate, attr)
-```
-
-The `SoftDelegation` class is customizable at runtime, since it accepts a class that is instanced and stored as `self.delegate`. At the same time, the `__getattr__()` function redirects all attribute lookup to this latter, making the `SoftDelegation` class actually "inherit" from it.
-
-Please note that this is not completely true, as some special methods may bypass `__getattr__()`. As an example, issuing a `for` loop on an object that delegates to a `list` doesn't work, because the `__iter__()` method is not retrieved through the standard machinery. In most cases, however, such a technique provides you a good approximation of "parametrized inheritance".
+<!--more-->
 
 ## Metaclasses and decorators: a match made in space
 
@@ -81,7 +47,7 @@ msp = MyStringProcessor()
 
 The module defines a `StringProcessor` class that I can inherit and customize adding methods that have a standard signature `(self, str)` and are decorated with `@stringfilter`. This class can later be instatiated and the instance used to directly process a string and return the result. Internally the class automatically executes all the decorated methods in succession. I also would like the class to obey the order I defined the filters: first defined, first executed.
 
-## Metaclasses in action
+## The Hitchhiker's Guide To Metaclasses
 
 How can metaclasses help to reach this target?
 
@@ -111,13 +77,13 @@ The full metaclass is then
 
 Now we have to find a way to mark all filter methods with a `_filter` attribute.
 
-## Dectorators in action
+## I, Decorator
 
 Decorators are, as the name suggests, the best way to augment functions or methods. Remember that a decorator is basically a callable that accepts another callable, processes it, and returns it.
 
 As for metaclasses, decorators are a very powerful and expressive way to implement advanced behaviours in our code. In this case we may easily use them to add an attribute to our decorated methods, one of the most basic tasks for a decorator.
 
-I decided to implement the `@stringfilter` decorator as a function. The reason is that for decorators without arguments the behaviour of a decorator class is different from that of a decorator with arguments and and explanation of that matter would be overkill now. In a later section of this post you will find all the gory details.
+I decided to implement the `@stringfilter` decorator as a function. The reason is that for decorators without arguments the behaviour of a decorator class is different from that of a decorator with arguments and and explanation of that matter would be overkill now. In a future post on dectorators you will find all the gory details, but in the meantime you may check the three Bruce Eckel posts listed in the references section.
 
 The decorator is very simple:
 
@@ -125,3 +91,55 @@ The decorator is very simple:
 
 ```
 
+As you can see the decorator just creates an attribute called `_filter` into the function (remember that functions are objects). The actual value of this attribute is not important in this case, since we are just interested in telling apart class members that contain it.
+
+## Do Functions Dream of Callable Objects?
+
+We are used to think about functions as special language components that may be "called" or executed. In Python functions are objects, just like everything else, and the feature that allows them to be executed comes from the presence of the `__call__()` method. Python is polymorphic by design and based on delegation, so (almost) everything that happens in the code relies on some features of the target object.
+
+The result of this generalization is that every object that contains the `__call__()` method may be executed like a function, and gains the name of _callable object_.
+
+The `StringProcessor` class shall thus contain this method and perform there the string processing with all the contained filters. The code is
+
+``` python
+```
+
+A quick review of this simple function shows that is accepts the string as an argument, stores it in a local variable and loops over the filters, executing them on the local string, that is on the result of the previous filter.
+
+The filter functions are extracted from the `self._filters` list, that is compiled by the `FilterClass` metaclass we already discussed.
+
+What we need to do now is to inherit from `StringProcessor` to get the metaclass machinery and the `__call__()` method, and to define as many methods as needed, decorating them with the `@stringfilter` decorator.
+
+Note that, thanks to the decorator and the metaclass, you may have other methods in your class that do not interfere with the string processing as long as they are not decorated with the decorator under consideration.
+
+## Book Trivia
+
+Section titles come from the following books: _The Left Hand of Darkness - Ursula K. Le Guin (1969)_, _Ender's Game - Orson Scott Card (1985)_ , _The Amber Chronicles (1970-1991)_, _A Match Made in Space - George McFly (1985)_, _The Hitchhiker's Guide To the Galaxy - Douglas Adams (1979)_, _I, Robot - Isaac Asimov (1950)_, _Do Androids Dream of Electric Sheep? - Philip K. Dick (1968)_.
+
+## Source code
+
+The [strproc.py](/downloads/code/metaclasses/strproc.py) file contains the full source code used in this post.
+
+## Online resources
+
+The following resources may be useful.
+
+#### Metaclasses
+
+* Python 3 official documentation: [customizing class creation](https://docs.python.org/3.4/reference/datamodel.html#customizing-class-creation).
+* Python 3 OOP Part 5 - Metaclasses [on this blog](/blog/2014/09/01/python-3-oop-part-5-metaclasses).
+* [Metaprogramming examples and patterns](http://python-3-patterns-idioms-test.readthedocs.org/en/latest/Metaprogramming.html) (still using some Python 2 code but useful).
+
+#### Decorators
+
+* [Bruce Eckel](http://www.artima.com/weblogs/viewpost.jsp?thread=240808) on decorators (series of three posts, 6 years old but still valid).
+* [A different approach](http://simeonfranklin.com/blog/2012/jul/1/python-decorators-in-12-steps/) on explaining decorators.
+* [Jeff Knupp](http://www.jeffknupp.com/blog/2013/11/29/improve-your-python-decorators-explained/) goes deep inside the concept of function.
+
+#### Callable objects
+
+* [Rafe Kettler](http://www.rafekettler.com/magicmethods.html#callable) provides a very detaild guide on Python "magic" methods.
+
+## Feedback
+
+Feel free to use [the blog Google+ page](https://plus.google.com/u/0/b/110554719587236016835/110554719587236016835/posts) to comment the post. The [GitHub issues](https://github.com/lgiordani/lgiordani.github.com/issues) page is the best place to submit corrections.
