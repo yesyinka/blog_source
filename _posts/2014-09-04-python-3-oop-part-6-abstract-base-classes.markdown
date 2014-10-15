@@ -3,7 +3,7 @@ layout: post
 title: "Python 3 OOP Part 6 - Abstract Base Classes"
 date: 2014-09-04 10:00:00 +0200
 comments: false
-categories: [python3, python, oop]
+categories: [python3, python, oop, metaclasses]
 ---
 
 <!--more-->
