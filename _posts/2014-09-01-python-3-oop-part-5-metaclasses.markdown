@@ -3,7 +3,7 @@ layout: post
 title: "Python 3 OOP Part 5 - Metaclasses"
 date: 2014-09-01 15:00:00 +0200
 comments: false
-categories: [python3, python, oop]
+categories: [python3, python, oop, metaclasses]
 ---
 
 <!--more-->
