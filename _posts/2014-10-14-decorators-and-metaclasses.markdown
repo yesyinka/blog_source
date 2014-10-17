@@ -200,7 +200,7 @@ The following resources may be useful.
 
 ## Updates
 
-2014-10-17: (Matthew Dillon)[https://github.com/thermokarst] spotted two typos. Thank you!
+2014-10-17: (Matthew Dillon)[https://github.com/thermokarst] and (Damon McDougall)[https://github.com/dmcdougall] spotted two typos. Thank you!
 
 2014-10-17: (ionelmc)[http://www.reddit.com/user/ionelmc] suggested two corrections (here)[http://www.reddit.com/r/Python/comments/2jbi2f/advanced_use_of_python_decorators_and_metaclasses/cla696y] and (here)[http://www.reddit.com/r/Python/comments/2jbi2f/advanced_use_of_python_decorators_and_metaclasses/cla6o77]. Both are correct so I implemented them. The second one is more about style, but fits well the introductory purpose of the post. Thanks!
 
