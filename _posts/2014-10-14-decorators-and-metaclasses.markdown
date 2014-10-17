@@ -42,7 +42,7 @@ msp = MyStringProcessor()
 "A test string" == msp("a test  string")
 ```
 
-The module defines a `StringProcessor` class that I can inherit and customize adding methods that have a standard signature `(self, str)` and are decorated with `@stringfilter`. This class can later be instatiated and the instance used to directly process a string and return the result. Internally the class automatically executes all the decorated methods in succession. I also would like the class to obey the order I defined the filters: first defined, first executed.
+The module defines a `StringProcessor` class that I can inherit and customize adding methods that have a standard signature `(self, str)` and are decorated with `@stringfilter`. This class can later be instantiated and the instance used to directly process a string and return the result. Internally the class automatically executes all the decorated methods in succession. I also would like the class to obey the order I defined the filters: first defined, first executed.
 
 ## The Hitchhiker's Guide To Metaclasses
 
@@ -58,14 +58,13 @@ We are however interested in preserving the order of definition and a Python dic
 
 ```python
 class FilterClass(type):
-    @classmethod
-    def __prepare__(metacls, name, bases, **kwds):
+    def __prepare__(name, bases, **kwds):
         return collections.OrderedDict()
 ```
 
-This way, when the class will be created, an `OrderedDict` will be used to host the namespace, allowing us to keep the definition order. Please note that the signature `__prepare__(metacls, name, bases, **kwds)` and the `@classmethod` decorator are enforced by the language.
+This way, when the class will be created, an `OrderedDict` will be used to host the namespace, allowing us to keep the definition order. Please note that the signature `__prepare__(name, bases, **kwds)` is enforced by the language. If you want the method to get the metaclass as a first argument (because the code of the method needs it) you have to change the signature to `__prepare__(metacls, name, bases, **kwds)` and decorate it with `@classmethod`.
 
-The second function we want to define in our metaclass is `__new__`. Just like happens for the instantiation of classes, this method is invoked by Python to get a new instance of the metaclass, and is run before `__init__`. Its signature has to be `__new__(cls, name, bases, namespace, **kwds)` and the result shall be an instance of the metaclass. As for its normal class counterpart (after all a metaclass is a class), `__new__()` usually wraps the same method of the parent class, `type` in this case, adding its own customizations.
+The second function we want to define in our metaclass is `__new__`. Just like happens for the instantiation of classes, this method is invoked by Python to get a new instance of the metaclass, and is run before `__init__`. Its signature has to be `__new__(metacls, name, bases, namespace, **kwds)` and the result shall be an instance of the metaclass. As for its normal class counterpart (after all a metaclass is a class), `__new__()` usually wraps the same method of the parent class, `type` in this case, adding its own customizations.
 
 The customization we need is the creation of a list of methods that are marked in some way (the decorated filters). Say for simplicity's sake that the decorated methods have an attribute `_filter`.
 
@@ -74,11 +73,11 @@ The full metaclass is then
 ```python
 class FilterClass(type):
     @classmethod
-    def __prepare__(metacls, name, bases, **kwds):
+    def __prepare__(name, bases, **kwds):
         return collections.OrderedDict()
 
-    def __new__(cls, name, bases, namespace, **kwds):
-        result = type.__new__(cls, name, bases, dict(namespace))
+    def __new__(metacls, name, bases, namespace, **kwds):
+        result = type.__new__(metacls, name, bases, dict(namespace))
         result._filters = [
             value for value in namespace.values() if hasattr(value, '_filter')]
         return result
@@ -165,7 +164,11 @@ That's it!
 
 ## Final words
 
-There are onviously other ways to accomplish the same task, and this post wanted just to give a practical example of what metaclasses are good for, and why I think that they should be part of any Python programmer's arsenal.
+There are obviously other ways to accomplish the same task, and this post wanted just to give a practical example of what metaclasses are good for, and why I think that they should be part of any Python programmer's arsenal.
+
+[Update] Some developers (on Reddit)[http://www.reddit.com/r/Python/comments/2jbi2f/advanced_use_of_python_decorators_and_metaclasses/] and Linkedin raised objections to the content of the post mainly about the fact that the example may be perfectly implemented without metaclasses and about the dangerous nature of metaclasses. Since I try to learn from everyone, I thank them for their suggestions.
+
+It is especially interesting to know that some developers consider the use of metaclasses a risky business, because they hide a lot of the structure of the class and the underlying machinery. This is true, so (as you should do for other technologies), think carefully about the reasons that drive you to use metaclasses, and be sure you know them well.
 
 ## Book Trivia
 
@@ -194,6 +197,12 @@ The following resources may be useful.
 #### Callable objects
 
 * [Rafe Kettler](http://www.rafekettler.com/magicmethods.html#callable) provides a very detaild guide on Python "magic" methods.
+
+## Updates
+
+2014-10-17: (Matthew Dillon)[https://github.com/thermokarst] spotted two typos. Thank you!
+
+2014-10-17: (ionelmc)[http://www.reddit.com/user/ionelmc] suggested two corrections (here)[http://www.reddit.com/r/Python/comments/2jbi2f/advanced_use_of_python_decorators_and_metaclasses/cla696y] and (here)[http://www.reddit.com/r/Python/comments/2jbi2f/advanced_use_of_python_decorators_and_metaclasses/cla6o77]. Both are correct so I implemented them. The second one is more about style, but fits well the introductory purpose of the post. Thanks!
 
 ## Feedback
 
