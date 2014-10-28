@@ -39,7 +39,7 @@ PAGINATION_PATTERNS = (
 STATIC_PATHS = ['images', 'code', 'extra/CNAME']
 EXTRA_PATH_METADATA = {'extra/CNAME': {'path': 'CNAME'},}
 
-THEME = "themes/pelican-bootstrap3"
+THEME = "pelican-themes/pelican-bootstrap3"
 CC_LICENSE = 'CC-BY-SA'
 #SHOW_ARTICLE_AUTHOR = True
 BOOTSTRAP_THEME = 'spacelab'
