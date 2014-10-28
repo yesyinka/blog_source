@@ -33,7 +33,7 @@ Generators, indeed, through the `yield` statement implement this very behaviour,
 
 Let’s look at a simple implementation of such a system. First of all we need a `MicroThread` object, i.e. an object that can run simultaneously with other similar objects, but in a cooperative way.
 
-```python
+``` python
 class MicroThread(object):
 	def main(self):
 		while 1:
@@ -44,7 +44,7 @@ An instance of this object exposes a `main()` method that, when called, returns 
 
 The object can be directly tested
 
-```bash
+``` bash
 >>> mt = MicroThread()
 >>> g = mt.main()
 >>> g
@@ -74,7 +74,7 @@ class MicroThread(object):
 
 Such changes let us inherit the class and extend it simply by overriding the `create()` and `step()` methods; the first is called as soon as `main()` is called, acting as a delayed initializer, while the second is executed at each call of `next()`, just before freezing the code with `yield`. Pay attention that since `create()` is called inside the generator function, you have to call `next()` once to run it after the genrator has been created. So the standard workflow with this object is
 
-```python
+``` python
 # Instance the object
 mt = MicroThread()
  
@@ -98,7 +98,7 @@ Now we need a scheduler, i.e. the system component that manages running tasks. W
 
 The core of the scheduler will be something like the following:
 
-```python
+``` python
 for thread in active_microthreads:
 	try:
 		thread.next()
@@ -173,7 +173,7 @@ ms.run()
 
 Here the `TestMicroThread` is a microthread but the `step()` method was reimplemented to print a number and wait 1 second. Three microthreads are instanced and added to the scheduler and the `run()` method of the scheduler is executed. Not surprisingly the result is the following
 
-```bash
+``` bash
 $ python test_scheduler.py
 Number: 1
 Number: 2

@@ -16,7 +16,7 @@ The first step into the most intimate secrets of Python objects comes from two c
 
 First of all recall that in Python _everything is an object_, that is everything inherits from `object`. Thus, `object` seems to be the deepest thing you can find digging into Python variables. Let's check this
 
-``` python
+``` pycon
 >>> a = 5
 >>> type(a)
 <class 'int'>
@@ -30,7 +30,7 @@ First of all recall that in Python _everything is an object_, that is everything
 
 The variable `a` is an instance of the `int` class, and this latter inherits from `object`, which inherits from nothing. This demonstrates that `object` is at the top of the class hierarchy. However, as you can see, both `int` and `object` are called _classes_ (`<class 'int'>`, `<class 'object'>`). Indeed, while `a` is an instance of the `int` class, `int` itself is an instance of another class, _a class that is instanced to build classes_
 
-``` python
+``` pycon
 >>> type(a)
 <class 'int'>
 >>> type(int)
@@ -43,7 +43,7 @@ The variable `a` is an instance of the `int` class, and this latter inherits fro
 
 Since in Python everything is an object, everything is the instance of a class, even classes. Well, `type` is the class that is instanced to get classes. So remember this: `object` is the base of every object, `type` is the class of every type. Sounds puzzling? It is not your fault, don't worry. However, just to strike you with the finishing move, this is what Python is built on
 
-``` python
+``` pycon
 >>> type(object)
 <class 'type'>
 >>> type.__bases__
@@ -56,7 +56,7 @@ Jokes apart, at the very base of Python type system there are two things, `objec
 
 When you think you grasped the `type`/`object` matter read this and start thinking again
 
-``` python
+``` pycon
 >>> type(type)
 <class 'type'>
 ```
@@ -71,7 +71,7 @@ So for example you know that a class may be instanced, i.e. it can be called and
 
 The point of exposing this structure of Python objects is that you may change the way classes are built. As you know, `type` is an object, so it can be subclassed just like any other class. Once you get a subclass of `type` you need to instruct your class to use it as the metaclass instead of type, and you can do this by passing it as the `metaclass` keyword argument in the class definition.
 
-``` python
+``` pycon
 >>> class MyType(type):
 ...  pass
 ...
@@ -110,7 +110,7 @@ We are defining a new type, which inherits from `type` to provide all bells and 
 
 To test the new type we need to define a new class that uses it as its metaclass
 
-``` python
+``` pycon
 >>> class ASingleton(metaclass=Singleton):
 ...  pass
 ... 

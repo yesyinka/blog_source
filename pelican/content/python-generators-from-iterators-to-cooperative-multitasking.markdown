@@ -55,7 +55,7 @@ Back to the loop syntax from above we can clarify the matter saying that in Pyth
 
 Let’s look at an example:
 
-```python
+``` python
 class AnIterator(object):
 	def __init__(self, value):
 		self.value = value
@@ -73,7 +73,7 @@ class AnIterator(object):
 
 This object is an iterator since it exposes `__iter__()`. Its `next()` method returns the decreasing sequence of integer numbers starting from a given number. Testing it we obtain
 
-```sh
+``` pycon
 >>> iterator = AnIterator(3)
 >>> print iterator.next()
 3
@@ -100,14 +100,14 @@ This execution shows that the iterator can be used in a for loop. Pay attention 
 
 Let’s dive a little more inside what happens when the for loop runs. The Python code
 
-```python
+``` python
 for i in iterable:
 	some_code
 ```
 
 is equivalent to
 
-```python
+``` python
 _iter = iterable.__iter__()
 while 1:
 	try:

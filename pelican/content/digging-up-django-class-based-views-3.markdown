@@ -24,7 +24,7 @@ class StickyNote(models.Model):
 
 One of the first things we usually want to do is to build a form that allows the user to create a new entry in the database, in this case a new sticky note. The functional version of such a form would be the following:
 
-```python
+``` python
 def note_add(request):
     form = StickyNoteForm(request.POST or None)
     if form.is_valid():

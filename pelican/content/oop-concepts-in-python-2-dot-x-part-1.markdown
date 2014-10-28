@@ -112,7 +112,7 @@ In Python, the type of an object is represented by the class used to build the o
 
 For example, one of the built-in classes of Python is `int`, which represents an integer number
 
-``` python
+``` pycon
 >>> a = 6
 >>> print a
 6
@@ -126,7 +126,7 @@ As you can see, the built-in function `type()` returns the content of the _magic
 
 Once you have a class you can _instantiate_ it to get a concrete object (an _instance_) of that type, i.e. an object built according to the structure of that class. The Python syntax to instantiate a class is the same of a function call
 
-``` python
+``` pycon
 >>> b = int()
 >>> type(b)
 <type 'int'>
@@ -134,7 +134,7 @@ Once you have a class you can _instantiate_ it to get a concrete object (an _ins
 
 When you create an instance, you can pass some values, according to the class definition, to _initialize_ it.
 
-``` python
+``` pycon
 >>> b = int()
 >>> print b
 0
@@ -172,7 +172,7 @@ As you can see the `__init__()` method shall create and initialize the attribute
 
 The class can be used to create a concrete object
 
-``` python
+``` pycon
 >>> door1 = Door(1, 'closed')
 >>> type(door1)
 <class '__main__.Door'>
@@ -184,7 +184,7 @@ closed
 
 Now `door1` is an instance of the `Door` class; `type()` returns the class as `__main__.Door` since the class was defined directly in the interactive shell, that is in the current main module. To call a method of an object, that is to run one of its internal functions, you just access it as an attribute with the dotted syntax and call it like a standard function.
 
-``` python
+``` pycon
 >>> door1.open()
 >>> print door1.number
 1
@@ -204,7 +204,7 @@ Objects are described by a _class_, which can generate one or more _instances_, 
 
 The Python implementation of classes has some peculiarities. The bare truth is that in Python the class of an object is an object itself. You can check this by issuing `type()` on the class
 
-``` python
+``` pycon
 >>> type(door1)
 <class '__main__.Door'>
 >>> print type(Door)
@@ -219,7 +219,7 @@ If the class is an instance it is a concrete object and is stored somewhere in m
 
 First of all, let's check that the two objects are stored at different addresses
 
-``` python
+``` pycon
 >>> hex(id(door1))
 '0x7fa4c818bad0'
 >>> hex(id(door2))
@@ -231,7 +231,7 @@ This confirms that the two instances are separate and unrelated.
 
 However if we use `id()` on the class of the two instances we discover that the class is _exactly_ the same
 
-``` python
+``` pycon
 >>> hex(id(door1.__class__))
 '0x766800'
 >>> hex(id(door2.__class__))
@@ -261,7 +261,7 @@ class Door(object):
 
 The `colour` attribute here is not created using `self`, and any change of its value reflects on all instances
 
-``` python
+``` pycon
 >>> door1 = Door(1, 'closed')
 >>> door2 = Door(2, 'closed')
 >>> Door.colour
@@ -289,7 +289,7 @@ The `colour` attribute here is not created using `self`, and any change of its v
 
 Any Python object is automatically given a `__dict__` attribute, which contains its list of attributes. Let's investigate what this dictionary contains for our example objects:
 
-``` python
+``` pycon
 >>> Door.__dict__
 dict_proxy({'__module__': '__main__',
     'colour': 'brown',
@@ -309,7 +309,7 @@ How comes that we can call `door1.colour`, if that attribute is not listed for t
 
 The standard implementation of `__getattribute__()` searches first the internal dictionary (`__dict__`) of an object, then the type of the object itself; in this case `door1.__getattribute__('colour')` executes first `door1.__dict__['colour']` and then `door1.__class__.__dict__['colour']`
 
-``` python
+``` pycon
 >>> door1.__dict__['colour']
 Traceback (most recent call last):
   File "<stdin>", line 1, in <module>
@@ -320,14 +320,14 @@ KeyError: 'colour'
 
 Indeed, if we check the objects equality through the `is` operator we can confirm that both `door1.colour` and `Door.colour` are exactly the same object
 
-``` python
+``` pycon
 >>> door1.colour is Door.colour
 True
 ```
 
 When we try to assign a value to a class attribute directly on an instance, we just put in the `__dict__` of the instance a value with that name, and this value masks the class attribute since it is found first by `__getattribute__()`. As you can see from the examples of the previous section, this is different from changing the value of the attribute on the class itself.
 
-``` python
+``` pycon
 >>> door1.colour = 'white'
 >>> door1.__dict__['colour']
 'white'
@@ -344,14 +344,14 @@ When we try to assign a value to a class attribute directly on an instance, we j
 
 Let's play the same game with methods. First of all you can see that, just like class attributes, methods are listed only in the class `__dict__`. Chances are that they behave the same as attributes when we get them
 
-``` python
+``` pycon
 >>> door1.open is Door.open
 False
 ```
 
 Whoops. Let us further investigate the matter
 
-``` python
+``` pycon
 >>> Door.__dict__['open']
 <function open at 0xb73ee10c>
 >>> Door.open
@@ -366,7 +366,7 @@ Why does Python bother with methods being bound or unbound? And how does Python 
 
 First of all, if you try to call an unbound method you get an error
 
-``` python
+``` pycon
 >>> Door.open()
 Traceback (most recent call last):
   File "<stdin>", line 1, in <module>
@@ -376,7 +376,7 @@ TypeError: unbound method open() must be called with
 
 so by default Python considers methods as functions that shall operate on instances, and calling them from the class leaves the interpreter puzzled. Let us try to pass the instance as suggested by the exception message
 
-``` python
+``` pycon
 >>> Door.open(door1)
 >>> door1.status
 'open'
@@ -386,14 +386,14 @@ Python does not complain here, and the method works as expected. So `Door.open(d
 
 When you access a member of an object, Python calls `__getattribute__()` to satisfy the request. This magic method, however, conforms to a procedure known as _descriptor protocol_. For the read access `__getattribute__()` checks if the object has a `__get__()` method and calls this latter. So for function the conversion from an unbound into a bound method is made by such a mechanism. Let us review it by means of an example.
 
-``` python
+``` pycon
 >>> door1.__class__.__dict__['open']
 <function open at 0xb73ee10c>
 ```
 
 This syntax retrieves the function defined in the class; the function knows nothing about objects, but it _is_ an object (remember "everything is an object"). So we can look inside it with the `dir()` built-in function
 
-``` python
+``` pycon
 >>> dir(door1.__class__.__dict__['open'])
 ['__call__', '__class__', '__closure__', '__code__', '__defaults__',
  '__delattr__', '__dict__', '__doc__', '__format__', '__get__',
@@ -408,14 +408,14 @@ This syntax retrieves the function defined in the class; the function knows noth
 
 As you can see, a `__get__` method is listed among the members of the function, and Python recognizes it as a _method-wrapper_. This method shall connect the `open` function to the `door1` instance, so we can call it passing the instance alone
 
-``` python
+``` pycon
 >>> door1.__class__.__dict__['open'].__get__(door1)
 <bound method ?.open of <__main__.Door object at 0xb73f956c>>
 ```
 
 Ok, something is missing. Indeed `__get__()` in this case also accepts the _owner_ class, i.e. the class we are trying to get the attribute from. So the correct form is
 
-``` python
+``` pycon
 >>> door1.__class__.__dict__['open'].__get__(door1, Door)
 <bound method Door.open of <__main__.Door object at 0xb73f956c>>
 ```
@@ -424,7 +424,7 @@ Ok, something is missing. Indeed `__get__()` in this case also accepts the _owne
 
 If we use `type()` on an unbound method, we get an interesting result
 
-``` python
+``` pycon
 >>> door1.__class__.__dict__['open']
 <function open at 0xb6aa548c>
 >>> type(door1.__class__.open)
@@ -454,7 +454,7 @@ class Door(object):
 
 Such a definition makes the method callable on both the instance and the class
 
-``` python
+``` pycon
 >>> door1.knock()
 Knock!
 >>> Door.knock()
@@ -467,7 +467,7 @@ Knock!
 
 And this is possible since, as you can see, both the class method and the instance method are bound. The class method is bound to the class itself, while the instance method is bound to the instance of the class. What about the type of the method?
 
-``` python
+``` pycon
 >>> door1.__class__.__dict__['knock']
 <classmethod object at 0xb6a8db6c>
 >>> type(door1.__class__.knock)
@@ -478,7 +478,7 @@ Puzzled? Don't be confused! When you look in the `__dict__` you are not going th
 
 On the other side, when you check the type of `door1.__class__.knock` you implicitly invoke `__get__()`, which binds the method to the class.
 
-``` python
+``` pycon
 >>> type(door1.__class__.__dict__['knock'].__get__(door1, Door))
 <type 'instancemethod'>
 >>> type(door1.__class__.__dict__['knock'])
@@ -520,13 +520,13 @@ class SecurityDoor(Door):
 
 where we declare a new class `SecurityDoor` that, at the moment, is a perfect copy of the `Door` class. Let us investigate what happens when we access attributes and methods. First we instance the class
 
-``` python
+``` pycon
 >>> sdoor = SecurityDoor(1, 'closed')
 ```
 
 The first check we can do is that class attributes are still global and shared
 
-``` python
+``` pycon
 >>> SecurityDoor.colour is Door.colour
 True
 >>> sdoor.colour is Door.colour
@@ -537,7 +537,7 @@ This shows us that Python tries to resolve instance members not only looking int
 
 If we investigate the content of `__dict__` we can catch a glimpse of the inheritance mechanism in action
 
-``` python
+``` pycon
 >>> sdoor.__dict__
 {'status': 'closed', 'number': 1}
 >>> sdoor.__class__.__dict__
@@ -556,14 +556,14 @@ dict_proxy({'knock': <classmethod object at 0xb6a8db6c>,
 
 As you can see the content of `__dict__` for `SecurityDoor` is very narrow compared to that of `Door`. The inheritance mechanism takes care of the missing elements by climbing up the classes tree. Where does Python get the parent classes? A class always contains a `__bases__` tuple that lists them
 
-``` python
+``` pycon
 >>> SecurityDoor.__bases__
 (<class '__main__.Door'>,)
 ```
 
 So an example of what Python does to resolve a class method call through the inheritance tree is
 
-``` python
+``` pycon
 >>> sdoor.__class__.__bases__[0].__dict__['knock'].__get__(sdoor, SecurityDoor)
 <bound method type.knock of <class '__main__.SecurityDoor'>>
 >>> sdoor.knock
@@ -586,7 +586,7 @@ class SecurityDoor(Door):
 
 As you can forecast, the overridden members now are present in the `__dict__` of the `SecurityDoor` class
 
-``` python
+``` pycon
 >>> SecurityDoor.__dict__
 dict_proxy({'locked': True,
     '__module__': '__main__',

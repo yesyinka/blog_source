@@ -42,7 +42,7 @@ def extract_even_numbers(alist):
 
 The example is very trivial, but I think there is always time to tangle up the code, so let us start with simple things. A class version of this function could be written as
 
-```python
+``` python
 class EvenExtractor(object):
     def __init__(self, alist):
         self.l = alist

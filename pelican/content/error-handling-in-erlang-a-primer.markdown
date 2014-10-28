@@ -38,7 +38,7 @@ The simplest way to make something go wrong when dealing with a computer is to t
 
 As you can see Erlang does not get mad at your provocation and simply **raises and exception**, i.e. signals that something went wrong, giving some details about why and where it happened. This is not different from what other languages, like Python, do.
 
-```python
+``` pycon
 >>> 1/0
 Traceback (most recent call last):
   File "<stdin>", line 1, in <module>

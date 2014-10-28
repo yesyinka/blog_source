@@ -31,7 +31,7 @@ class Child(Parent):
 
 As you can see the `Child` class is empty, but since it inherits from `Parent` Python takes charge of routing all method calls. So you may use the `get_value()` method of `Child` objects and exerything works as expected.
 
-``` python
+``` pycon
 >>> c = Child()
 >>> c.get_value()
 5
@@ -39,7 +39,7 @@ As you can see the `Child` class is empty, but since it inherits from `Parent` P
 
 Indeed `get_value()` is not exactly part of the `Child` class as if it were defined in it
 
-``` python
+``` pycon
 >>> p = Parent()
 >>> c = Child()
 >>>
@@ -100,7 +100,7 @@ class Child(Parent):
 
 Now `Child` objects behave differently
 
-``` python
+``` pycon
 >>> c = Child()
 >>> c.get_value()
 6
@@ -157,7 +157,7 @@ class TimestampLogger(Logger):
 
 The `TimestampLogger` object adds some information to the message string before calling the original implementation of its `log()` method.
 
-``` python
+``` pycon
 >>> l = Logger()
 >>> l.log('hi!')
 hi!

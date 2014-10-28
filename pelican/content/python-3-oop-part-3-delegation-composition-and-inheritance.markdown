@@ -43,13 +43,13 @@ class SecurityDoor(Door):
 
 where we declare a new class `SecurityDoor` that, at the moment, is a perfect copy of the `Door` class. Let us investigate what happens when we access attributes and methods. First we instance the class
 
-``` python
+``` pycon
 >>> sdoor = SecurityDoor(1, 'closed')
 ```
 
 The first check we can do is that class attributes are still global and shared
 
-``` python
+``` pycon
 >>> SecurityDoor.colour is Door.colour
 True
 >>> sdoor.colour is Door.colour
@@ -60,7 +60,7 @@ This shows us that Python tries to resolve instance members not only looking int
 
 If we investigate the content of `__dict__` we can catch a glimpse of the inheritance mechanism in action
 
-``` python
+``` pycon
 >>> sdoor.__dict__
 {'number': 1, 'status': 'closed'}
 >>> sdoor.__class__.__dict__
@@ -80,14 +80,14 @@ mappingproxy({'__dict__': <attribute '__dict__' of 'Door' objects>,
 
 As you can see the content of `__dict__` for `SecurityDoor` is very narrow compared to that of `Door`. The inheritance mechanism takes care of the missing elements by climbing up the classes tree. Where does Python get the parent classes? A class always contains a `__bases__` tuple that lists them
 
-``` python
+``` pycon
 >>> SecurityDoor.__bases__
 (<class '__main__.Door'>,)
 ```
 
 So an example of what Python does to resolve a class method call through the inheritance tree is
 
-``` python
+``` pycon
 >>> sdoor.__class__.__bases__[0].__dict__['knock'].__get__(sdoor)
 <bound method type.knock of <class '__main__.SecurityDoor'>>
 >>> sdoor.knock
@@ -110,7 +110,7 @@ class SecurityDoor(Door):
 
 As you can forecast, the overridden members now are present in the `__dict__` of the `SecurityDoor` class
 
-``` python
+``` pycon
 >>> SecurityDoor.__dict__
 mappingproxy({'__doc__': None,
     '__module__': '__main__',
@@ -136,7 +136,7 @@ class SecurityDoor(Door):
 
 You can easily test that this implementation is working correctly.
 
-``` python
+``` pycon
 >>> sdoor = SecurityDoor(1, 'closed')
 >>> sdoor.status
 'closed'

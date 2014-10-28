@@ -29,7 +29,7 @@ In Python polymorphism is one of the key concepts, and we can say that it is a b
 
 First of all, you know that in Python the type of a variable is not explicitly declared. Beware that this does not mean that Python variables are _untyped_. On the contrary, everything in Python has a type, it just happens that the type is implicitly assigned. If you remember the last paragraph of the previous post, I stated that in Python variables are just pointers (using a C-like nomenclature), in other words they just tell the language _where_ in memory a variable has been stored. What is stored at that address is not a business of the variable.
 
-``` python
+``` pycon
 >>> a = 5
 >>> a
 5
@@ -85,7 +85,7 @@ there is no need to specify the type of the two input variables. The object `a` 
 
 Let us consider another simple example before moving on. The built-in `len()` function returns the length of the input object. For example
 
-``` python
+``` pycon
 >>> l = [1, 2, 3]
 >>> len(l)
 3
@@ -96,7 +96,7 @@ Let us consider another simple example before moving on. The built-in `len()` fu
 
 As you can see it is perfectly polymorphic: you can feed both a list or a string to it and it just computes its length. Does it work with any type? let's check
 
-``` python
+``` pycon
 >>> d = {'a': 1, 'b': 2}
 >>> len(d)
 2
@@ -111,7 +111,7 @@ Ouch! Seems that the `len()` function is smart enough to deal with dictionaries,
 
 Indeed this is exactly the point of Python polymorphism: _the integer type does not define a length operation_. While you blame the `len()` function, the `int` type is at fault. The `len()` function just calls the `__len__()` method of the input object, as you can see from this code
 
-``` python
+``` pycon
 >>> l.__len__()
 3
 >>> s.__len__()
@@ -192,7 +192,7 @@ class BooleanDoor(object):
 
 Both represent a door that can be open or closed, and they implement the concept in two different ways: the first class relies on strings, while the second leverages booleans. Despite _being_ two different types, both _act_ the same way, so both can be used to build a `Room` object.
 
-``` python
+``` pycon
 >>> door = Door()
 >>> bool_door = BooleanDoor()
 >>> room = Room(door)
@@ -275,7 +275,7 @@ The first step into the most intimate secrets of Python objects comes from two c
 
 First of all recall that in Python _everything is an object_, that is everything inherits from `object`. Thus, `object` seems to be the deepest thing you can find digging into Python variables. Let's check this
 
-``` python
+``` pycon
 >>> a = 5
 >>> type(a)
 <type 'int'>
@@ -289,7 +289,7 @@ First of all recall that in Python _everything is an object_, that is everything
 
 The variable `a` is an instance of the `int` class, and this latter inherits from `object`, which inherits from nothing. This demonstrates that `object` is at the top of the class hierarchy. However, as you can see, both `int` and `object` are called _types_ (`<type 'int'>`, `<type 'object'>`), which in Python is a pure alias of the word _class_. Indeed, while `a` is an instance of the `int` class, `int` itself is an instance of another class, _a class that is instanced to build classes_
 
-``` python
+``` pycon
 >>> type(a)
 <type 'int'>
 >>> type(int)
@@ -298,11 +298,11 @@ The variable `a` is an instance of the `int` class, and this latter inherits fro
 <type 'type'>
 >>> type(dict)
 <type 'type'>
-```     
+```
 
 Since in Python everything is an object, everything is the instance of a class, even classes. Well, `type` is the class that is instanced to get classes. So remember this: `object` is the base of every object, `type` is the class of every type. Sounds puzzling? It is not your fault, don't worry. However, just to strike you with the finishing move, this is what Python is built on
 
-``` python
+``` pycon
 >>> type(object)
 <type 'type'>
 >>> type.__bases__
@@ -315,7 +315,7 @@ Jokes apart, at the very base of Python type system there are two things, `objec
 
 When you think you grasped the `type`/`object` matter read this and start thinking again
 
-``` python
+``` pycon
 >>> type(type)
 <type 'type'>
 ```
@@ -332,7 +332,7 @@ So for example you know that a class may be instanced, i.e. it can be called and
 
 The point of exposing this structure of Python objects is that you may change the way classes are built. As you know, `type` is an object, so it can be subclassed just like any other class. Once you get a subclass of `type` you need to instruct your class to use it as the metaclass instead of type, and you can do this by setting the `__metaclass__` attribute.
 
-``` python
+``` pycon
 >>> class MyType(type):
 ...  pass
 ...
@@ -371,7 +371,7 @@ We are defining a new type, which inherits from `type` to provide all bells and 
 
 To test the new type we need to define a new class that uses it as its metaclass
 
-``` python
+``` pycon
 >>> class ASingleton(object):
 ...     __metaclass__ = Singleton
 ... 

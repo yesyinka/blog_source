@@ -14,7 +14,7 @@ After the recap of the iteration process in Python, in this post we will introdu
 
 The for construct is generally simple to use and such a loop can be found in almost all programming languages. Its implementation, however, can be problematic in some cases. Let’s look at an example:
 
-```python
+``` python
 def sequence(num):
 	s = []
 	i = 0
@@ -43,7 +43,7 @@ Pay attention to the fact that the first call of a function that contains an `yi
 
 A simple example of generator is the following:
 
-```python
+``` python
 def dec(num):
 	x = num
 	while 1:
@@ -51,7 +51,7 @@ def dec(num):
 		yield x
 ```
 
-```bash
+``` pycon
 >>> g = dec(8)
 >>> g
 <generator object dec at 0xb6abbf2c>
@@ -61,7 +61,7 @@ When executed, the `dec()` function returns a **generator object** and no lines 
 
 As soon as `next()` is called for the first time `x` will be initialized with the value passed to the function (8 in the example above) and the infinite loop will start. Inside it the local variable `x` will be decremented and returned to the caller by `yield`. This latter will also freeze again the code, holding the internal state, in this case the value of the variable `x`.
 
-```bash
+``` pycon
 >>> g.next()
 7
 >>> g.next()
@@ -80,7 +80,7 @@ Another caveat: as for return a function is not limited to one statement, but ca
 
 What happens if we call the function again, maybe with a different value of the parameter? We simply obtain a new generator object that is completely independent from the first one, although it behaves the same way.
 
-```bash
+``` pycon
 >>> f = dec(12)
 >>> f
 <generator object dec at 0xb72e1cac>
@@ -100,7 +100,7 @@ Pay attention to the fact that a generator is an iterator (it exposes `next()` a
 
 Back to the `sequence()` function showed above we can now write it as a generator function and use it to build arbitrarily long sequences and, at the limit, infinite.
 
-```python
+``` python
 def sequence(num):
 	i = 0
 	while 1:
@@ -109,7 +109,8 @@ def sequence(num):
 		yield i
 		i += 1
 ```
-```bash
+
+``` pycon
 >>> s = sequence(3)
 >>> s.next()
 0
@@ -147,13 +148,13 @@ The two observations above identify the problems that generators can solve in a 
 
 Every Python programmer uses and hopefully appreciates the elegance of list comprehension. The following code instances with a single line 100 objects of the `MyObject` class and puts them in a list
 
-```python
+``` python
 object_list = [MyObject() for i in range(100)]
 ```
 
 where the classic code would be
 
-```python
+``` python
 object_list = []
 for i in range(100):
 	object_list.append(MyObject())
@@ -163,13 +164,13 @@ Surely it is not a lot of code, but it is less easy to understand immediately an
 
 Could we take advantage of generators in this case? Yes, with **generator expressions**. The syntax of such expressions is identical to that of list comprehension, except for the use of round brackets instead of square ones. While list comprehension returns a list, however, a generator expression return a generator, as the name implies. The previous code could thus be written this way
 
-```python
+``` python
 object_generator = (MyObject() for i in range(100))
 ```
 
 where `object_generator` is a generator like one of those returned by a generator function. This latter form of the code would be
 
-```python
+``` python
 def object_generator_function():
 	for i in range(100):
 		yield MyObject()
@@ -181,13 +182,13 @@ Which is, as happens for list comprehension and for loops, less elegant than its
 
 As for list comprehension, generator expressions can encompass a condition in the form
 
-```python
+``` python
 generator = (expression for i in s if condition).
 ```
 
 and can also be directly used as arguments for single-argument functions, using function call brackets to mark the expression.
 
-```python
+``` python
 afunction(expression for i in s)
 ```
 
@@ -195,7 +196,7 @@ There is however no real performance improvement using such a syntax, since the 
 
 A typical example of this use is that of the so-called **dictionary comprehension**; from two lists of the same length, one of keys and one of values, we can obtain a dictionary with
 
-```python
+``` python
 d = dict(z for z in zip(keys, values))
 ```
 

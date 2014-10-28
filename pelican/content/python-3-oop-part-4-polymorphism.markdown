@@ -20,7 +20,7 @@ In Python polymorphism is one of the key concepts, and we can say that it is a b
 
 First of all, you know that in Python the type of a variable is not explicitly declared. Beware that this does not mean that Python variables are _untyped_. On the contrary, everything in Python has a type, it just happens that the type is implicitly assigned. If you remember the last paragraph of the previous post, I stated that in Python variables are just pointers (using a C-like nomenclature), in other words they just tell the language _where_ in memory a variable has been stored. What is stored at that address is not a business of the variable.
 
-``` python
+``` pycon
 >>> a = 5
 >>> a
 5
@@ -55,7 +55,7 @@ def echo(a):
 
 The function works as expected, just echoes the given parameter
 
-``` python
+``` pycon
 >>> echo(5)
 5
 >>> echo('five')
@@ -85,7 +85,7 @@ there is no need to specify the type of the two input variables. The object `a` 
 
 Let us consider another simple example before moving on. The built-in `len()` function returns the length of the input object. For example
 
-``` python
+``` pycon
 >>> l = [1, 2, 3]
 >>> len(l)
 3
@@ -96,7 +96,7 @@ Let us consider another simple example before moving on. The built-in `len()` fu
 
 As you can see it is perfectly polymorphic: you can feed both a list or a string to it and it just computes its length. Does it work with any type? let's check
 
-``` python
+``` pycon
 >>> d = {'a': 1, 'b': 2}
 >>> len(d)
 2
@@ -111,7 +111,7 @@ Ouch! Seems that the `len()` function is smart enough to deal with dictionaries,
 
 Indeed this is exactly the point of Python polymorphism: _the integer type does not define a length operation_. While you blame the `len()` function, the `int` type is at fault. The `len()` function just calls the `__len__()` method of the input object, as you can see from this code
 
-``` python
+``` pycon
 >>> l.__len__()
 3
 >>> s.__len__()
@@ -192,7 +192,7 @@ class BooleanDoor:
 
 Both represent a door that can be open or closed, and they implement the concept in two different ways: the first class relies on strings, while the second leverages booleans. Despite _being_ two different types, both _act_ the same way, so both can be used to build a `Room` object.
 
-``` python
+``` pycon
 >>> door = Door()
 >>> bool_door = BooleanDoor()
 >>> room = Room(door)

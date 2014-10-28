@@ -26,7 +26,7 @@ In this post I want to show you an interesting joint use of decorators and metac
 
 More in detail, I will implement a class that can be called on a string to "process" it, and show you how to implement different "filters" through simple decorated methods. What I want to obtain is something like this:
 
-```python
+``` python
 class MyStringProcessor(StringProcessor):
     @stringfilter
     def capitalize(self, str):
@@ -54,7 +54,7 @@ You know that a class has a _namespace_, that is a dictionary of what was define
 
 We are however interested in preserving the order of definition and a Python dictionary is an unordered structure, so we take advantage of the `__prepare__` hook introduced in the class creation process with Python 3. This function, if present in the metaclass, is used to preprocess the class and to return the structure used to host the namespace. So, following the example found in the official documentation, we start defining a metaclass like
 
-```python
+``` python
 class FilterClass(type):
     def __prepare__(name, bases, **kwds):
         return collections.OrderedDict()
@@ -68,7 +68,7 @@ The customization we need is the creation of a list of methods that are marked i
 
 The full metaclass is then
 
-```python
+``` python
 class FilterClass(type):
     @classmethod
     def __prepare__(name, bases, **kwds):
@@ -95,7 +95,7 @@ I decided to implement the `@stringfilter` decorator as a function, even if I us
 
 The decorator is very simple:
 
-```python
+``` python
 def stringfilter(func):
     func._filter = True
     return func
@@ -111,7 +111,7 @@ The result of this generalization is that every object that contains the `__call
 
 The `StringProcessor` class shall thus contain this method and perform there the string processing with all the contained filters. The code is
 
-```python
+``` python
 class StringProcessor(metaclass=FilterClass):
 
     def __call__(self, string):
@@ -132,7 +132,7 @@ Note that, thanks to the decorator and the metaclass, you may have other methods
 
 An example derived class may be the following
 
-```python
+``` python
 class MyStringProcessor(StringProcessor):
 
     @stringfilter
@@ -146,7 +146,7 @@ class MyStringProcessor(StringProcessor):
 
 The two `capitalize()` and `remove_double_spaces()` methods have been decorated, so they will be applied in order to any string passed when calling the class. A quick example of this last class is
 
-```pycon
+``` pycon
 >>> import strproc
 >>> msp = strproc.MyStringProcessor()
 >>> input_string = "a test  string"

@@ -56,7 +56,7 @@ There are many examples that could be done leveraging the highly dynamic nature 
 
 In Python you can obtain the type of an object using the `type()` built-in function, but to check it you'd better use `isinstance()`, which returns a boolean value. Let us see an example before moving on
 
-``` python
+``` pycon
 >>> isinstance([], list)
 True
 >>> isinstance(1, int)
@@ -81,7 +81,7 @@ As you can see the function can also walk the class hierarchy, so the check is n
 
 The `isinstance()` function, however, does not completely solve the problem. If we write a class that actually _acts_ like a `list` but does not inherit from it, `isinstance()` does not recognize the fact that the two may be considered the same thing. The following code returns `False` regardless the content of the `MyList` class
 
-``` python
+``` pycon
 >>> class MyList(object):
 ...  pass
 ... 
@@ -146,7 +146,7 @@ assert isinstance((), MyABC)
 
 Here, the `MyABC` class is provided the `ABCMeta` metaclass. This puts the two `__instancecheck__()` and `__subclasscheck__()` behaviours inside `MyABC`. Please note however that those methods are not actually put into the object so that you can use them like
 
-``` python
+``` pycon
 >>> d = {'a': 1}
 >>> MyABC.__metaclass__.__instancecheck__(MyABC, d)
 ```
@@ -159,7 +159,7 @@ After the definition of `MyABC` we need a way to signal that a given class is an
 
 In addition to the `abc` module, the standard library now provides a `collections` module that, besides some interesting container datatypes like `namedtuple` and `OrderedDict`, supplies a remarkable number of ABCs that represent container behaviours. An example is `collections.Sized` that pledges that the registered class will contain the `__len__()` method, enabling the code to pass it to the `len()` builtin. Let us exemplify that:
 
-``` python
+``` pycon
 >>> class Snake(object):
 ...   def __init__(self, meters):
 ...     self.len = meters
@@ -180,7 +180,7 @@ True
 
 If not stressed enough, ABCs assure that a given behaviour will be implemented but there is no actual check of this. For example:
 
-``` python
+``` pycon
 >>> class FakeSnake(object):
 ...   def __init__(self, meters):
 ...     pass
@@ -221,7 +221,7 @@ class AbstractCalculator(object):
 
 This is a class with `ABCMeta` as its metaclass, which makes `AbstractCalculator` an Abstract Base Class. The two `sum()` and `multiply()` methods are decorated with `@abstractmethod`, that raises an exception when we try to instance the class:
 
-``` python
+``` pycon
 >>> ac = AbstractCalculator()
 Traceback (most recent call last):
   File "<stdin>", line 1, in <module>
@@ -231,7 +231,7 @@ TypeError: Can't instantiate abstract class AbstractCalculator with abstract met
 
 Moreover, any class that derives from `AbstractCalculator` and does not override the two methods (implementing them), cannot be instantiated:
 
-``` python
+``` pycon
 >>> class Calculator(AbstractCalculator):
 ...  pass
 ... 
@@ -248,7 +248,7 @@ These two decorators are the standard way to enforce a check about a behaviour o
 
 In the first post, when I discussed for the first time the concept of instantiation, I stated that an instance of a class may be obtained by calling the class itself just like a function. Let me recall you the example
 
-``` python
+``` pycon
 >>> b = int()
 >>> type(b)
 <type 'int'>
@@ -258,13 +258,13 @@ Later, speaking about methods and attributes, I defined _callable_ something tha
 
 When we execute a syntax like
 
-``` python
+``` pycon
 >>> some_object()
 ```
 
 Python executes under the hood the following code
 
-``` python
+``` pycon
 >>> some_object.__call__()
 ```
 
@@ -272,13 +272,13 @@ where any parameter passed to the class is obviously passed to `__call__()`.
 
 For standard classes the `__call__()` method is provided by `type`, which is the standard metaclass. So when we write
 
-``` python
+``` pycon
 >>> b = int()
 ```
 
 python actually executes this code
 
-``` python
+``` pycon
 >>> b = int.__class__.__call__(int)
 ```
 
@@ -296,7 +296,7 @@ class CallMe(object):
 
 Class instances usually contain no definition of `__call__()` and the implementation provided in the class hierarchy prevents them from being called
 
-``` python
+``` pycon
 >>> a = int()
 >>> a()
 Traceback (most recent call last):

@@ -52,7 +52,7 @@ There are many examples that could be done leveraging the highly dynamic nature 
 
 In Python you can obtain the type of an object using the `type()` built-in function, but to check it you'd better use `isinstance()`, which returns a boolean value. Let us see an example before moving on
 
-``` python
+``` pycon
 >>> isinstance([], list)
 True
 >>> isinstance(1, int)
@@ -77,7 +77,7 @@ As you can see the function can also walk the class hierarchy, so the check is n
 
 The `isinstance()` function, however, does not completely solve the problem. If we write a class that actually _acts_ like a `list` but does not inherit from it, `isinstance()` does not recognize the fact that the two may be considered the same thing. The following code returns `False` regardless the content of the `MyList` class
 
-``` python
+``` pycon
 >>> class MyList:
 ...  pass
 ... 
@@ -142,7 +142,7 @@ assert isinstance((), MyABC)
 
 Here, the `MyABC` class is provided the `ABCMeta` metaclass. This puts the two `__isinstancecheck__()` and `__subclasscheck__()` methods inside `MyABC` so that, when issuing `isinstance()`, what Python actually ececutes is
 
-``` python
+``` pycon
 >>> d = {'a': 1}
 >>> isinstance(d, MyABC)
 False
@@ -158,7 +158,7 @@ After the definition of `MyABC` we need a way to signal that a given class is an
 
 The current implementation of ABCs stores the registered types inside the `_abc_registry` attribute. Actually it stores there weak references to the registered types (this part is outside the scope of this article, so I'm not detailing it)
 
-``` python
+``` pycon
 >>> MyABC._abc_registry.data
 {<weakref at 0xb682966c; to 'type' at 0x83dcca0 (tuple)>}
 ```
