@@ -1,7 +1,7 @@
 Title: "Python 3 OOP Part 3 - Delegation: composition and inheritance"
 Date: 2014-08-20 15:00:00 +0200
 Category: Programming
-Tags: python, python3, OOP
+Tags: Python, Python3, OOP
 Authors: Leonardo Giordani
 Slug: python-3-oop-part-3-delegation-composition-and-inheritance
 Series: "Python 3 OOP"

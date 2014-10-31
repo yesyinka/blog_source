@@ -14,7 +14,8 @@ SITEURL = 'http://lgiordani.com'
 RELATIVE_URLS = False
 
 FEED_ALL_ATOM = 'atom.xml'
-CATEGORY_FEED_ATOM = 'categories/%s/atom.xml'
+TAG_FEED_ATOM = 'categories/%s/atom.xml'
+CATEGORY_FEED_ATOM = 'category/%s/atom.xml'
 
 DELETE_OUTPUT_DIRECTORY = True
 

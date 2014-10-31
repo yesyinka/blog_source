@@ -1,7 +1,7 @@
 Title: "Python Generators - From Iterators to Cooperative Multitasking - 3"
 Date: 2013-03-29 13:25 +0100
 Category: Programming
-Tags: python, generators
+Tags: Python, generators
 Authors: Leonardo Giordani
 Slug: python-generators-from-iterators-to-cooperative-multitasking-3
 Series: "Python generators - from iterators to cooperative multitasking"
