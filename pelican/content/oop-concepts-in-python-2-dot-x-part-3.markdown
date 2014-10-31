@@ -4,6 +4,7 @@ Category: Programming
 Tags: python2, python, OOP
 Authors: Leonardo Giordani
 Slug: oop-concepts-in-python-2-dot-x-part-3
+Series: "OOP concepts in Python 2.x"
 Summary:
 
 ## Abstract

@@ -4,6 +4,7 @@ Category: Programming
 Tags: python, python3, OOP
 Authors: Leonardo Giordani
 Slug: python-3-oop-part-5-metaclasses
+Series: "Python 3 OOP"
 Summary:
 
 ## Previous post
