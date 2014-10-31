@@ -1,7 +1,7 @@
 Title: "Concurrent programming - 5"
 Date: 2013-02-28 17:49 +0200
 Category: Programming
-Tags: C-language, operating systems, concurrent programming
+Tags: C, operating systems, concurrent programming
 Authors: Leonardo Giordani
 Slug: concurrent-programming-5
 Series: "Concurrent programming"

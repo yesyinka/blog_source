@@ -1,7 +1,7 @@
 Title: "Concurrent programming - 6"
 Date: 2013-04-23 08:29 +0200
 Category: Programming
-Tags: C-language, operating systems, concurrent programming
+Tags: C, operating systems, concurrent programming
 Authors: Leonardo Giordani
 Slug: concurrent-programming-6
 Series: "Concurrent programming"
