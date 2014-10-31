@@ -1,7 +1,7 @@
 Title: "Error handling in Erlang - a primer"
 Date: 2013-05-30 11:41 +0100
 Category: Programming
-Tags: erlang, concurrent programming
+Tags: Erlang, concurrent programming
 Authors: Leonardo Giordani
 Slug: error-handling-in-erlang-a-primer
 Summary:

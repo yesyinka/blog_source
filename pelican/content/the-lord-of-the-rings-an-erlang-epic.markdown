@@ -1,7 +1,7 @@
 Title: "The Lord of the Rings: an Erlang epic"
 Date: 2013-06-20 17:49 +0100
 Category: Programming
-Tags: erlang, concurrent programming
+Tags: Erlang, concurrent programming
 Authors: Leonardo Giordani
 Slug: the-lord-of-the-rings-an-erlang-epic
 Summary:

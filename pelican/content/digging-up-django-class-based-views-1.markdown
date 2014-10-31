@@ -1,7 +1,7 @@
 Title: "Digging up Django class-based views - 1"
 Date: 2013-10-28 08:43 +0200
 Category: Programming
-Tags: python, django
+Tags: Python, Django
 Authors: Leonardo Giordani
 Slug: digging-up-django-class-based-views-1
 Series: "Digging up Django class-based views"

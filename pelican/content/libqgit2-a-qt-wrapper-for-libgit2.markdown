@@ -1,7 +1,7 @@
 Title: "libqgit2: a Qt wrapper for libgit2"
 Date: 2013-07-18 10:51 +0100
 Category: Projects
-Tags: qt, c++, git
+Tags: Qt, C++, Git
 Authors: Leonardo Giordani
 Slug: libqgit2-a-qt-wrapper-for-libgit2
 Summary:

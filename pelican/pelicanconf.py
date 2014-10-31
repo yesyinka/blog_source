@@ -14,6 +14,7 @@ DEFAULT_LANG = u'en'
 
 # Feed generation is usually not desired when developing
 FEED_ALL_ATOM = None
+TAG_FEED_ATOM = None
 CATEGORY_FEED_ATOM = None
 TRANSLATION_FEED_ATOM = None
 
@@ -62,7 +63,7 @@ ARTICLE_SAVE_AS = ARTICLE_URL + 'index.html'
 CATEGORY_URL = 'category/{slug}/'
 CATEGORY_SAVE_AS = CATEGORY_URL + 'index.html'
 
-TAG_URL = 'blog/categories/{slug}/'
+TAG_URL = 'categories/{slug}/'
 TAG_SAVE_AS = TAG_URL + 'index.html'
 
 ARCHIVES_URL = 'archives/'
@@ -76,3 +77,5 @@ GOOGLE_ANALYTICS_UNIVERSAL = 'UA-38715090-1'
 SITEMAP = {
     'format': 'xml',
 }
+
+SLUG_SUBSTITUTIONS = [("c++","cpp")]
