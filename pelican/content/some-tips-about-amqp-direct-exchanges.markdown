@@ -1,7 +1,7 @@
 Title: "Some tips about AMQP direct exchanges"
 Date: 2013-08-21 18:10 +0100
 Category: Programming
-Tags: rabbitmq, amqp
+Tags: RabbitMQ, AMQP
 Authors: Leonardo Giordani
 Slug: some-tips-about-amqp-direct-exchanges
 Summary:

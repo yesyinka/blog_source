@@ -1,7 +1,7 @@
 Title: "Python 3 OOP Part 2 - Classes and members"
 Date: 2014-08-20 14:00:00 +0200
 Category: Programming
-Tags: python, python3, OOP
+Tags: Python, Python3, OOP
 Authors: Leonardo Giordani
 Slug: python-3-oop-part-2-classes-and-members
 Series: "Python 3 OOP"

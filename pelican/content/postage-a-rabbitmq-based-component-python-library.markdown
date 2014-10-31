@@ -1,7 +1,7 @@
 Title: "Postage - a RabbitMQ-based component Python library"
 Date: 2013-07-25 15:50 +0100
 Category: Projects
-Tags: python, pika, rabbitmq, postage
+Tags: Python, Pika, RabbitMQ, Postage
 Authors: Leonardo Giordani
 Slug: postage-a-rabbitmq-based-component-python-library
 Summary:

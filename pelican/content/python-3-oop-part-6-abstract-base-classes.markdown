@@ -1,7 +1,7 @@
 Title: "Python 3 OOP Part 6 - Abstract Base Classes"
 Date: 2014-09-04 10:00:00 +0200
 Category: Programming
-Tags: python, python3, OOP
+Tags: Python, Python3, OOP
 Authors: Leonardo Giordani
 Slug: python-3-oop-part-6-abstract-base-classes
 Series: "Python 3 OOP"

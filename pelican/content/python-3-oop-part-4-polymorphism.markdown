@@ -1,7 +1,7 @@
 Title: "Python 3 OOP Part 4 - Polymorphism"
 Date: 2014-08-21 10:00:00 +0200
 Category: Programming
-Tags: python, python3, OOP
+Tags: Python, Python3, OOP
 Authors: Leonardo Giordani
 Slug: python-3-oop-part-4-polymorphism
 Series: "Python 3 OOP"

@@ -1,7 +1,7 @@
 Title: "Method overriding in Python"
 Date: 2014-05-19 13:51:26 +0200
 Category: Programming
-Tags: python, OOP
+Tags: Python, OOP
 Authors: Leonardo Giordani
 Slug: method-overriding-in-python
 Summary:
