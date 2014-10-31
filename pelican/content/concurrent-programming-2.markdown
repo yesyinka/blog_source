@@ -5,6 +5,7 @@ Tags: C-language, operating systems, concurrent programming
 Authors: Leonardo Giordani
 Slug: concurrent-programming-2
 Version: 2
+Series: "Concurrent programming"
 Summary:
 
 ## Abstract

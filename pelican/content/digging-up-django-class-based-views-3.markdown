@@ -4,6 +4,7 @@ Category: Programming
 Tags: python, django
 Authors: Leonardo Giordani
 Slug: digging-up-django-class-based-views-3
+Series: "Digging up Django class-based views"
 Summary:
 
 _This post refers to Django 1.5. Please be warned that some of the matters discussed here, some solutions or the given code can be outdated by more recent Django versions_

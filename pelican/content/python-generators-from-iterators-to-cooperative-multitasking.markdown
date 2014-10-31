@@ -4,6 +4,7 @@ Category: Programming
 Tags: python, generators
 Authors: Leonardo Giordani
 Slug: python-generators-from-iterators-to-cooperative-multitasking
+Series: "Python generators - from iterators to cooperative multitasking"
 Summary:
 
 ## Introduction
