@@ -31,10 +31,10 @@ function get_repo () {
     cd ..
 }
 
-#virtualenv venv
-#source venv/bin/activate
+virtualenv venv
+source venv/bin/activate
 
-#pip install fabric pelican markdown
+pip install fabric pelican markdown
 
 $(get_repo ${method} pelican-plugins)
 # git clone $(repo ${method} lgiordani pelican-plugins)
