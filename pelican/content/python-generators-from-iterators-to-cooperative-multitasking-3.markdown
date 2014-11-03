@@ -170,7 +170,7 @@ ms.add_microthread(mt3)
 
 ms.run()
 ```
-[source code](python-generators/test_scheduler.py)
+[source code](/code/python-generators/test_scheduler.py)
 
 Here the `TestMicroThread` is a microthread but the `step()` method was reimplemented to print a number and wait 1 second. Three microthreads are instanced and added to the scheduler and the `run()` method of the scheduler is executed. Not surprisingly the result is the following
 
