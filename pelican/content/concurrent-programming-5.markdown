@@ -313,7 +313,7 @@ int main()
   return 0;
 }
 ```
-[source code](queues2.c)
+[source code](/code/queues2.c)
 
 Compiling and running the program you can check the correct working of the shared message queue.
 
