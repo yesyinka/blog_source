@@ -55,7 +55,8 @@ DISPLAY_RECENT_POSTS_ON_SIDEBAR = True
 TWITTER_USERNAME = 'tw_lgiordani'
 TWITTER_CARDS = True
 OPEN_GRAPH_IMAGE = 'images/TheDigitalCat_logo_200.jpg'
-MULTI_PART_SHOW_TITLE = False
+DISPLAY_SERIES_ON_SIDEBAR = True
+SHOW_SERIES = True
 
 ARTICLE_URL = 'blog/{date:%Y}/{date:%m}/{date:%d}/{slug}/'
 ARTICLE_SAVE_AS = ARTICLE_URL + 'index.html'
@@ -70,7 +71,7 @@ ARCHIVES_URL = 'archives/'
 ARCHIVES_SAVE_AS = ARCHIVES_URL + 'index.html'
 
 PLUGIN_PATHS = ["pelican-plugins"]
-PLUGINS = ['related_posts', 'sitemap']
+PLUGINS = ['related_posts', 'series', 'sitemap']
 
 GOOGLE_ANALYTICS_UNIVERSAL = 'UA-38715090-1'
 
