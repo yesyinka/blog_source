@@ -23,11 +23,11 @@ TRANSLATION_FEED_ATOM = None
 #         ('Python.org', 'http://python.org/'),)
 
 # Social widget
-# SOCIAL = (
-# 		('Twitter', 'https://twitter.com/tw_lgiordani'),
-# 		('Google+', 'http://plus.google.com/+LeonardoGiordani?rel=author'),
-# 		('GitHub', 'https://github.com/lgiordani'),
-# 	)
+SOCIAL = (
+		('Twitter', 'https://twitter.com/tw_lgiordani'),
+		('Google+', 'http://plus.google.com/+LeonardoGiordani?rel=author'),
+		('GitHub', 'https://github.com/lgiordani'),
+	)
 
 DEFAULT_PAGINATION = 10
 PAGINATION_PATTERNS = (
