@@ -189,6 +189,6 @@ So the following guidelines must be shaped on the specific needs of the developm
 
 ## Finale
 
-As you can see there is much to say about this subject, and this article only scratches the surface of the matter. However, I hope it helped you to have a big picture of the different aspects that hide behind those apparently simple labels or numbers called versions. Stay tuned for future articles on this topic through the [versioning](/blog/categories/versioning/) tag.
+As you can see there is much to say about this subject, and this article only scratches the surface of the matter. However, I hope it helped you to have a big picture of the different aspects that hide behind those apparently simple labels or numbers called versions. Stay tuned for future articles on this topic through the [versioning](/categories/versioning/) tag.
 
 

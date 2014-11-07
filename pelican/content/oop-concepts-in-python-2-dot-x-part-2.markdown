@@ -18,7 +18,7 @@ This second post discusses the following OOP features in Python:
 * Metaclasses
 * Object creation
 
-This post refers to the internals of Python 2.x - please note that Python 3.x changes (improves!) some of the features shown here. You can find the **updated version** [here](/blog/categories/python3/).
+This post refers to the internals of Python 2.x - please note that Python 3.x changes (improves!) some of the features shown here. You can find the **updated version** [here](/categories/python3/).
 
 ## Good Morning, Polymorphism
 

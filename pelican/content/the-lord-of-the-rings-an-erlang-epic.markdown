@@ -702,6 +702,6 @@ loop(NextProcess) ->
 
 The process ring is an exercise that can be solved in many ways (I just presented the two more straightforward ones) but makes the programmer face problems that may later rise in real-world applications. For this reason, it is an invaluable sandbox where the Erlang programmer can try different approaches to solve both the concurrency and the topology problems.
 
-Keep in touch for other Erlang articles on [this page](/blog/categories/erlang/).
+Keep in touch for other Erlang articles on [this page](/categories/erlang/).
 
 

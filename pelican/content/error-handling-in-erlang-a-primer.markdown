@@ -213,7 +213,7 @@ The aim of the article was to give an overview of error handling in Erlang: not 
 
 There is obviously much more than this in the Erlang treasure chest. If the whole link and exit signals stuff thrilled you like it did with me, I promise you that OTP behavious (sorry, behaviors) will take your breath away.
 
-Keep in touch for other Erlang articles on [this page](/blog/categories/erlang/).
+Keep in touch for other Erlang articles on [this page](/categories/erlang/).
 
 
 

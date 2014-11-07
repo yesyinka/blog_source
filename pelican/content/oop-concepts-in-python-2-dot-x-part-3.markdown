@@ -13,7 +13,7 @@ Welcome to the third installment of this little series of posts about Python 2.x
 
 This post will continue the discussion about metaclasses, introducing Abstract Base Classes, and give some insights on callable objects.
 
-This post refers to the internals of Python 2.x - please note that Python 3.x changes (improves!) some of the features shown here. You can find the **updated version** [here](/blog/categories/python3/).
+This post refers to the internals of Python 2.x - please note that Python 3.x changes (improves!) some of the features shown here. You can find the **updated version** [here](/categories/python3/).
 
 ## The Inspection Club
 

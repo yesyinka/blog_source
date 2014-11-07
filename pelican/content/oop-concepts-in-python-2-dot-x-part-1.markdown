@@ -20,7 +20,7 @@ This first post covers the following topics:
 * Object members: methods and attributes
 * Delegation: inheritance and composition
 
-This post refers to the internals of Python 2.x - please note that Python 3.x changes (improves!) some of the features shown here. You can find the **updated version** [here](/blog/categories/python3/).
+This post refers to the internals of Python 2.x - please note that Python 3.x changes (improves!) some of the features shown here. You can find the **updated version** [here](/categories/python3/).
 
 ## Back to the Object
 
