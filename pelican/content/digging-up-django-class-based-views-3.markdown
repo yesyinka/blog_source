@@ -206,7 +206,7 @@ As you can see, the structure behind the current implementation of Django class-
 
 When performing special actions that fall outside the standard CUD operations you better inherit from `FormView` ([views/generic/edit.py#L181](https://github.com/django/django/blob/stable/1.5.x/django/views/generic/edit.py#L181)). The first thing to do is to check if and how you need to customize the `get()` and `post()` methods; remember that you either need to implement the full behaviour of those methods or make you changes and call the parent implementation. If this is not enough for your application consider overriding one of the more dedicated methods, such as `get_form_kwargs()` or `form_valid()`.
 
-This post ends the series "Digging Up Django Class-based Views". Stay tuned for other [upcoming articles on Django](/blog/categories/django/)!
+This post ends the series "Digging Up Django Class-based Views". Stay tuned for other [upcoming articles on Django](/categories/django/)!
 
 Feel free to use [the blog Google+ page](https://plus.google.com/u/0/b/110554719587236016835/110554719587236016835/posts) to comment the post or to ask for an in-depth analysis of some topic. The [GitHub issues](https://github.com/lgiordani/lgiordani.github.com/issues) page is the best place to submit corrections.
 

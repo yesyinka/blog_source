@@ -108,4 +108,4 @@ Well, after all I just explained again and more verbosely the basic RabbitMQ exa
 
 Yes. However, I think such considerations can be useful for novices and from time to time it is a good thing for experts to refresh the plain old basic stuff. So this post can be used as a quick memo of the different configurations you can create with an AMQP direct exchange.
 
-Stay tuned for other [RabbitMQ](/blog/categories/rabbitmq/) and [AMQP](/blog/categories/amqp/) posts!
+Stay tuned for other [RabbitMQ](/categories/rabbitmq/) and [AMQP](/categories/amqp/) posts!
