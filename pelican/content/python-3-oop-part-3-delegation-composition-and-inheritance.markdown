@@ -166,7 +166,7 @@ class SecurityDoor(Door):
     def open(self):
         if self.locked:
             return
-        super().open(self)
+        super().open()
 ```
 
 The output of `super()` is not exactly the `Door` class. It returns a `super` object which representation is `<super: <class 'SecurityDoor'>, <SecurityDoor object>>`. This object however acts like the parent class, so you can safely ignore its custom nature and use it just like you would do with the `Door` class in this case.
