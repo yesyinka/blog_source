@@ -192,7 +192,7 @@ If not stressed enough, ABCs assure that a given behaviour will be implemented b
 True
 >>> f = FakeSnake(6)
 >>> len(f)
-Traceback (most recent call last):
+Traceback  (most recent call last):
   File "<stdin>", line 1, in <module>
 TypeError: object of type 'FakeSnake' has no len()
 ```
@@ -224,7 +224,7 @@ This is a class with `ABCMeta` as its metaclass, which makes `AbstractCalculator
 
 ``` pycon
 >>> ac = AbstractCalculator()
-Traceback (most recent call last):
+Traceback  (most recent call last):
   File "<stdin>", line 1, in <module>
 TypeError: Can't instantiate abstract class AbstractCalculator with abstract methods mutiply, sum
 >>> 
@@ -237,7 +237,7 @@ Moreover, any class that derives from `AbstractCalculator` and does not override
 ...  pass
 ... 
 >>> c = Calculator()
-Traceback (most recent call last):
+Traceback  (most recent call last):
   File "<stdin>", line 1, in <module>
 TypeError: Can't instantiate abstract class Calculator with abstract methods mutiply, sum
 >>> 
@@ -300,7 +300,7 @@ Class instances usually contain no definition of `__call__()` and the implementa
 ``` pycon
 >>> a = int()
 >>> a()
-Traceback (most recent call last):
+Traceback  (most recent call last):
   File "<stdin>", line 1, in <module>
 TypeError: 'int' object is not callable
 ```
