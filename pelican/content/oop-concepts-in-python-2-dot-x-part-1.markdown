@@ -312,7 +312,7 @@ The standard implementation of `__getattribute__()` searches first the internal 
 
 ``` pycon
 >>> door1.__dict__['colour']
-Traceback (most recent call last):
+Traceback  (most recent call last):
   File "<stdin>", line 1, in <module>
 KeyError: 'colour'
 >>> door1.__class__.__dict__['colour']
@@ -369,7 +369,7 @@ First of all, if you try to call an unbound method you get an error
 
 ``` pycon
 >>> Door.open()
-Traceback (most recent call last):
+Traceback  (most recent call last):
   File "<stdin>", line 1, in <module>
 TypeError: unbound method open() must be called with
     Door instance as first argument (got nothing instead)

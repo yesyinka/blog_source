@@ -120,7 +120,7 @@ def sequence(num):
 >>> s.next()
 2
 >>> s.next()
-Traceback (most recent call last):
+Traceback  (most recent call last):
   File "<stdin>", line 1, in <module>
   File "<stdin>", line 5, in sequence
 StopIteration
