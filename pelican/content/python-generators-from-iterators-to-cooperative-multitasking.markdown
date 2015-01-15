@@ -83,7 +83,7 @@ This object is an iterator since it exposes `__iter__()`. Its `next()` method re
 >>> print iterator.next()
 1
 >>> print iterator.next()
-Traceback (most recent call last):
+Traceback  (most recent call last):
   File "<stdin>", line 1, in <module>
   File "<stdin>", line 7, in next
 StopIteration

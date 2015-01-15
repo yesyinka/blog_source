@@ -40,7 +40,7 @@ As you can see Erlang does not get mad at your provocation and simply **raises a
 
 ``` pycon
 >>> 1/0
-Traceback (most recent call last):
+Traceback  (most recent call last):
   File "<stdin>", line 1, in <module>
 ZeroDivisionError: integer division or modulo by zero
 >>> 

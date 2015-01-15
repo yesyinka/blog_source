@@ -103,7 +103,7 @@ As you can see it is perfectly polymorphic: you can feed both a list or a string
 2
 >>> i = 5
 >>> len(i)
-Traceback (most recent call last):
+Traceback  (most recent call last):
   File "<stdin>", line 1, in <module>
 TypeError: object of type 'int' has no len()
 ```
@@ -120,7 +120,7 @@ Indeed this is exactly the point of Python polymorphism: _the integer type does 
 >>> d.__len__()
 2
 >>> i.__len__()
-Traceback (most recent call last):
+Traceback  (most recent call last):
   File "<stdin>", line 1, in <module>
 AttributeError: 'int' object has no attribute '__len__'
 ```
