@@ -217,9 +217,9 @@ Both `getattr()` and `__getattr__()` have their counterpart to manage writing ac
 
 ## The deepest secret
 
-Every Python object (starting from `object` itself) contains a very special method called `__getattribute__()` which should never be called explicitly or overridden. This method implements the attribute resolution inside the object, provides the attribute lookup through the inheritance hierarchy, resolves properties, calls `__getattr__()` and if needed raises the `AttributeError` exception. Even `__getattribute__()` has a counterpart that deals with write access, `__setattribute__()`.
+Every Python object (starting from `object` itself) contains a very special method called `__getattribute__()` which should never be called explicitly or overridden. This method implements the attribute resolution inside the object, provides the attribute lookup through the inheritance hierarchy, resolves properties, calls `__getattr__()` and if needed raises the `AttributeError` exception.
 
-Due to the very complex nature of these methods, and the uttermost importance of their role in making Python objects run, you shall never, never try to override them. If you find yourself in a situation where dealing explicitly with `__getattribute__()` is needed, you may be pretty sure that you did something wrong.
+Due to the very complex nature of this method, and the uttermost importance of its role in making Python objects run, you shall never, never try to override it. If you find yourself in a situation where dealing explicitly with `__getattribute__()` is needed, you may be pretty sure that you did something wrong.
 
 ## Conclusions
 
