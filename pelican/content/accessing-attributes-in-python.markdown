@@ -225,3 +225,6 @@ Due to the very complex nature of this method, and the uttermost importance of i
 
 As you can figure, 95% of your Python code will be based on standard dotted attribute access. Knowing other ways to manage attributes (properties) and being aware of what happens behind the scenes (`getattr`, `__getattr__()`, and `__getattribute__()`) is however essential to master the whole power of Python, which can sometimes lead to very elegant solutions that are otherwise very difficult to achieve.
 
+## Updates
+
+2015-01-16: Thanks to [Jamie](https://twitter.com/astronouth7303) who spotted a wrong `__setattribute__()` method presented in the last section.
