@@ -1,4 +1,4 @@
-Title: "The Lord of the Rings: an Erlang epic"
+Title: The Lord of the Rings: an Erlang epic
 Date: 2013-06-20 17:49 +0100
 Category: Programming
 Tags: Erlang, concurrent programming

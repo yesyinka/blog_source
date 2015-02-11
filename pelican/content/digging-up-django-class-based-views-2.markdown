@@ -1,4 +1,4 @@
-Title: "Digging up Django class-based views - 2"
+Title: Digging up Django class-based views - 2
 Date: 2013-12-11 09:00 +0200
 Category: Programming
 Tags: Python, Django

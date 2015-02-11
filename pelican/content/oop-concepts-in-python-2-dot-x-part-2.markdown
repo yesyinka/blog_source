@@ -1,4 +1,4 @@
-Title: "OOP concepts in Python 2.x - Part 2"
+Title: OOP concepts in Python 2.x - Part 2
 Date: 2014-03-10 18:56:56 +0100
 Category: Programming
 Tags: Python2, Python, OOP

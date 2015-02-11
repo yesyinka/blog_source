@@ -1,4 +1,4 @@
-Title: "Postage - a RabbitMQ-based component Python library"
+Title: Postage - a RabbitMQ-based component Python library
 Date: 2013-07-25 15:50 +0100
 Category: Projects
 Tags: Python, Pika, RabbitMQ, Postage

@@ -1,4 +1,4 @@
-Title: "Concurrent programming - 2"
+Title: Concurrent programming - 2
 Date: 2013-02-04 10:35 +0200
 Category: Programming
 Tags: C, operating systems, concurrent programming

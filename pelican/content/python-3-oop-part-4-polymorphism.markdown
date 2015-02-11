@@ -1,4 +1,4 @@
-Title: "Python 3 OOP Part 4 - Polymorphism"
+Title: Python 3 OOP Part 4 - Polymorphism
 Date: 2014-08-21 10:00:00 +0200
 Category: Programming
 Tags: Python, Python3, OOP

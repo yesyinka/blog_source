@@ -1,4 +1,4 @@
-Title: "Versioning - An underrated discipline"
+Title: Versioning - An underrated discipline
 Date: 2013-03-20 10:02 +0100
 Category: Programming
 Tags: versioning

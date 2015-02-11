@@ -1,4 +1,4 @@
-Title: "Python Generators - From Iterators to Cooperative Multitasking - 3"
+Title: Python Generators - From Iterators to Cooperative Multitasking - 3
 Date: 2013-03-29 13:25 +0100
 Category: Programming
 Tags: Python, generators

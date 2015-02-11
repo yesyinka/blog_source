@@ -1,4 +1,4 @@
-Title: "Python 3 OOP Part 5 - Metaclasses"
+Title: Python 3 OOP Part 5 - Metaclasses
 Date: 2014-09-01 15:00:00 +0200
 Category: Programming
 Tags: Python, Python3, OOP

@@ -1,4 +1,4 @@
-Title: "Accessing attributes in Python"
+Title: Accessing attributes in Python
 Date: 2015-01-12 17:00:00 +0100
 Category: Programming
 Tags: Python, Python3, OOP
