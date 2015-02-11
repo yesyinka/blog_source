@@ -1,4 +1,4 @@
-Title: "Python 3 OOP Part 2 - Classes and members"
+Title: Python 3 OOP Part 2 - Classes and members
 Date: 2014-08-20 14:00:00 +0200
 Category: Programming
 Tags: Python, Python3, OOP

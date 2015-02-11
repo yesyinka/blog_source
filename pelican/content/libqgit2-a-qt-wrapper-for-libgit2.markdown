@@ -1,4 +1,4 @@
-Title: "libqgit2: a Qt wrapper for libgit2"
+Title: libqgit2: a Qt wrapper for libgit2
 Date: 2013-07-18 10:51 +0100
 Category: Projects
 Tags: Qt, C++, Git

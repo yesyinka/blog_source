@@ -1,4 +1,4 @@
-Title: "Error handling in Erlang - a primer"
+Title: Error handling in Erlang - a primer
 Date: 2013-05-30 11:41 +0100
 Category: Programming
 Tags: Erlang, concurrent programming

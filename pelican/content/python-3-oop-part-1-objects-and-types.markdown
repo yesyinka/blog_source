@@ -1,4 +1,4 @@
-Title: "Python 3 OOP Part 1 - Objects and types"
+Title: Python 3 OOP Part 1 - Objects and types
 Date: 2014-08-20 13:00:00 +0200
 Category: Programming
 Tags: Python, Python3, OOP

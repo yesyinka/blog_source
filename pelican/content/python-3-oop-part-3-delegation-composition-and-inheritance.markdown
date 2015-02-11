@@ -1,4 +1,4 @@
-Title: "Python 3 OOP Part 3 - Delegation: composition and inheritance"
+Title: Python 3 OOP Part 3 - Delegation: composition and inheritance
 Date: 2014-08-20 15:00:00 +0200
 Category: Programming
 Tags: Python, Python3, OOP
