@@ -7,6 +7,8 @@ Slug: python-3-oop-part-4-polymorphism
 Series: "Python 3 OOP"
 Summary:
 
+This post is available as an **IPython Notebook** [here](/notebooks/Python_3_OOP_Part_4__Polymorphism.ipynb)
+
 ## Previous post
 
 [Python 3 OOP Part 3 - Delegation: composition and inheritance](/blog/2014/08/20/python-3-oop-part-3-delegation-composition-and-inheritance)
