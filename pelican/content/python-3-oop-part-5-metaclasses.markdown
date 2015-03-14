@@ -7,6 +7,8 @@ Slug: python-3-oop-part-5-metaclasses
 Series: "Python 3 OOP"
 Summary:
 
+This post is available as an **IPython Notebook** [here](/notebooks/Python_3_OOP_Part_5__Metaclasses.ipynb)
+
 ## Previous post
 
 [Python 3 OOP Part 4 - Polymorphism](/blog/2014/08/21/python-3-oop-part-4-polymorphism)
