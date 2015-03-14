@@ -7,6 +7,8 @@ Slug: python-3-oop-part-6-abstract-base-classes
 Series: "Python 3 OOP"
 Summary:
 
+This post is available as an **IPython Notebook** [here](/notebooks/Python_3_OOP_Part_6__Abstract_Base_Classes.ipynb)
+
 ## Previous post
 
 [Python 3 OOP Part 5 - Metaclasses](/blog/2014/09/01/python-3-oop-part-5-metaclasses)
