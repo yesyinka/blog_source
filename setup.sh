@@ -6,7 +6,7 @@ if [[ ! -z $1 ]]
     then
     method=$1;
 else
-    method='https'
+    method='ssh'
 fi
 
 # repo <method> <user> <name>
@@ -42,8 +42,8 @@ $(get_repo ${method} pelican-plugins)
 # git remote add upstream $(repo ${method} getpelican pelican-plugins)
 # cd ..
 
-$(get_repo ${method} pelican-themes)
-# git clone https://github.com/lgiordani/pelican-themes.git pelican/pelican-themes
+#$(get_repo ${method} pelican-themes)
+git clone git@github.com:lgiordani/pelican-bootstrap3.git pelican/pelican-bootstrap3
 # cd pelican/pelican-themes
 # git remote add upstream https://github.com/getpelican/pelican-themes.git
 # cd ..
