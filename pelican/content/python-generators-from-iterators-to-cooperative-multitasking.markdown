@@ -68,7 +68,7 @@ class AnIterator(object):
 		self.value = self.value - 1
 		return tmp
 		
-	def __iter__():
+	def __iter__(self):
 		return self
 ```
 
