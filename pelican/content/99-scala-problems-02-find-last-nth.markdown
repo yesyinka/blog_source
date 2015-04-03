@@ -55,7 +55,7 @@ def lastNth[A](n: Int, l: List[A]): A = {
 }
 ```
 
-## The functional solution
+## The recursive solution
 
 The recursive solution takes advantage of the power of pattern matching. The exit case is when the list is composed by a head element and a tail made by a list of one single element. The pattern matching syntax can express this situation with the `h :: List(t)` syntax. The standard case is when the tail is still a generic list and the last case covers all edge cases.
 
@@ -85,9 +85,9 @@ The function is very simple. If the length of the list is `n` the element we are
 
 ## Final considerations
 
-This time I learned digging into the Scala documentation and paying attention to exceptions which are an important matter in a robust API.
+This time I learned digging into the **Scala documentation** and paying attention to **exceptions** which are an important matter in a robust API.
 
-Working on the functional solution I learned that patterns can be very expressive and how to use pattern guards.
+Working on the recursive solution I learned that **patterns** can be very expressive and how to use **pattern guards**.
 
 ## Feedback
 

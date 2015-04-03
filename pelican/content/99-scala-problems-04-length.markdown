@@ -21,7 +21,7 @@ res0: Int = 6
 ## Initial thoughts
 This should be straightforward both with object-oriented and functional techniques. There are no special cases except that of an empty list. There is an interesting solution that mixes functional and object-oriented techniques, which is known as folding, and I'll discuss it in detail.
 
-As already said for the problem 02, this function may help solving that problem in a pure functional way, so we'll talk about this too.
+As already said for [problem 02](/blog/2015/04/02/99-scala-problems-02-find-last-nth/), this function may help solving that problem in a pure recursive way, so we'll talk about this too.
 
 ## The procedural solution
 
@@ -31,13 +31,13 @@ def length[A](l:List[A]):Int = {
 }
 ```
 
-No special things to high light here. The `length()` method works with empty lists too, returning 0, so everything should be fine. As already shown in problem 01 the function may be also reduced to one single line
+No special things to high light here. The `length()` method works with empty lists too, returning 0, so everything should be fine. As already shown in [problem 01](/blog/2015/04/02/99-scala-problems-01-find-last-element/) the function may be also reduced to one single line
 
 ``` scala
 def length[A](l:List[A]):Int = l.length
 ```
 
-## The functional solution
+## The recursive solution
 
 Coming from procedural languages my first solution was
 
@@ -106,7 +106,7 @@ The `count()` function may however be simplified to an anonymous function due to
 
 ## Last nth element
 
-Now that we have a pure functional solution for counting elements in a list we may go back to problem 02 and give another solution.
+Now that we have a pure recursive solution for counting elements in a list we may go back to [problem 02](/blog/2015/04/02/99-scala-problems-02-find-last-nth/) and give another solution.
 
 ``` scala
 def lastNth[A](n: Int, l:List[A]): A = {
@@ -128,11 +128,11 @@ def lastNth[A](n: Int, l:List[A]): A = {
 }
 ```
 
-This simply takes advantage of the function `length()` developed in this post and of the function `findKth()` from the problem 03.
+This simply takes advantage of the function `length()` developed in this post and of the function `findKth()` from [problem 03](/blog/2015/04/02/99-scala-problems-03-find-kth/).
 
 ## Final considerations
 
-The discussion about this problem involved a lot of important topics for the Scala programmer: tail recursion, folding, partial functions, partially applied functions, currying, anonymous functions, type inference and placeholder syntax. We also reached the goal of writing a pure functional solution to problem 02.
+The discussion about this problem involved a lot of important topics for the Scala programmer: **tail recursion**, **folding**, **partial functions**, **partially applied functions**, **currying**, **anonymous functions**, **type inference** and **placeholder syntax**. We also reached the goal of writing a pure recursive solution to problem 02.
 
 ## Feedback
 

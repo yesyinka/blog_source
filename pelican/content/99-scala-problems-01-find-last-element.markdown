@@ -84,7 +84,7 @@ There is no check for an empty list because the `last()` method already throws t
 
 There is no need to use an explicit `return` statement, as functions always return the last expression.
 
-## The functional solution
+## The recursive solution
 
 ``` scala
 def last[A](l:List[A]):A = l match {
@@ -106,9 +106,9 @@ In Scala the exception shall be created at the moment, just like a standard obje
 
 ## Final considerations
 
-My first experience with functional languages was Erlang, so I quickly learned to love pattern matching and the beauty of recursive solutions. The Scala pattern matching syntax was for me really simple to grasp. The procedural solution using the dedicated method was straightforward.
+My first experience with functional languages was Erlang, so I quickly learned to love **pattern matching** and the beauty of **recursive solutions**. The Scala pattern matching syntax was for me really simple to grasp. The procedural solution using the dedicated method was straightforward.
 
-The type variables syntax is very useful. I come from Python, where the polymorphic approach is pushed to its limit, and all variables are references, thus implementing type variables from the very beginning. In Scala, types are explicitly declared, so the type variables syntax allows me to use collections without binding the code to a specific type.
+The **type variables** syntax is very useful. I come from Python, where the polymorphic approach is pushed to its limit, and all variables are references, thus implementing type variables from the very beginning. In Scala, types are explicitly declared, so the type variables syntax allows me to use collections without binding the code to a specific type.
 
 ## Feedback
 

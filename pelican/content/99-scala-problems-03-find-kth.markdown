@@ -47,7 +47,7 @@ def findKth[A](k:Int, l:List[A]):A = {
 
 which probably states more clearly that the main job of the function is to replace one exception with another one.
 
-## The functional solution
+## The recursive solution
 
 A recursive solution is pretty straightforward. We just repeatedly remove the first element until and decrease the given index until it reaches 0. Using a couple of methods from the `List` type the solution is
 
@@ -59,7 +59,7 @@ def findKth[A](k:Int, l:List[A]):A = k match {
 }
 ```
 
-If however we try to avoid the use of methods, just to see if we may solve it with a pure functional approach, we need to match two things together, which leads to
+If however we try to avoid the use of methods, just to see if we may solve it with a pure recursive approach, we need to match two things together, which leads to
 
 ``` scala
 def findKth[A](k:Int, l:List[A]):A = (k,l) match {
@@ -75,7 +75,7 @@ The first case is the exit case, where the counter reached 0 and the list has an
 
 ## Final considerations
 
-The procedural approach made me learn how to catch exceptions in Scala and how to perform logical comparisons. The functional solution taught me pattern matching of multiple values.
+The procedural approach made me learn how to **catch exceptions** in Scala and how to perform **logical comparisons**. The recursive solution taught me **pattern matching of multiple values**.
 
 ## Feedback
 

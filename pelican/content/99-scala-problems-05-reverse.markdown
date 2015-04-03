@@ -20,7 +20,7 @@ res0: List[Int] = List(8, 5, 3, 2, 1, 1)
 
 ## Initial thoughts
 
-Another classical problem of computer science and functional languages. The solution will be straightforward. As happened with the `length()` function developed for the problem 04, this one may help solving problem 02 in a pure functional way. Moreover this problem may be solved with folding like problem 04.
+Another classical problem of computer science and functional languages. The solution will be straightforward. As happened with the `length()` function developed for [problem 04](/blog/2015/04/02/99-scala-problems-04-length/), this one may help solving [problem 02](/blog/2015/04/02/99-scala-problems-02-find-last-nth/) in a pure recursive way. Moreover this problem may be solved with folding like problem 04.
 
 ## The procedural solution
 
@@ -30,7 +30,7 @@ Another classical problem of computer science and functional languages. The solu
 def reverse[A](ls: List[A]) = ls.reverse
 ```
 
-## Functional
+## The recursive solution
 
 ``` scala
 def reverse[A](l: List[A]): List[A] = l match {
@@ -94,7 +94,7 @@ scala> List(4,5,6).:::(List(1,2,3))
 res0: List[Int] = List(1, 2, 3, 4, 5, 6)
 ```
 
-Now the functional solution becomes more clear: the first pattern matching case just exchanges the head of the list with the tail, but recursively calls the function on the tail itself.
+Now the recursive solution becomes more clear: the first pattern matching case just exchanges the head of the list with the tail, but recursively calls the function on the tail itself.
 
 As already explained this code is not tail recursive, thus allocating stack space to store local variables during the recursive call. A good way to make it tail recursive is to use another list that is filled by the elements extracted from the source one.
 
@@ -115,7 +115,7 @@ Here we use an helper function in which we pick the first element of the remaind
 Folding may greatly simplify the solution. Remember that `foldLeft()` is a method of `List` objects that visits each element in the list, applying a given function. The first use of the function receives the initial value passed to `foldLeft()`, while successive calls receive the result of the previous call.
 
 ``` scala
-def reverseFunctional[A](ls: List[A]): List[A] =
+def reverse[A](ls: List[A]): List[A] =
     ls.foldLeft(List[A]()) { (r, h) => h :: r }
 ```
 
@@ -148,7 +148,7 @@ Instead of computing the actual index of the last-nth element using the `length(
 
 ## Final considerations
 
-This problem led me into the list concatenation operators and the discovery of the `::` class that allows list decomposition in pattern matching.
+This problem led me into the **list concatenation operators** and the discovery of the `::` class that allows **list decomposition** in pattern matching.
 
 ## Feedback
 
