@@ -24,7 +24,7 @@ This is similar to [problem 08](/blog/2015/04/02/99-scala-problems-08-eliminate-
 
 ## The recursive solution
 
-The tail recursive solution is easier to write than any other solution. The resulting list we are building is a `List[List[A]]`, while the remainder is just a plain list `List[A]`.
+The tail recursive solution is easier to write than the standard recursive one. The resulting list we are building is a `List[List[A]]`, while the remainder is just a plain list `List[A]`.
 
 The first case is straightforward. The second case extracts an element from the list and, if the result is empty of the result doesn't contain that element, appends a new list. Pay attention: we have to check `res.last.head` since `res` is a list of lists. So `res.last` is the last list we put into `res` and its head is the repeated element. Obviously the same thing is accomplished by checking `res.last.last`, since this algorithm packs together equal values. The third case covers the situation in which the extracted element is already in the last list or `res`, so we have to modify this latter. To do this we separate `res` in `res.init` and `res.last`, append `h` to `res.last` (`res.last:::List(h)`) and merge again the two pieces.
 
@@ -39,23 +39,29 @@ def pack[A](l: List[A]):List[List[A]] = {
 }
 ```
 
-A very simpler solution, however, comes from the `span()` method of `List` objects.
-TODO TODO TODO
+A very simpler solution, however, comes from the `span()` method of `List` objects. This method "splits this list into a prefix/suffix pair according to a predicate."
+
+In other words, `span()` selects the elements of the list (preserving order) that satisfy a given function until it finds an element for which the function returns false. This is exactly what we need to pack consecutive duplicate elements. The strategy is to pack all elements with the same value of the list head element, then store this list and recursively call `span()` on the remaining list.
 
 ``` scala
-def pack2[A](l: List[A]):List[List[A]] = {
-    def _pack2(res: List[List[A]], rem: List[A]):List[List[A]] = rem match {
+def pack[A](l: List[A]):List[List[A]] = {
+    def _pack(res: List[List[A]], rem: List[A]):List[List[A]] = rem match {
         case Nil => res
         case ls => {
             val (s: List[A], r: List[A]) = rem span { _ == rem.head }
-            _pack2(res:::List(s), r)
+            _pack(res:::List(s), r)
         }
     }
-    _pack2(List(), l)
+    _pack(List(), l)
 }
 ```
 
+The function I pass to `span()` is simply `{ _ == rem.head }` since the method gives the function each element in the list.
+
 ## Final considerations
+
+This problem helped me enhance my knowledge of **pattern guards** and Scala **anonymous functions**. The solution with `span()` includes a pattern match that leads to a **block expression**, which was somehow a syntactical blind guess for me, but ended up being perfectly valid.
+
 ## Feedback
 
 Feel free to use [the blog Google+ page](https://plus.google.com/u/0/b/110554719587236016835/110554719587236016835/posts) to comment the post. The [GitHub issues](https://github.com/lgiordani/lgiordani.github.com/issues) page is the best place to submit corrections.

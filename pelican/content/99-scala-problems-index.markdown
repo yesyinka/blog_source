@@ -6,9 +6,11 @@ Authors: Leonardo Giordani
 Slug: 99-scala-problems-index
 Summary: The updated index of posts about 99 Scala Problems
 
+I decided to learn [Scala](http://www.scala-lang.org/). I looked for some good exercises for Scala programmers and found [S-99: Ninety-Nine Scala Problems](http://aperiodic.net/phil/scala/s-99/). The site provides solutions for the problems, so my solutions will obviously be influenced by those, when not the same.
+
 **CAVEAT**: I am a beginner so what I state in the following posts may be inaccurate and sometimes wrong. Please submit an issue on the blog [GitHub issues](https://github.com/lgiordani/lgiordani.github.com/issues) page.
 
-This is the index of the problems I already discussed. You will find the official page [here](http://aperiodic.net/phil/scala/s-99/). I kept the original title and difficulty ranking (asterisks)
+This is the index of the problems I already discussed. I kept the original title and difficulty ranking (asterisks)
 
 * [P01](/blog/2015/04/02/99-scala-problems-01-find-last-element/) (*) Find the last element of a list.
 * [P02](/blog/2015/04/02/99-scala-problems-02-find-last-nth/) (*) Find the last but one element of a list.
