@@ -1,5 +1,5 @@
 Title: 99 Scala Problems 03 - Find the Kth element of a list
-Date: 2015-04-02 22:30:00 +0100
+Date: 2015-04-07 09:10:00 +0100
 Category: Programming
 Tags: Scala, functional programming
 Authors: Leonardo Giordani

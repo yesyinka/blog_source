@@ -1,5 +1,5 @@
 Title: 99 Scala Problems 05 - Reverse a list
-Date: 2015-04-02 22:50:00 +0100
+Date: 2015-04-07 09:20:00 +0100
 Category: Programming
 Tags: Scala, functional programming
 Authors: Leonardo Giordani

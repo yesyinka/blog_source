@@ -40,7 +40,7 @@ PAGINATION_PATTERNS = (
 STATIC_PATHS = ['images', 'code', 'notebooks', 'extra/CNAME']
 EXTRA_PATH_METADATA = {'extra/CNAME': {'path': 'CNAME'},}
 
-THEME = "pelican-themes/pelican-bootstrap3"
+THEME = "pelican-bootstrap3"
 CC_LICENSE = 'CC-BY-SA'
 #SHOW_ARTICLE_AUTHOR = True
 BOOTSTRAP_THEME = 'spacelab'
@@ -51,10 +51,14 @@ FAVICON = 'images/TheDigitalCat_favicon_32.png'
 DISPLAY_ARTICLE_INFO_ON_INDEX = True
 DISPLAY_TAGS_INLINE = True
 DISPLAY_RECENT_POSTS_ON_SIDEBAR = True
+
+ADDTHIS_PROFILE = 'ra-552391e122c8506c'
 #GITHUB_USER = 'lgiordani'
 TWITTER_USERNAME = 'tw_lgiordani'
 TWITTER_CARDS = True
+USE_OPEN_GRAPH = True
 OPEN_GRAPH_IMAGE = 'images/TheDigitalCat_logo_200.jpg'
+
 DISPLAY_SERIES_ON_SIDEBAR = True
 SHOW_SERIES = True
 

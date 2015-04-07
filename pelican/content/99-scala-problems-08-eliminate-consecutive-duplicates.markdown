@@ -1,5 +1,5 @@
 Title: 99 Scala Problems 08 - Eliminate consecutive duplicates of list elements
-Date: 2015-04-02 23:20:00 +0100
+Date: 2015-04-07 09:35:00 +0100
 Category: Programming
 Tags: Scala, functional programming
 Authors: Leonardo Giordani
