@@ -1,5 +1,5 @@
 Title: 99 Scala Problems 10 - Run-length encoding of a list.
-Date: 2015-04-xx xx:xx:00 +0100
+Date: 2015-04-14 10:00:00 +0100
 Category: Programming
 Tags: Scala, functional programming
 Authors: Leonardo Giordani

@@ -23,3 +23,9 @@ This is the index of the problems I already discussed. I kept the original title
 * [P07](/blog/2015/04/07/99-scala-problems-07-flatten/) (**) Flatten a nested list structure.
 * [P08](/blog/2015/04/07/99-scala-problems-08-eliminate-consecutive-duplicates/) (**) Eliminate consecutive duplicates of list elements.
 * [P09](/blog/2015/04/07/99-scala-problems-09-pack-consecutive-duplicates/) (**) Pack consecutive duplicates of list elements into sublists.
+* [P10](/blog/2015/04/14/99-scala-problems-10-run-length-encoding-of-a-list) (*) Run-length encoding of a list.
+* [P11](/blog/2015/04/14/99-scala-problems-11-modified-run-length-encoding) (*) Modified run-length encoding.
+* [P12](/blog/2015/04/14/99-scala-problems-12-decode-a-run-length-encoded-list) (**) Decode a run-length encoded list.
+* [P13](/blog/2015/04/14/99-scala-problems-13-run-length-encoding-of-a-list-direct-solution) (**) Run-length encoding of a list (direct solution).
+* [P14](/blog/2015/04/14/99-scala-problems-14-duplicate-the-elements-of-a-list) (*) Duplicate the elements of a list.
+* [P15](/blog/2015/04/14/99-scala-problems-15-duplicate-the-elements-of-a-list-a-given-number-of-times) (**) Duplicate the elements of a list a given number of times.
