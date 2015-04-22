@@ -251,4 +251,38 @@ This pattern enables you to do every sort of things with the decorated object. N
 
 If you write a class-based decorator with arguments, you are in charge of returning a callable object of choice. There is no assumption on the returned object, even if the usual case is that the returned object has the same prototype as the decorated one.
 
-This means that if the decorated object accepts zero arguments (like in my example), you usually return a callable that accepts zero arguments. This is however by no means enforced by the language, 
+This means that if the decorated object accepts zero arguments (like in my example), you usually return a callable that accepts zero arguments. This is however by no means enforced by the language, and through this you may push the metaprogramming technique a bit. I'm not providing examples of this technique in this post, however, as it is something more advanced.
+
+## Function-based decorators
+
+Function-based decorators are very simple for simple cases, but their syntax could be difficult to grasp at first sight. They are not very different from the class-based decorators with arguments case, as they define a local function that wraps the decorated object and return it.
+
+The case without arguments is always the simplest one
+
+``` python
+def decorate(f):
+    def wrap():
+        f()
+    return wrap
+
+@decorate
+def func():
+    pass
+```
+
+This behaves like the equivalent case with classes. The function is passed as an argument to the `decorate` function as the decoration process calls it passing the decorated object. When you actually call the function, however, you are actually calling `wrap()`.
+
+As happened for class-based decorators, the parametrization changes the calling procedure a little. This is the code
+
+``` python
+def decorate(arg1):
+    def wrap(f):
+        def _wrap(arg):
+            f(arg1)
+        return _wrap
+    return wrap
+
+@decorate(1)
+def func(arg1):
+    pass
+```
