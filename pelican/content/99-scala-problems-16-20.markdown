@@ -205,9 +205,68 @@ def rotate[A](n: Int, l: List[A]):List[A] = {
 }
 ```
 
+# Problem 20
+
+## The problem
+
+**P20** (*) Remove the Kth element from a list.
+Return the list and the removed element in a Tuple.  Elements are numbered from 0.
+
+``` scala
+scala> removeAt(1, List('a, 'b, 'c, 'd))
+res0: (List[Symbol], Symbol) = (List('a, 'c, 'd),'b)
+```
+
+## Solution
+
+There are two edge conditions in this problem. The first is when the list is empty, and the second is when we are asking for an index outside the list. Since an empty list has length 0 both conditions can be summarized checking if the requested index is greater or equal than the length of the list (the "or equal" part comes from the fact that lists are indexed starting from 0).
+
+The simplest solution uses `take()` and `drop()`
+
+``` scala
+def removeAt[A](n: Int, l: List[A]):(List[A], A) = {
+    if (l.length <= n ) throw new NoSuchElementException
+    (l.take(n):::l.drop(n).tail, l(n))
+}
+```
+
+The problem with boundaries comes from the use of `tail()`, that cannot be applied to an empty list, while `take()` and `drop()` seamlessly work on empty lists and negative indexes. So using the `take()` counterpart `takeRight()` we could write
+
+``` scala
+def removeAt[A](n: Int, l: List[A]):(List[A], A) = {
+    (l.take(n):::l.takeRight(l.length - n), l(n))
+}
+```
+
+which automatically raises an `IndexOutOfBoundsException` when the requested index is outside the list. If we want a `NoSuchElementException`, however, we have to wrap the code with a `try` statement.
+
+We can also use mapping, even if in this case its use is probably overkill
+
+``` scala
+def removeAt[A](n: Int, l: List[A]):(List[A], A) = {
+    (l.zipWithIndex filter { e => e._2 != n } map { _._1 }, l(n))
+}
+```
+
+this solution raises an `IndexOutOfBoundsException` when the index is outside the list, just like the previous one.
+
+A recursive solution may use the index as a countdown value to get elements until the requested one pops up, then skipping it and getting the rest of the list.
+
+``` scala
+def removeAtR[A](n: Int, l: List[A]):(List[A], A) = {
+    def _removeAtR[A](k: Int, res: List[A], rem: List[A]):(List[A], A) = (k, rem) match {
+        case (0, h::tail) => return (res:::tail, h)
+        case (k, Nil) => throw new NoSuchElementException
+        case (k, h::tail) => return _removeAtR(k - 1, res:::List(h), tail)
+    }
+    return _removeAtR(n, List(), l)
+}
+```
+
+
 ## Final considerations
 
-Problem 16 introduced me to new **list methods** `filter()` and `zipWithIndex()`. I met **iterators** and **tuples** for the first time and learned how to deal with them on a basic level.  Problem 17 introduced the new `splitAt()` method and let me review `take()`, `takeRight()` and `drop()`. The recursive solution makes use of everything has been already discovered solving the previous problems. With problem 18 I learned a new method of the `List` type, `slice()`. The recursive solution is pretty straightforward but matching a tuple of three values requires some attention. I appreciate the **syntactic sugar** that allows to drop parenthesis when calling a function with a single argument, it makes the call resemble natural language. Problem 19 is just another application of the same methods.
+Problem 16 introduced me to new **list methods** `filter()` and `zipWithIndex()`. I met **iterators** and **tuples** for the first time and learned how to deal with them on a basic level.  Problem 17 introduced the new `splitAt()` method and let me review `take()`, `takeRight()` and `drop()`. The recursive solution makes use of everything has been already discovered solving the previous problems. With problem 18 I learned a new method of the `List` type, `slice()`. The recursive solution is pretty straightforward but matching a tuple of three values requires some attention. I appreciate the **syntactic sugar** that allows to drop parenthesis when calling a function with a single argument, it makes the call resemble natural language. Problems 19 and 20 are just applications of the same methods.
 
 ## Feedback
 
