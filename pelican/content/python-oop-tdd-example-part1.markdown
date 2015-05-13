@@ -1,5 +1,5 @@
 Title: A simple example of Python OOP development (with TDD) - Part 1
-Date: 2015-05-08 16:00:00 +0100
+Date: 2015-05-13 17:00:00 +0100
 Category: Programming
 Tags: OOP, Python, Python3, TDD
 Authors: Leonardo Giordani
