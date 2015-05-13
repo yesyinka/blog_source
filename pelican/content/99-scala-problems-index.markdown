@@ -29,8 +29,8 @@ This is the index of the problems I already discussed. I kept the original title
 * [P13](/blog/2015/04/14/99-scala-problems-13-run-length-encoding-of-a-list-direct-solution) (**) Run-length encoding of a list (direct solution).
 * [P14](/blog/2015/04/14/99-scala-problems-14-duplicate-the-elements-of-a-list) (*) Duplicate the elements of a list.
 * [P15](/blog/2015/04/14/99-scala-problems-15-duplicate-the-elements-of-a-list-a-given-number-of-times) (**) Duplicate the elements of a list a given number of times.
-* [P16](/blog/2015/mm/dd/99-scala-problems-16-20) (**) Drop every Nth element from a list.
-* [P17](/blog/2015/mm/dd/99-scala-problems-16-20) (*) Split a list into two parts.
-* [P18](/blog/2015/mm/dd/99-scala-problems-16-20) (**) Extract a slice from a list.
-* [P19](/blog/2015/mm/dd/99-scala-problems-16-20) (**) Rotate a list N places to the left.
-* [P20](/blog/2015/mm/dd/99-scala-problems-16-20) (*) Remove the Kth element from a list.
+* [P16](/blog/2015/05/13/99-scala-problems-16-20) (**) Drop every Nth element from a list.
+* [P17](/blog/2015/05/13/99-scala-problems-16-20) (*) Split a list into two parts.
+* [P18](/blog/2015/05/13/99-scala-problems-16-20) (**) Extract a slice from a list.
+* [P19](/blog/2015/05/13/99-scala-problems-16-20) (**) Rotate a list N places to the left.
+* [P20](/blog/2015/05/13/99-scala-problems-16-20) (*) Remove the Kth element from a list.

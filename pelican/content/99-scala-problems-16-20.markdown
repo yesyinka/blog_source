@@ -1,5 +1,5 @@
 Title: 99 Scala Problems 16-20
-Date: 2015-04-14 12:30:00 +0100
+Date: 2015-05-13 16:00:00 +0100
 Category: Programming
 Tags: Scala, functional programming
 Authors: Leonardo Giordani
@@ -271,5 +271,3 @@ Problem 16 introduced me to new **list methods** `filter()` and `zipWithIndex()`
 ## Feedback
 
 Feel free to use [the blog Google+ page](https://plus.google.com/u/0/b/110554719587236016835/110554719587236016835/posts) to comment the post. The [GitHub issues](https://github.com/lgiordani/lgiordani.github.com/issues) page is the best place to submit corrections.
-
-
