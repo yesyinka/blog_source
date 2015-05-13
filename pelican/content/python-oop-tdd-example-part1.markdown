@@ -330,7 +330,7 @@ tests/test_binary.py:5: TypeError
 
 So now you can start writing code and use your test battery to check if it works as expected. Obviously "as expected" means that all the tests you wrote pass, but this does not imply you covered all cases. TDD is an iterative methodology: when you find a bug or a missing feature you first write a good test or a set of tests that address the matter and then produce some code that make the tests pass.
 
-**At this point you are warmly encouraged to write the code by yourself** and to check your product with the given battery of tests. Just download the first version of the tests file (`test_binary_ver1.py`) and put it in the `tests/` directory. Then read it carefully to understand what the requirements are and start writing the class. When you think you are done with a part of it just run the tests and see if everything works well, then move on.
+**At this point you are warmly encouraged to write the code by yourself** and to check your product with the given battery of tests. Just download the first version of the tests file ([`test_binary_ver1.py`](/code/python-oop-tdd-part1/test_binary_ver1.py)) and put it in the `tests/` directory. Then read it carefully to understand what the requirements are and start writing the class. When you think you are done with a part of it just run the tests and see if everything works well, then move on.
 
 ## My solution
 
@@ -376,11 +376,9 @@ If the incoming value is not a sequence it shall be convertible to an integer, w
 
 Finally, the `__int__()` method (one of the Python _magic methods_) is automatically called when we apply `int()` to our binary, just like we do in a lot of the tests. This method is basically the one responsible of providing a conversion to integer of a given class. In this case we just have to return the value we stored internally.
 
-**Obviously I didn't write this code in a single burst. I had to run the tests a lot of times to tune my code.**
+**Obviously I didn't write this code in a single burst. I had to run the tests more than once to tune my code.**
 
-### Conversions
-
-We already write the method that performs the conversion to an integer. Some tests however (namely `test_binary_bin` and `test_binary_hex`) still fail with the error message `TypeError: 'Binary' object cannot be interpreted as an integer`.
+I already wrote the method that performs the conversion to an integer. Some tests however (namely `test_binary_bin` and `test_binary_hex`) still fail with the error message `TypeError: 'Binary' object cannot be interpreted as an integer`.
 
 According to [the official documentation](https://docs.python.org/3/library/functions.html#bin),  "If x is not a Python int object, it has to define an `__index__()` method that returns an integer." so this is what we are missing. As for `__index__()`, the [documentation](https://docs.python.org/3/reference/datamodel.html#object.__index__) states that "In order to have a coherent integer type class, when `__index__()` is defined `__int__()` should also be defined, and both should return the same value."
 
@@ -455,7 +453,7 @@ The first two tests check that adding both an integer and a `Binary` to a `Binar
 
 Bitwise and arithmetic operations are implemented using Python magic methods. Please check [the official documentation](https://docs.python.org/3.4/library/operator.html) for a complete list of operators and related methods.
 
-**Now download the file `test_binary_ver2.py` and use it to develop the new features.**
+**Now download the file [`test_binary_ver2.py`](/code/python-oop-tdd-part1/test_binary_ver2.py) and use it to develop the new features.**
 
 The code that implements the required behaviour is
 
@@ -519,7 +517,7 @@ def test_binary_slice():
     assert Binary('01101010')[4:] == Binary('110')
 ```
 
-**You will find the new tests in the `test_binary_ver3.py` file.**
+**You will find the new tests in the [`test_binary_ver3.py`](/code/python-oop-tdd-part1/test_binary_ver3.py) file.**
 
 Running the tests shows that the `__getitem__()` function does not provide support for `slice` objects, raising the exception `TypeError: unsupported operand type(s) for +: 'slice' and 'int'`. Checking [the documentation](https://docs.python.org/3.4/reference/datamodel.html#object.__getitem__) of `__getitem__()` we notice that it shall manage both integers and `slice` objects (this is the missing part) and that it shall raise `IndexError` for illegal indexes to make for loops work. So I immediately add a test for this rule
 
@@ -566,7 +564,7 @@ def test_binary_split_leading_zeros():
     assert Binary('100010110').split(8) == (1, Binary('10110'))
 ```
 
-**These new tests are in the file `test_binary_ver4.py`.**
+**These new tests are in the file [`test_binary_ver4.py`](/code/python-oop-tdd-part1/test_binary_ver4.py).**
 
 The code that implements it is
 
@@ -583,6 +581,17 @@ def split(self, bits):
 * Jeff Knupp on [open sourcing a Python project](http://www.jeffknupp.com/blog/2013/08/16/open-sourcing-a-python-project-the-right-way/).
 * The Python [`collections.abc` module documentation](https://docs.python.org/3/library/collections.abc.html).
 * [Python operators documentation](https://docs.python.org/3.4/library/operator.html).
+
+The code developed in this post can be found here:
+
+* The full code of the `Binary` class is [here](/code/python-oop-tdd-part1/binary.py).
+* The last version of the tests file is [here](/code/python-oop-tdd-part1/test_binary_ver4.py).
+
+## Final words
+
+If you tried and write your own class before checking my solution I'm sure you experienced both some frustration when tests failed and a great joy when they finally passed. I'm also sure that you could appreciate the simplicity of TDD and perhaps understand why so many programmes adopt it.
+
+In the next post I will guide you through the addition of the `SizeBinary` class, again following the TDD methodology.
 
 ## Feedback
 
