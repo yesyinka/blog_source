@@ -16,7 +16,7 @@ Binary numbers are rather easy to understand, even if becoming familiar with the
 
 The package we are going to write will provide a class that represents binary numbers (`Binary`) and a class that represents binary numbers with a given bit size (`SizeBinary`). They shall provide basic binary operations like logical (and, or, xor), arithmetic (addition, subtraction, multiplication, division), shifts and indexing.
 
-A quick example of what the package can do:
+A quick example of what the package shall do:
 
 ``` pycon
 >>> b = Binary('0101110001')
@@ -29,7 +29,7 @@ A quick example of what the package can do:
 >>> b[9]
 '0'
 >>> b.SHR()
-'010111000'
+'10111000'
 ```
 
 ## Python and bases
@@ -74,11 +74,13 @@ You can also use a different base when converting things to integers, through th
 
 ## Test-driven development
 
-Simple tasks are the best way to try and use new development methodologies, so this is a good occasion to start working with the so-called test-driven approach. Test-driven Development (TDD) basically means that the first thing you do when developing is to write some _tests_, that is programs that use what you are going to develop. The purpose of those programs is to test that your final product complies with a given behaviour so they provide 
+Simple tasks are the best way to try and use new development methodologies, so this is a good occasion to start working with the so-called test-driven approach. Test-driven Development (TDD) basically means that the first thing you do when developing is to write some _tests_, that is **programs that use what you are going to develop**. The purpose of those programs is to test that your final product complies with a given behaviour so they provide 
 
 * **Documentation** for your API: they are examples of use of your package.
-* **Regression** checks: when you change the code to develop new features the package shall not break the behaviour of the previous versions.
+* **Regression** checks: when you change the code to develop new features they shall not break the behaviour of the previous package versions.
 * **TODO list**: until all tests run successfully you have something still waiting to be implemented.
+
+I suggest you to follow this post until we wrote some tests (section "Writing some tests" included), then **write your own class, trying to make it pass all the tests**. This way, actually developing something, you can really learn both TDD and Python. Then you can check your code against mine and perhaps provide a far better solution that the one found by me.
 
 ## Development environment
 
@@ -104,7 +106,7 @@ Then create a directory for the package, the `__init__.py` file and a directory 
 (venv)~/binary$ mkdir tests
 ```
 
-Finally, let us check that is correctly working. Py.test does not find any test so it should exit without errors.
+Finally, let us check that everything is correctly working. Py.test does not find any test so it should exit without errors.
 
 ``` bash
 (venv)~/binary$ py.test
@@ -256,7 +258,7 @@ def test_binary_init_negative():
         binary = Binary(-4)
 ```
 
-As you can see, now we have to check that our class raises an exception, but if we make the class raise it the test will fail. To let the test pass we shall check that the exception is raised but suppress it, and this can be done with `pytest.raises`, which is a suitable [context manager(https://www.python.org/dev/peps/pep-0343/).
+As you can see, now we have to check that our class raises an exception, but if we make the class raise it the test will fail. To let the test pass we shall check that the exception is raised but suppress it, and this can be done with `pytest.raises`, which is a suitable [context manager](https://www.python.org/dev/peps/pep-0343/).
 
 ### Conversions
 
@@ -278,7 +280,7 @@ def test_binary_str():
 
 I warmly suggest to check [this page](https://pytest.org/latest/goodpractises.html) for a project layout that allows py.test to work flawlessly. To avoid putting too many things in this post I am going to run `py.test` with a custom `PYTHONPATH` to make it correctly import the code. However, please remember that this setup is just a trick for simplicity's sake. Check [this detailed post](http://www.jeffknupp.com/blog/2013/08/16/open-sourcing-a-python-project-the-right-way/) by Jeff Knupp to learn a lot about Python packaging and project layouts.
 
-## Writing the class
+### Writing the class
 
 Trying to run the tests at this point just returns a big failure due to an import error, since the `binary.py` module does not exists yet.
 
@@ -328,7 +330,11 @@ tests/test_binary.py:5: TypeError
 
 So now you can start writing code and use your test battery to check if it works as expected. Obviously "as expected" means that all the tests you wrote pass, but this does not imply you covered all cases. TDD is an iterative methodology: when you find a bug or a missing feature you first write a good test or a set of tests that address the matter and then produce some code that make the tests pass.
 
-The most complex part of the class is the initialization, since I want it to accept a wide range of data types. Basically we have to deal with sequences (strings and lists) or with plain values. The latter ones shall be convertible to an integer, otherwise trying to initialize a binary number with them makes no sense. Since binary numbers are just a representation of integers I decided to store the value in the class as an integer inside the `self._value` attribute.
+**At this point you are warmly encouraged to write the code by yourself** and to check your product with the given battery of tests. Just download the first version of the tests file (`test_binary_ver1.py`) and put it in the `tests/` directory. Then read it carefully to understand what the requirements are and start writing the class. When you think you are done with a part of it just run the tests and see if everything works well, then move on.
+
+## My solution
+
+The most complex part of the class is the initialization, since I want it to accept a wide range of data types. Basically we have to deal with sequences (strings and lists) or with plain values. The latter ones shall be convertible to an integer, otherwise trying to initialize a binary number with them makes no sense. Since binary numbers are just a representation of integers I decided to store the value in the class as an integer inside the `self._value` attribute. Pay attention that this decision means that all leading zeros will be stripped from the number, i.e., `Binary('000101')` is equal to `Binary('101')`. This will be important for indexing and slicing.
 
 This is the code
 
@@ -360,7 +366,7 @@ Running the tests I get `4 failed, 9 passed in 0.02 seconds`, which is a good sc
 
 Let us review the code I wrote. I make use of the `collections` module to tell apart sequences from plain values in a pythonic way. If you do not know what Abstract Base Classes are, please check [this post](/blog/2014/09/04/python-3-oop-part-6-abstract-base-classes) and the [`collections.abc` module documentation](https://docs.python.org/3/library/collections.abc.html).
 
-**WARNING**: you you are using Python 3.2 or less you will find those classes in the `collections` module instead of `collections.abc`, which has been introduced with Python 3.3
+**WARNING**: if you are using Python 3.2 or less you will find those classes in the `collections` module instead of `collections.abc`, which has been introduced with Python 3.3
 
 Basically through `isinstance(value, collections.abc.Sequence)` we check that the incoming value _behaves_ like a sequence, which is different from saying that it _is_ a `list`, a `string`, or other sequences. The first case covers an incoming string in the form `0bXXXXX`, which is converted to an integer through the `int()` function. The second case is the same but for hexadecimal strings in the form `0xXXXXX`.
 
@@ -370,7 +376,9 @@ If the incoming value is not a sequence it shall be convertible to an integer, w
 
 Finally, the `__int__()` method (one of the Python _magic methods_) is automatically called when we apply `int()` to our binary, just like we do in a lot of the tests. This method is basically the one responsible of providing a conversion to integer of a given class. In this case we just have to return the value we stored internally.
 
-## Conversions
+**Obviously I didn't write this code in a single burst. I had to run the tests a lot of times to tune my code.**
+
+### Conversions
 
 We already write the method that performs the conversion to an integer. Some tests however (namely `test_binary_bin` and `test_binary_hex`) still fail with the error message `TypeError: 'Binary' object cannot be interpreted as an integer`.
 
@@ -447,6 +455,8 @@ The first two tests check that adding both an integer and a `Binary` to a `Binar
 
 Bitwise and arithmetic operations are implemented using Python magic methods. Please check [the official documentation](https://docs.python.org/3.4/library/operator.html) for a complete list of operators and related methods.
 
+**Now download the file `test_binary_ver2.py` and use it to develop the new features.**
+
 The code that implements the required behaviour is
 
 ``` python
@@ -478,14 +488,104 @@ The code that implements the required behaviour is
         return Binary(int(self._value / Binary(other)._value))
 
     def __getitem__(self, item):
-        try:
-            return str(self)[-(item + 1)]
-        except IndexError:
-            return '0'
+        return str(self)[-(item + 1)]
 
     def __invert__(self):
         return Binary([abs(int(i) - 1) for i in str(self)])
 ```
 
-All methods are straightforward, except perhaps `__getitem__()` and `__invert__()`. The former is required to provide indexing, and as said shall index starting from the rightmost element and moving left. This is the reason of the `-(item + 1)` index. The `__invert__()` method is called when performing a bitwise NOT operation (`~`) and is implemented avoiding negative numbers. A simple solution is to convert the `Binary` into a string and then reverse every digit (`abs(int(i) - 1)` returns 0 for '1' and 1 for '0').
+All methods are straightforward, except perhaps `__getitem__()` and `__invert__()`. The `__invert__()` method is called when performing a bitwise NOT operation (`~`) and is implemented avoiding negative numbers. A simple solution is to convert the `Binary` into a string and then reverse every digit (`abs(int(i) - 1)` returns 0 for '1' and 1 for '0').
+
+The `__getitem__()` method is required to provide indexing, and as said shall index starting from the rightmost element and moving left. This is the reason of the `-(item + 1)` index. Please notice that this method will be changed later to provide full support to slicing.
+
+## Slicing
+
+I want `Binary` to support slicing, just like lists. The difference between lists and my `Binary` type is that for the latter indexes start from the rightmost element. So when I get bits 3:7 of an 8-bit `Binary` I obtain the four leftmost ones. The desired behaviour is thus exemplified by
+
+``` pycon
+>>> b = Binary('01101010')
+>>> b[4:7]
+<binary.Binary object at 0x...> (110)
+>>> b[1:3]
+<binary.Binary object at 0x...> (101)
+```
+
+that can immediately be converted into tests
+
+``` python
+def test_binary_slice():
+    assert Binary('01101010')[0:3] == Binary('10')
+    assert Binary('01101010')[1:4] == Binary('101')
+    assert Binary('01101010')[4:] == Binary('110')
+```
+
+**You will find the new tests in the `test_binary_ver3.py` file.**
+
+Running the tests shows that the `__getitem__()` function does not provide support for `slice` objects, raising the exception `TypeError: unsupported operand type(s) for +: 'slice' and 'int'`. Checking [the documentation](https://docs.python.org/3.4/reference/datamodel.html#object.__getitem__) of `__getitem__()` we notice that it shall manage both integers and `slice` objects (this is the missing part) and that it shall raise `IndexError` for illegal indexes to make for loops work. So I immediately add a test for this rule
+
+``` python
+def test_binary_illegal_index():
+    with pytest.raises(IndexError):
+        Binary('01101010')[7]
+```
+
+and other tests to match the correct behaviour (you will find them in the full code). Remember that leading zeros are stripped, so getting the index number 7 shall fail, since the binary number has just 7 digits, even if the incoming string has 8 characters.
+
+Instead of trying to reimplement the whole list slicing behaviour with reversed indexes, it is much simpler to make use of it. We can just take the string version of our `Binary`, slice its reversed version and return the result (reversed again). The result of the slice can be a single element, however, so we have to check it against the `Sequence` class
+
+``` python
+def __getitem__(self, key):
+        reversed_list = [int(i) for i in reversed(str(self))]
+        sliced = reversed_list.__getitem__(key)
+        if isinstance(sliced, collections.abc.Sequence):
+            if len(sliced) > 0:
+                return Binary([i for i in reversed(sliced)])
+            else:
+                return Binary(0)
+        else:
+            return Binary(sliced)
+```
+
+The first list comprehension returns a list of integers with the reversed version of the binary number (i.e. from `Binary('01101')` to `[1, 0, 1, 1]`, remember that leading zeros are stripped). Then we delegate the slice to the `list` type, calling `__getitem__()`. The result of this call may be a sequence or a single element (integer), so we tell apart the two cases. In the first case we reverse the result again, in the second case we just return it. In both cases we create a `Binary` object. The check on the length of the list must be introduced because the slice may return no elements, but the `Binary` class does not accept an empty list.
+
+## Splitting binaries
+
+The last feature I want to add is a `split()` function that divides the binary number in two binaries. The rightmost one shall have the given size in bits, while the leftmost just contains the remaining bits. The following tests exemplify the behaviour of `split()`
+
+``` python
+def test_binary_split_no_remainder():
+    assert Binary('110').split(4) == (0, Binary('110'))
+
+def test_binary_split_remainder():
+    assert Binary('110').split(2) == (1, Binary('10'))
+
+def test_binary_split_exact():
+    assert Binary('100010110').split(9) == (0, Binary('100010110'))
+
+def test_binary_split_leading_zeros():
+    assert Binary('100010110').split(8) == (1, Binary('10110'))
+```
+
+**These new tests are in the file `test_binary_ver4.py`.**
+
+The code that implements it is
+
+``` python
+def split(self, bits):
+    return (self[bits:], self[:bits])
+```
+
+## Resources
+
+* [Wikipedia entry](http://en.wikipedia.org/wiki/Binary_number) on binary numbers.
+* [Context managers](https://www.python.org/dev/peps/pep-0343/) in Python.
+* [Py.test project layouts](https://pytest.org/latest/goodpractises.html).
+* Jeff Knupp on [open sourcing a Python project](http://www.jeffknupp.com/blog/2013/08/16/open-sourcing-a-python-project-the-right-way/).
+* The Python [`collections.abc` module documentation](https://docs.python.org/3/library/collections.abc.html).
+* [Python operators documentation](https://docs.python.org/3.4/library/operator.html).
+
+## Feedback
+
+Feel free to use [the blog Google+ page](https://plus.google.com/u/0/b/110554719587236016835/110554719587236016835/posts) to comment the post. The [GitHub issues](https://github.com/lgiordani/lgiordani.github.com/issues) page is the best place to submit corrections.
+
 
