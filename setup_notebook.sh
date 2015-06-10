@@ -4,7 +4,7 @@
 
 sudo apt-get install -y python3-dev g++
 
-virtualenv venv3
+virtualenv -p python3 venv3 
 source venv3/bin/activate
 
 pip install ipython pyzmq jinja2 pygments tornado jsonschema

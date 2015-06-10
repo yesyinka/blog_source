@@ -140,7 +140,7 @@ SyntaxError: non-default argument follows default argument
 
 Default arguments may be provided as plain values or as the result of a function call, but this latter technique need a **very big warning**.
 
-While plain values are hardcoded, thus needing no evaluation except that made at compilation time, function calls are expected to be executed at run time. So we could write
+While plain values are hardcoded, thus needing no evaluation except that made at compilation time, function calls are expected to be executed at run time (check [this comment on Reddit](http://www.reddit.com/r/Python/comments/2viygh/default_arguments_in_python/coii8bn?context=3) for a better explanation of this matter). So we could write
 
 ``` python
 import datetime as dt
@@ -174,3 +174,7 @@ def log_time(message, time=None):
 ## Conclusions
 
 Default arguments may vastly simplify APIs, provided that you pay attention to their only "failure point", the evaluation time. Surprisingly, one of the most basic things in Python, function arguments and references, are one of the biggest source of errors, sometimes for experienced programmers too. I recommend giving references and polymorphism some study time.
+
+## Updates
+
+2015-06-10: [brandjon](http://www.reddit.com/user/brandjon) added some useful information [here](http://www.reddit.com/r/Python/comments/2viygh/default_arguments_in_python/coii8bn?context=3), explaining how CPython deals with plain values and functions. I added the link to the commented section.
