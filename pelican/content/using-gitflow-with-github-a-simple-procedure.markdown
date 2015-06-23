@@ -99,6 +99,16 @@ $ # Force a push on GitHub
 $ git push origin +new_feature
 ```
 
+## The `gitflow gh` command
+
+[This repository](https://github.com/lgiordani/gitflow/tree/github_support) is a fork of the official gitflow repository and inplements a new gitflow command `gh` to easily perform what has been described in this post. The changes are implemented in the `github_support` branch, which has been developed with the modified gitflow program itself.
+
+As of 22-06-2015 I [submitted a PR](https://github.com/petervanderdoes/gitflow/pull/208) to the official gitflow repository, but I do not know if it is going to be accepted.
+
+If you are interested in using this feature feel free to clone my gitflow repository and report any issue either there or in the PR itself. As soon as the PR is processed, I'll update this section.
+
+The `gh` command is described in [the README](https://github.com/lgiordani/gitflow/tree/github_support#github-integration). It currently provides six commands: enable, disable, activate, import, squash and publish.
+
 ## Links
 
 * The GitHUb workflow [official documentation](https://guides.github.com/introduction/flow/)
@@ -106,6 +116,10 @@ $ git push origin +new_feature
 * The gitflow AVH Edition [official repository](https://github.com/petervanderdoes/gitflow)
 * Some insights on [Git objects](https://git-scm.com/book/en/v2/Git-Internals-Git-Objects)
 * Another solution to work with GitHub and gitflow: [HubFlow](https://datasift.github.io/gitflow/)
+
+## Updates
+
+2015-06-23: Added a section about a gitflow fork that implements the concepts explained in the post.
 
 ## Feedback
 
