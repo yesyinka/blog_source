@@ -1,6 +1,7 @@
 #!/bin/bash
 
-version=$(date +%Y%m%d%H%M)
+version=$(~/Devel/bumpversion/tbump --allow-dirty --dry-run --list date | grep new_version | sed -r s,"^.*=",,)
+#version=$(date +%Y%m%d%H%M)
 
 git flow release start ${version}
 echo "${version}" > version.txt
