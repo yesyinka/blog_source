@@ -18,7 +18,7 @@ As already suggested in the first installment try to follow the post up to the s
 
 As soon as you build an electronic circuic to store information (a flip-flop, for example) you start dealing with binary numbers and with fixed-size quantities. Limiting the number of digits brings immediately the limitation of having a maximum number that can be represented and requires to decide what to do with bigger numbers. Another issue that arises is that of the representation of negative numbers. Since we can only use two symbols (one and zero) we have to decide a "syntax" for negative values.
 
-You will find a lot of information about some of those issues in the following Wikipedia articles: [Integer oveeflow](https://en.wikipedia.org/wiki/Integer_overflow) and [Signed number representations](https://en.wikipedia.org/wiki/Signed_number_representations). Check also this page on [bitwise operations](https://en.wikipedia.org/wiki/Bitwise_operation) as some of them will be implemented.
+You will find a lot of information about some of those issues in the following Wikipedia articles: [Integer overflow](https://en.wikipedia.org/wiki/Integer_overflow) and [Signed number representations](https://en.wikipedia.org/wiki/Signed_number_representations). Check also this page on [bitwise operations](https://en.wikipedia.org/wiki/Bitwise_operation) as some of them will be implemented.
 
 ## Object interface
 
@@ -62,13 +62,22 @@ def test_size_binary_set_overflow():
     assert size_binary.overflow == True
 ```
 
-I will cover all the cases already covered for the `Binary` class. As you can see, I'm specifying the bit size when instantiating the object and testing the overflow condition. Other initialization and conversion tests are very similar to their `Bianry` counterpart and I will not copy them here, as you can find them in the source code.
+I will cover all the cases already covered for the `Binary` class. As you can see, I'm specifying the bit size when instantiating the object and testing the overflow condition. Other initialization and conversion tests are very similar to their `Binary` counterpart and I will not copy them here, as you can find them in the source code.
 
 ## Splitting
 
 One of the requirements is to provide a method to split a `SizeBinary` object into two arbitrarily sized `Binary` objects. The tests are
 
 ``` python
+def test_size_binary_split():
+    size_binary8 = SizeBinary(8, '01010110')
+    size_binary4u, size_binary4l = size_binary8.split(4, 4)
+    assert (size_binary4u, size_binary4l) == (SizeBinary(4, '0101'), SizeBinary(4, '0110'))
+
+def test_size_binary_split_asymmetric():
+    size_binary8 = SizeBinary(8, '01010110')
+    size_binary9u, size_binary3l = size_binary8.split(9, 3)
+    assert (size_binary9u, size_binary3l) == (SizeBinary(9, '000001010'), SizeBinary(3, '110'))
 ```
 
 As you can see the split shall be able to pad the resulting values if the number of bits exceedes that of the available ones.
@@ -78,6 +87,39 @@ As you can see the split shall be able to pad the resulting values if the number
 There are many techniques to represent negative numbers with binary digits, and there is no way to tell from a binary number neither if it is positive or negative nor which technique has been used. It is a matter of conventions into the system in use. We want to implement [one's complement](https://en.wikipedia.org/wiki/Ones'_complement) and [two's complement](https://en.wikipedia.org/wiki/Two's_complement), which are described in detail in the linked Wikipedia articles. The tests to check the correct behaviour are
 
 ``` python
+def test_size_binary_OC():
+    # 6 = 0b00000110 -> 0b11111001
+    size_binary = SizeBinary(8, 6)
+    assert size_binary.oc() == SizeBinary(8, '11111001')
+
+    # 7 = 0b00000111 -> 0b11111000
+    size_binary = SizeBinary(8, 7)
+    assert size_binary.oc() == SizeBinary(8, '11111000')
+    
+    # 15 = 0b00001111 -> 0b11110000
+    size_binary = SizeBinary(8, 15)
+    assert size_binary.oc() == SizeBinary(8, '11110000')
+
+    # 15 = 0b0000000000001111 -> 0b1111111111110000
+    size_binary = SizeBinary(16, 15)
+    assert size_binary.oc() == SizeBinary(16, '1111111111110000')
+
+def test_size_binary_TC():
+    # 6 = 0b00000110 -> 0b11111010
+    size_binary = SizeBinary(8, 6)
+    assert size_binary.tc() == SizeBinary(8, '11111010')
+
+    # 7 = 0b00000111 -> 0b11111001
+    size_binary = SizeBinary(8, 7)
+    assert size_binary.tc() == SizeBinary(8, '11111001')
+
+    # 15 = 0b00001111 -> 0b11110001
+    size_binary = SizeBinary(8, 15)
+    assert size_binary.tc() == SizeBinary(8, '11110001')
+
+    # 15 = 0b0000000000001111 -> 0b1111111111110001
+    size_binary = SizeBinary(16, 15)
+    assert size_binary.tc() == SizeBinary(16, '1111111111110001')
 ```
 
 ## Mathematics, indexing and slicing
@@ -85,6 +127,14 @@ There are many techniques to represent negative numbers with binary digits, and 
 The basic mathematical and logical operations are the same implemented for the `Binary` class. Some tests have been added to check what happens when performing operations between two `SizeBinary` with a different size. We expect the result to have the size of the bigger of the two operands.
 
 ``` python
+def test_binary_addition_int():
+    assert SizeBinary(8, 4) + 1 == SizeBinary(8, 5)
+
+def test_binary_addition_binary():
+    assert SizeBinary(8, 4) + SizeBinary(8, 5) == SizeBinary(8, 9)
+
+def test_binary_addition_binary_different_size():
+    assert SizeBinary(8, 4) + SizeBinary(16, 5) == SizeBinary(16, 9)
 ```
 
 Being very straightforward, I do not copy here all the tests written to cover this part, you will find them in the source code.
@@ -110,6 +160,10 @@ class SizeBinary(Binary):
 
 and with this simple declaration I get 1 test passed and still 50 to go. We obviously may also create a new object that does not inherit from `Binary` but we would have to explicitly delegate a lot of functions to this latter class. So, in this case, better to stick to an automatic delegation mechanism like inheritance. To get a review of those two concepts read [this post](/blog/2014/08/20/python-3-oop-part-3-delegation-composition-and-inheritance).
 
+Composition could be another viable solution, with a `Binary` value stored internally and accessed whenever we call `super()` in the inheritance version. In this case, however, inheritance and composition lead to very similar results, with the latter being somehow counterintuitive and thus not the best choice.
+
+We need to reimplement many of the special methods already implemented in the `Binary` class. This because Python resolves magic methods through a dedicated channel that avoids the `__getattr__()` and `__getattribute__()` methods, making the whole thing faster. This makes impossible to automatically delegate magic methods, except by means of metaclasses, which are however too complex to be a useful addition to this post.
+
 The initialization function shall store the bit length and initialize a flag to signal the overflow condition. Since I also want to have a `set()` function that changes the value I implement it and call it in the `__init__()` method.
 
 ``` python
@@ -131,9 +185,11 @@ The initialization function shall store the bit length and initialize a flag to 
         self._value = Binary(lower)._value
 ```
 
-I'm not that happy to poke into the `Binary` class implementation setting the `_value` attribute. TODO TODO TODO. With this code I get a surprising result of 37 passed tests, while 14 still refuse to let me call it a day. This is however misleading, as many tests assume the `SizeBinary` object correctly performs comparision, which is not the case, as shown by the failure of the `test_binary_equality_checks_bits` test.
+I'm not that happy to poke into the `Binary` class implementation setting the `_value` attribute, but this is the only way to change the value of the underlying `Binary` class. If the `Binary` class had a `set()` method we could call it through `super()`, and I cannot directly set it through `__init__()` because I need to check the overflow condition.
 
-This was done on purpose, to show you that writing tests is not something that automatically ensures you to have correct code. In this case tests like
+With this code I get a surprising result of 37 passed tests, while 14 still refuse to let me call it a day. This is however misleading, as many tests assume the `SizeBinary` object correctly performs comparision, which is not the case, as shown by the failure of the `test_binary_equality_checks_bits` test.
+
+This was done on purpose, to show you that writing tests is not something that automatically guarantees you to have correct code. As a matter of fact, in this case tests like
 
 ``` python
 def test_binary_addition_int():
@@ -251,3 +307,14 @@ The second needs some consideration: slicing depends on the `__getitem__()` magi
 ```
 
 First of all I use the slicing function of the underlying `Binary` object which was already tested and correctly working. Then I compute the length of that result and act depending on the result.
+
+## Resources
+
+* Wikipedia entries on [integer overflow](https://en.wikipedia.org/wiki/Integer_overflow), [signed number representations](https://en.wikipedia.org/wiki/Signed_number_representations), and [bitwise operations](https://en.wikipedia.org/wiki/Bitwise_operation).
+
+The code developed in this post can be found here:
+
+* The full code of the `SizeBinary` class is [here](/code/python-oop-tdd-part2/size_binary.py).
+* The tests file is [here](/code/python-oop-tdd-part2/test_size_binary.py).
+* Here you find a zip file containing both source code files and the relative tests.
+
