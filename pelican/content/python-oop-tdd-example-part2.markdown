@@ -1,5 +1,5 @@
 Title: A simple example of Python OOP development (with TDD) - Part 2 
-Date: 2015-07-15 20:00:00 +0100
+Date: 2015-09-10 20:00:00 +0100
 Category: Programming
 Tags: OOP, Python, Python3, TDD
 Authors: Leonardo Giordani
@@ -18,7 +18,7 @@ As already suggested in the first installment try to follow the post up to the s
 
 As soon as you build an electronic circuic to store information (a flip-flop, for example) you start dealing with binary numbers and with fixed-size quantities. Limiting the number of digits brings immediately the limitation of having a maximum number that can be represented and requires to decide what to do with bigger numbers. Another issue that arises is that of the representation of negative numbers. Since we can only use two symbols (one and zero) we have to decide a "syntax" for negative values.
 
-You will find a lot of information about some of those issues in the following Wikipedia articles: [Integer overflow](https://en.wikipedia.org/wiki/Integer_overflow) and [Signed number representations](https://en.wikipedia.org/wiki/Signed_number_representations). Check also this page on [bitwise operations](https://en.wikipedia.org/wiki/Bitwise_operation) as some of them will be implemented.
+You will find a lot of information about some of those issues in the following Wikipedia articles: [Integer overflow](https://en.wikipedia.org/wiki/Integer_overflow) and [signed number representations](https://en.wikipedia.org/wiki/Signed_number_representations). Check also this page on [bitwise operations](https://en.wikipedia.org/wiki/Bitwise_operation) as some of them will be implemented.
 
 ## Object interface
 
@@ -145,7 +145,7 @@ The indexing and slicing operations are basically the same as in the `Binary` ca
 
 ## Implementation time!
 
-Now be a good OOP programmer and go, write a class that passes all the tests you find in the [source code](/code/python-oop-tdd-part1/test_size_binary.py). Just an advice, before you start headlong: being a `SizeBinary` mostly a `Binary` object with some new features it is recommended to use inheritance as the key delegation technique.
+Now be a good OOP programmer and go, write a class that passes all the tests you find in the [source code](/code/python-oop-tdd-part2/test_size_binary.py). Just an advice, before you start headlong: being a `SizeBinary` mostly a `Binary` object with some new features it is recommended to use inheritance as the key delegation technique.
 
 ## My solution
 
