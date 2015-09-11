@@ -6,7 +6,7 @@ Authors: Leonardo Giordani
 Slug: python-oop-tdd-example-part2
 Summary: The second part of the post about Object-oriented Programming and Test Driven Development
 
-In the first part of this small series I introduced you to TDD with Python by means of the powerful `py.test` package. We developed together a simple library which provides a `Binary` class that is a bit more useful than the default binary representation that Python provides with the `bin()` builtin function.
+In [the first part](/blog/2015/05/13/python-oop-tdd-example-part1/) of this small series I introduced you to TDD with Python by means of the powerful `py.test` package. We developed together a simple library which provides a `Binary` class that is a bit more useful than the default binary representation that Python provides with the `bin()` builtin function.
 
 In this part I'll go on with the development of the library, discussing the implementation of a binary number with a fixed size, which is a very interesting and useful matter, being the foundation of the computer we are working with. Fixed-size binaries may also represent negative numbers with the two's complement technique, and this will be an important point to test.
 
@@ -314,7 +314,6 @@ First of all I use the slicing function of the underlying `Binary` object which 
 
 The code developed in this post can be found here:
 
-* The full code of the `SizeBinary` class is [here](/code/python-oop-tdd-part2/size_binary.py).
-* The tests file is [here](/code/python-oop-tdd-part2/test_size_binary.py).
-* Here you find a zip file containing both source code files and the relative tests.
+* The full code of the `SizeBinary` class is [here](/code/python-oop-tdd-part2/size_binary.py), while the tests file is [here](/code/python-oop-tdd-part2/test_size_binary.py).
+* [Here](/code/python-oop-tdd-part2/binary.zip) you find a zip file containing both source code files and the relative tests.
 
