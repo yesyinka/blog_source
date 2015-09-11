@@ -8,7 +8,7 @@ Summary: A simple implementation of binary numbers in Python to exemplify OOP an
 
 If you are eager to learn some Python and do not know how to start, this post may give you some hints. I will develop a very simple Python package from scratch, exemplifying some Object-oriented Programming (OOP) techniques and concepts, and using a Test-Driven Development (TDD) approach.
 
-The package will provide some classes to deal with binary numbers (see the Rationale section), but remember that it is just a toy project. Nothing in this package has been designed with performance in mind: it wants to be as clearer as possible.
+The package will provide some classes to deal with binary numbers (see the Rationale section), but remember that it is just a toy project. Nothing in this package has been designed with performance in mind: it wants to be as clear as possible.
 
 ## Rationale
 
@@ -61,7 +61,7 @@ Traceback (most recent call last):
 TypeError: 'int' object is not subscriptable
 ```
 
-You can also use a different base when converting things to integers, through the `base` attribute
+You can also use a different base when converting things to integers, through the `base` parameter
 
 ``` pycon
 >>> a = int('101', base=2)
@@ -74,7 +74,7 @@ You can also use a different base when converting things to integers, through th
 
 ## Test-driven development
 
-Simple tasks are the best way to try and use new development methodologies, so this is a good occasion to start working with the so-called test-driven approach. Test-driven Development (TDD) basically means that the first thing you do when developing is to write some _tests_, that is **programs that use what you are going to develop**. The purpose of those programs is to test that your final product complies with a given behaviour so they provide 
+Simple tasks are the best way to try and use new development methodologies, so this is a good occasion to start working with the so-called test-driven approach. Test-driven Development (TDD) basically means that the first thing you do when developing is to write some _tests_, that is **programs that use what you are going to develop**. The purpose of those programs is to test that your final product complies with a given behaviour. So they provide 
 
 * **Documentation** for your API: they are examples of use of your package.
 * **Regression** checks: when you change the code to develop new features they shall not break the behaviour of the previous package versions.
