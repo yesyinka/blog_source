@@ -449,7 +449,7 @@ def test_binary_shl_pos():
     assert Binary('1101') << 5 == Binary('110100000')
 ```
 
-The first two tests check that adding both an integer and a `Binary` to a `Binary` works as expected. The division checks two different cases: because integer division produces a remainder, which is not considered here. The `test_binary_get_bit` function tests indexing and is one of the few tests that contain more than one assertion. Please note that binary indexing, unlike standard sequence indexing in Python, start from the leftmost element.
+The first two tests check that adding both an integer and a `Binary` to a `Binary` works as expected. The division checks two different cases: because integer division produces a remainder, which is not considered here. The `test_binary_get_bit` function tests indexing and is one of the few tests that contain more than one assertion. Please note that binary indexing, unlike standard sequence indexing in Python, starts from the rightmost element.
 
 Bitwise and arithmetic operations are implemented using Python magic methods. Please check [the official documentation](https://docs.python.org/3.4/library/operator.html) for a complete list of operators and related methods.
 
@@ -596,6 +596,8 @@ In the next post I will guide you through the addition of the `SizeBinary` class
 ## Updates
 
 2015-05-15 As suggested by [Jacob Zimmerman](https://plus.google.com/u/0/b/110554719587236016835/+JacobZimmermanCrapEDM/posts) in [this comment](https://plus.google.com/110554719587236016835/posts/F7TrsivP94B) the class lacks some methods to be a complete numeric class, most notably `__radd__` and `__rsub__`. Indeed, my first goal was to show TDD so I did not add the whole series of reflected arithmetic operations. You will find all those methods [here](https://docs.python.org/3/reference/datamodel.html#object.__radd__) and try to implement them following the methodology shown in the post. Jacob also suggested to shorten the `__str__()` implementation, and I fixed it. Thanks Jacob!
+
+2015-09-22 [Christopher McCormack](https://github.com/cmccormack) spotted an error about binary indexing: "starts from the leftmost element" should be "starts from the rightmost element". Now it has been fixed. Thanks Christopher!
 
 ## Feedback
 
