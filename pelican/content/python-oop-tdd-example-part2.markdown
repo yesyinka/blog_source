@@ -317,3 +317,6 @@ The code developed in this post can be found here:
 * The full code of the `SizeBinary` class is [here](/code/python-oop-tdd-part2/size_binary.py), while the tests file is [here](/code/python-oop-tdd-part2/test_size_binary.py).
 * [Here](/code/python-oop-tdd-part2/binary.zip) you find a zip file containing both source code files and the relative tests.
 
+## Feedback
+
+Feel free to use [the blog Google+ page](https://plus.google.com/u/0/b/110554719587236016835/110554719587236016835/posts) to comment the post. The [GitHub issues](https://github.com/lgiordani/lgiordani.github.com/issues) page is the best place to submit corrections.
