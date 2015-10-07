@@ -23,7 +23,7 @@ So I chose to split the previous series and to adapt the content to Python 3 ins
 
 One of the most noticeable changes introduced by Python 3 is the transformation of the `print` keyword into the `print()` function. This is indeed a very small change, compared to other modifications made to the internal structures, but is the most visual-striking one, and will be the source of 80% of your syntax errors when you will start writing Python 3 code.
 
-Remember that print is now a function so write `print(a)` and not `print a`.d
+Remember that print is now a function so write `print(a)` and not `print a`.
 
 ## Back to the Object
 
