@@ -89,3 +89,5 @@ SITEMAP = {
 }
 
 SLUG_SUBSTITUTIONS = [("c++","cpp")]
+
+DEFAULT_DATE_FORMAT = '%d/%m/%Y'
