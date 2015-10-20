@@ -13,10 +13,15 @@ TIMEZONE = 'Europe/Paris'
 DEFAULT_LANG = u'en'
 
 # Feed generation is usually not desired when developing
-FEED_ALL_ATOM = None
-TAG_FEED_ATOM = None
-CATEGORY_FEED_ATOM = None
+FEED_ALL_ATOM = 'atom.xml'
+TAG_FEED_ATOM = 'categories/%s/atom.xml'
+CATEGORY_FEED_ATOM = 'category/%s/atom.xml'
+# FEED_ALL_ATOM = None
+# TAG_FEED_ATOM = None
+# CATEGORY_FEED_ATOM = None
 TRANSLATION_FEED_ATOM = None
+DISPLAY_FEEDS_ON_SIDEBAR = True
+DISPLAY_TAGS_ON_SIDEBAR = False
 
 # Blogroll
 #LINKS = (('Pelican', 'http://getpelican.com/'),
@@ -84,3 +89,5 @@ SITEMAP = {
 }
 
 SLUG_SUBSTITUTIONS = [("c++","cpp")]
+
+DEFAULT_DATE_FORMAT = '%d/%m/%Y'
