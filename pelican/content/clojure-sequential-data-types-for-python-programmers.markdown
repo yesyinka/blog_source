@@ -1,6 +1,6 @@
 Title: Clojure sequential data types for Python programmers
 Date: 2015-09-22 19:00:00 +0100
-Category: Programming/Projects
+Category: Programming
 Tags: functional programming, Python, Python2, Python3, Clojure
 Authors: Leonardo Giordani
 Slug: clojure-sequential-data-types-for-python-programmers
