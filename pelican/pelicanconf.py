@@ -85,7 +85,7 @@ LACES_NAVBAR_BRAND = {
 }
 
 LACES_SIDEBAR = {
-    'fields': ['tags', 'tags_inline', 'series', 'social'],
+    'fields': ['tags', 'tags_inline', 'series', 'social', 'feeds'],
     'recent': True,
     'recent_num': 4,
 }
