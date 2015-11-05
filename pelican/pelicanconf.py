@@ -29,43 +29,90 @@ DISPLAY_TAGS_ON_SIDEBAR = False
 
 # Social widget
 SOCIAL = (
-		('Twitter', 'https://twitter.com/tw_lgiordani'),
-		('Google+', 'http://plus.google.com/+LeonardoGiordani?rel=author'),
-		('GitHub', 'https://github.com/lgiordani'),
-	)
+        ('Twitter', 'https://twitter.com/tw_lgiordani'),
+        ('Google+', 'http://plus.google.com/+LeonardoGiordani?rel=author'),
+        ('GitHub', 'https://github.com/lgiordani'),
+    )
 
 DEFAULT_PAGINATION = 10
 PAGINATION_PATTERNS = (
-	(1, '{base_name}/', '{base_name}/index.html'),
-	(2, '{base_name}/page/{number}/', '{base_name}/page/{number}/index.html'),
-	)
+    (1, '{base_name}/', '{base_name}/index.html'),
+    (2, '{base_name}/page/{number}/', '{base_name}/page/{number}/index.html'),
+    )
 
 # Uncomment following line if you want document-relative URLs when developing
 #RELATIVE_URLS = True
 STATIC_PATHS = ['images', 'code', 'notebooks', 'extra/CNAME']
 EXTRA_PATH_METADATA = {'extra/CNAME': {'path': 'CNAME'},}
-
-THEME = "pelican-bootstrap3"
-CC_LICENSE = 'CC-BY-SA'
-#SHOW_ARTICLE_AUTHOR = True
-BOOTSTRAP_THEME = 'spacelab'
-PYGMENTS_STYLE = 'monokai'
-SITELOGO = 'images/TheDigitalCat_favicon_32.png'
-SITELOGO_SIZE = 24
-FAVICON = 'images/TheDigitalCat_favicon_32.png'
-DISPLAY_ARTICLE_INFO_ON_INDEX = True
-DISPLAY_TAGS_INLINE = True
-DISPLAY_RECENT_POSTS_ON_SIDEBAR = True
-
-ADDTHIS_PROFILE = 'ra-552391e122c8506c'
-#GITHUB_USER = 'lgiordani'
 TWITTER_USERNAME = 'tw_lgiordani'
-TWITTER_CARDS = True
-USE_OPEN_GRAPH = True
-OPEN_GRAPH_IMAGE = 'images/TheDigitalCat_logo_200.jpg'
 
-DISPLAY_SERIES_ON_SIDEBAR = True
-SHOW_SERIES = True
+THEME = "laces3"
+
+LACES_CONTENT_BOOTSWATCH_THEME = 'spacelab'
+
+LACES_PYGMENTS_STYLE = 'monokai'
+
+# LACES_NAVBAR_BRAND = {
+#     'show_site_name': True,
+#     'file':'images/TheDigitalCat_favicon_32.png',
+#     'width':24
+# }
+
+LACES_FAVICON = 'images/TheDigitalCat_favicon_32.png'
+
+LACES_ARTICLE_INFO_LIST = {
+    'fields': ['date', 'tags']
+}
+
+LACES_ARTICLE_INFO_PAGE = {
+    'fields': ['date', 'tags', 'series']
+}
+
+LACES_SERIES = {
+    'display_on_header': True,
+    'display_on_footer': True
+}
+
+LACES_BANNER = {
+    'file': 'images/TheDigitalCat_favicon_32.png',
+    'all_pages': False,
+    'subtitle': "Adventures of a curious cat in the land of programming"
+}
+
+LACES_NAVBAR_BRAND = {
+    'title': SITENAME,
+    'icon': 'paw'
+}
+
+LACES_SIDEBAR = {
+    'fields': ['tags', 'tags_inline', 'series', 'social', 'feeds'],
+    'recent': True,
+    'recent_num': 4,
+}
+
+LACES_LICENSE = {
+    'cc_short': 'CC-BY-SA'
+}
+
+# LACES_GITHUB = {
+#     'user': 'lgiordani',
+#     'repo_count': 4,
+#     'show_user_link': True
+# }
+
+LACES_ADDTHIS = {
+    'profile': 'ra-552391e122c8506c'
+}
+
+LACES_TWITTER_CARDS = True
+
+LACES_OPEN_GRAPH = {
+    'image': 'images/TheDigitalCat_logo_200.jpg'    
+}
+
+LACES_COOKIECONSENT = True
+
+JINJA_EXTENSIONS = ['jinja2.ext.with_', 'jinja2.ext.do']
 
 ARTICLE_URL = 'blog/{date:%Y}/{date:%m}/{date:%d}/{slug}/'
 ARTICLE_SAVE_AS = ARTICLE_URL + 'index.html'
@@ -80,7 +127,7 @@ ARCHIVES_URL = 'archives/'
 ARCHIVES_SAVE_AS = ARCHIVES_URL + 'index.html'
 
 PLUGIN_PATHS = ["pelican-plugins"]
-PLUGINS = ['related_posts', 'series', 'sitemap']
+PLUGINS = ['related_posts', 'series', 'sitemap', 'tag_cloud']
 
 GOOGLE_ANALYTICS_UNIVERSAL = 'UA-38715090-1'
 
@@ -92,4 +139,3 @@ SLUG_SUBSTITUTIONS = [("c++","cpp")]
 
 DEFAULT_DATE_FORMAT = '%d/%m/%Y'
 
-COOKIECONSENT = True
