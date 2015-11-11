@@ -23,6 +23,34 @@ TRANSLATION_FEED_ATOM = None
 DISPLAY_FEEDS_ON_SIDEBAR = True
 DISPLAY_TAGS_ON_SIDEBAR = False
 
+
+JINJA_EXTENSIONS = ['jinja2.ext.with_', 'jinja2.ext.do']
+
+ARTICLE_URL = 'blog/{date:%Y}/{date:%m}/{date:%d}/{slug}/'
+ARTICLE_SAVE_AS = ARTICLE_URL + 'index.html'
+
+CATEGORY_URL = 'category/{slug}/'
+CATEGORY_SAVE_AS = CATEGORY_URL + 'index.html'
+
+TAG_URL = 'categories/{slug}/'
+TAG_SAVE_AS = TAG_URL + 'index.html'
+
+ARCHIVES_URL = 'archives/'
+ARCHIVES_SAVE_AS = ARCHIVES_URL + 'index.html'
+
+PLUGIN_PATHS = ["pelican-plugins"]
+PLUGINS = ['related_posts', 'series', 'sitemap', 'tag_cloud']
+
+GOOGLE_ANALYTICS_UNIVERSAL = 'UA-38715090-1'
+
+SITEMAP = {
+    'format': 'xml',
+}
+
+SLUG_SUBSTITUTIONS = [("c++","cpp")]
+
+DEFAULT_DATE_FORMAT = '%d/%m/%Y'
+
 # Blogroll
 #LINKS = (('Pelican', 'http://getpelican.com/'),
 #         ('Python.org', 'http://python.org/'),)
@@ -111,31 +139,3 @@ LACES_OPEN_GRAPH = {
 }
 
 LACES_COOKIECONSENT = True
-
-JINJA_EXTENSIONS = ['jinja2.ext.with_', 'jinja2.ext.do']
-
-ARTICLE_URL = 'blog/{date:%Y}/{date:%m}/{date:%d}/{slug}/'
-ARTICLE_SAVE_AS = ARTICLE_URL + 'index.html'
-
-CATEGORY_URL = 'category/{slug}/'
-CATEGORY_SAVE_AS = CATEGORY_URL + 'index.html'
-
-TAG_URL = 'categories/{slug}/'
-TAG_SAVE_AS = TAG_URL + 'index.html'
-
-ARCHIVES_URL = 'archives/'
-ARCHIVES_SAVE_AS = ARCHIVES_URL + 'index.html'
-
-PLUGIN_PATHS = ["pelican-plugins"]
-PLUGINS = ['related_posts', 'series', 'sitemap', 'tag_cloud']
-
-GOOGLE_ANALYTICS_UNIVERSAL = 'UA-38715090-1'
-
-SITEMAP = {
-    'format': 'xml',
-}
-
-SLUG_SUBSTITUTIONS = [("c++","cpp")]
-
-DEFAULT_DATE_FORMAT = '%d/%m/%Y'
-
