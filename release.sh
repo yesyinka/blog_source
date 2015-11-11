@@ -9,5 +9,5 @@ cat .bumpversion.cfg | sed -r s,"current_version = .*","current_version = ${vers
 mv new_bumpversion.cfg .bumpversion.cfg
 git add version.txt .bumpversion.cfg
 git ci -m "Version bumped"
-git flow release finish -m "Version ${version}" -p ${version}
+git flow release finish -m "Updated to new version" -p ${version}
 
